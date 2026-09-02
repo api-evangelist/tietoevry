@@ -1,0 +1,83 @@
+generated: '2026-09-02'
+method: derived
+source: 'Derived from the seven webhook and callback operations declared in
+  openapi/tietoevry-sepa-direct-debit-api-gateway.yaml (OpenAPI 3.0.1, fetched from
+  https://openbanking.api.tietoevry.com/documentation/sepa-direct-debit-api-gateway.yaml, HTTP 200,
+  2026-09-02) and the notification-URI request headers that register them.'
+type: Webhooks
+asyncapi_published: false
+asyncapi_note: 'Tietoevry publishes no AsyncAPI document. Probed 2026-09-02: no /asyncapi.yaml or
+  /asyncapi.json on any provider host, no event catalog page on any of the three portals, and no public
+  GitHub repository (github.com/tietoevry reports 0 public repositories). This file captures the webhook
+  catalog that IS published, in the contract''s own words, and asserts no AsyncAPI conformance.'
+summary:
+  event_surface: true
+  transport: HTTP POST to a consumer-supplied URL
+  webhook_count: 7
+  applies_to: tietoevry-sepa-direct-debits
+  provider_wording: 'The API also includes an Event Notification mechanism to stay notified about the state
+    changes of Payments, Refunds and about incoming Payments.'
+  xs2a_note: 'The XS2A / Open Banking surface has NO event mechanism. Consent, authorisation and payment
+    state are discovered by polling /status sub-resources. Nothing pushes.'
+registration:
+  style: per-request header, not a subscription resource
+  headers:
+  - name: Creditor-Notification-URI
+    role: Creditor
+    declared_on: 2 operations
+    note: 'Set on createPayment and createRefund. The contract states it "specifies the URI of a webhook,
+      which will receive event notifications about the particular created refund", i.e. the destination is
+      bound to the individual object, not to the account.'
+  - name: Debtor-Notification-URI
+    role: Debtor
+    declared_on: 1 operation
+  no_management_api: 'There is no list, update, delete, replay or delivery-history operation for webhook
+    subscriptions, and no signing secret, signature header or verification scheme is documented. A consumer
+    cannot verify that a delivered notification came from Tietoevry from anything in the published contract.'
+webhooks:
+- operationId: receivePaymentStatus
+  summary: (Callback) Receive Payment Status
+  role: Creditor
+  path_template: '{receivePaymentStatus}'
+  trigger: State change of a payment the creditor initiated.
+- operationId: receiveRefundStatus
+  summary: (Callback) Receive Refund Status
+  role: Creditor
+  path_template: '{receiveRefundStatus}'
+  trigger: State change of a refund the creditor created.
+- operationId: receiveChargebackStatus
+  summary: (Callback) Receive Chargeback Status
+  role: Debtor
+  path_template: '{receiveChargebackStatus}'
+  trigger: State change of a chargeback the debtor raised.
+- operationId: receiveRefund
+  summary: (Webhook) Receive a Refund
+  role: Debtor
+  path_template: '{receiveRefund}'
+  trigger: An incoming refund is presented to the debtor.
+- operationId: receivePaymentCharge
+  summary: (Webhook) Receive Payment Charge
+  role: Debtor
+  path_template: '{receivePaymentCharge}'
+  trigger: An incoming direct debit collection is presented to the debtor.
+- operationId: confirmAvailabilityOfFunds
+  summary: (Webhook) Confirm availability of funds
+  role: Debtor
+  path_template: '{confirmAvailabilityOfFunds}'
+  trigger: 'Tietoevry asks the debtor-side system whether funds are available. This one is synchronous in
+    effect — the consumer''s response decides the outcome, so it is a callback the consumer must answer, not
+    a notification it may drop.'
+- operationId: verifyCreditorAndAccounts
+  summary: (Webhook) Verify creditor and accounts
+  role: Creditor
+  path_template: '{verifyCreditorAndAccounts}'
+  trigger: Tietoevry asks the creditor-side system to verify a creditor and its accounts.
+payload:
+  note: 'Payload schemas are declared in the contract as ordinary request bodies on these operations; the
+    state values they carry are the same ISO 20022 transactionStatus set documented in
+    errors/tietoevry-decline-codes.yml.'
+delivery_semantics:
+  retries: not documented
+  ordering: not documented
+  at_least_once: not documented
+  signature: not documented

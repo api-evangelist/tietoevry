@@ -1,0 +1,28 @@
+generated: '2026-09-02'
+method: generated
+source: 'Authored from the published Tietoevry contracts in openapi/ plus the provider''s own getting-started
+  manual. Searched first for provider-published Agent Skills or an AGENTS.md on all four hosts and on GitHub;
+  none exists, so these are API Evangelist generated skills. Every operationId referenced in them was grepped
+  out of the published specs — none is invented.'
+skills:
+- name: tietoevry-read-account-data
+  file: skills/tietoevry-read-account-data.md
+  api: tietoevry-openbanking-xs2a
+  summary: Establish an AIS consent, complete SCA, then read accounts, balances and transactions.
+  operations: 8
+- name: tietoevry-initiate-payment
+  file: skills/tietoevry-initiate-payment.md
+  api: tietoevry-openbanking-xs2a
+  summary: Initiate a SEPA credit transfer, get it authorised, follow its ISO 20022 status, and choose
+    between cancel and recall.
+  operations: 8
+- name: tietoevry-reverse-sepa-direct-debit
+  file: skills/tietoevry-reverse-sepa-direct-debit.md
+  api: tietoevry-sepa-direct-debits
+  summary: Pick and execute the right SEPA Direct Debit reversal — cancel, refund, reject or chargeback —
+    for your role and the collection's state.
+  operations: 8
+grounding_rules:
+- Every operationId cited exists in openapi/; nothing was invented.
+- No time window is asserted for any reversal, because the provider publishes none.
+- X-Request-ID is described as correlation, never as an idempotency key, matching the contract.

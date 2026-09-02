@@ -1,0 +1,314 @@
+generated: '2026-09-02'
+method: probed
+source: direct unauthenticated HTTPS probes of every apis.yml baseURL host, every OpenAPI servers[]/host value and
+  the developer-portal hosts, run 2026-09-02 with a browser User-Agent
+summary:
+  hosts_probed: 8
+  paths_probed_per_host: 8
+  documents_served: 0
+  result: No /.well-known/ document is served anywhere on the Tietoevry API surface. No security.txt, no OpenID
+    Provider or OAuth authorization-server metadata, no api-catalog, no ai-plugin.json and no A2A agent card.
+false_positive_warning: Four of these hosts (api.tietoevry.com, openbanking.api.tietoevry.com, aggregation.api.tieto.com,
+  credit.api.tietoevry.com) are React single-page apps behind a catch-all rewrite, so EVERY path returns HTTP 200
+  with the same small HTML shell — 834, 1016, 1052 and 1036 bytes respectively. www.tietoevry.com likewise answers
+  unknown /.well-known/ paths with its 87KB homepage. None of those 200s is a document; they are all recorded as
+  misses and NO WellKnown or SecurityTxt pointer is emitted for this provider.
+hosts:
+- host: aggregation.api.tieto.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/api-catalog
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent-card.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+- host: api.tietoevry.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/api-catalog
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent-card.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+- host: credit.api.tietoevry.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/api-catalog
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent-card.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+- host: openbanking.api.tieto.com
+  documents:
+  - path: /.well-known/security.txt
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/openid-configuration
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/oauth-authorization-server
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/oauth-protected-resource
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/api-catalog
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/ai-plugin.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/agent-card.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/agent.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+- host: openbanking.api.tietoevry.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/api-catalog
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent-card.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/agent.json
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+- host: payments.api.tieto.com
+  documents:
+  - path: /.well-known/security.txt
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/openid-configuration
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/oauth-authorization-server
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/oauth-protected-resource
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/api-catalog
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/ai-plugin.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/agent-card.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+  - path: /.well-known/agent.json
+    status: <no response>
+    result: unreachable
+    note: Host did not complete a TLS/HTTP exchange from an ordinary client.
+- host: www.tieto.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    result: absent
+  - path: /.well-known/openid-configuration
+    status: 404
+    result: absent
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    result: absent
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    result: absent
+  - path: /.well-known/api-catalog
+    status: 404
+    result: absent
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    result: absent
+  - path: /.well-known/agent-card.json
+    status: 404
+    result: absent
+  - path: /.well-known/agent.json
+    status: 404
+    result: absent
+- host: www.tietoevry.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/api-catalog
+    status: 200
+    result: html-shell
+    note: 200 returned the site HTML shell, not a document — this host answers every /.well-known/* path with its
+      single-page-app index (or, on www.tietoevry.com, with the corporate homepage). Recorded as a miss.
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    result: absent
+  - path: /.well-known/agent-card.json
+    status: 404
+    result: absent
+  - path: /.well-known/agent.json
+    status: 404
+    result: absent

@@ -1,0 +1,110 @@
+generated: '2026-09-02'
+method: searched
+source: https://openbanking.api.tietoevry.com/documentation/how-to-instruction.yaml (provider "Getting
+  started!" manual, fetched 2026-09-02, HTTP 200), plus the securityDefinitions declared in
+  openapi/tietoevry-tieto-xs2a-vam-accounts.yaml, openapi/tietoevry-tieto-xs2a-vam-users.yaml and
+  openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+docs: https://openbanking.api.tietoevry.com/getting-started
+note: 'Spec-derived security is thin because the Berlin Group XS2A specs Tietoevry publishes declare their
+  credential headers as ordinary header parameters rather than securityDefinitions: X-API-Key appears as a
+  required header parameter on 171 of the 211 published operations but is a declared securityScheme only in
+  the two VAM specs. The provider manual states the real profile, so this file is upgraded from derived to
+  searched. The openIdConnectUrl in the SEPA Direct Debits gateway spec is the literal placeholder
+  http://example/openid-connect and does not resolve to a Tietoevry issuer.'
+summary:
+  types:
+  - apiKey
+  - openIdConnect
+  - mutualTLS
+  api_key_in:
+  - header
+  primary: 'API key in the X-API-Key header, issued per registered application in the developer portal'
+schemes:
+- name: APIKeyHeader
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  description: 'The API key of the application registered in My Apps. The provider manual states it "must be
+    added to every call you make on our APIs" and it is copied from the app detail screen in the portal.
+    Present as a required header parameter on 171 published operations.'
+  scope: all XS2A, premium and VAM operations
+  obtained_at: https://openbanking.api.tietoevry.com/workplace/applications/sandbox
+  sources:
+  - openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
+  - openapi/tietoevry-tieto-xs2a-vam-users.yaml
+  - https://openbanking.api.tietoevry.com/documentation/how-to-instruction.yaml
+- name: Authorization
+  type: http
+  scheme: bearer
+  description: 'OAuth 2.0 bearer access token used for the OAuth2 SCA (redirect) and embedded SCA approaches
+    described in the provider''s oauth2-how-to and embedded-SCA introductions. Declared as an Authorization
+    header parameter on 62 operations rather than as a securityScheme; the provider publishes no
+    authorization-server metadata document and no scope reference, so the token endpoint and scope names are
+    not machine-readable from the public surface.'
+  sources:
+  - openapi/tietoevry-oauth2-how-to.yaml
+  - openapi/tietoevry-tieto-oauth2-embedded-intro.yaml
+- name: bearerToken
+  type: openIdConnect
+  openIdConnectUrl: http://example/openid-connect
+  description: 'Declared on the SEPA Direct Debits gateway. The URL is an unreplaced placeholder, so the
+    discovery document cannot be fetched; treat the real issuer as undocumented.'
+  sources:
+  - openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+- name: eIDAS QWAC / QSealC
+  type: mutualTLS
+  description: 'PSD2 production access requires eIDAS qualified certificates (QWAC for transport, QSealC for
+    sealing), registered against the application in the portal. The provider manual states "QWAC and QSeal
+    certificates are not required in the Sandbox mode", which is the reverse statement of the live
+    requirement. Consistent with this, https://openbanking.api.tieto.com (the host named in the published
+    specs as the live XS2A base) resolves to 20.86.199.14 but terminates TLS with a self-signed chain to an
+    ordinary client, i.e. the live gateway is not reachable without the client certificate.'
+  applies_to: live
+  sources:
+  - https://openbanking.api.tietoevry.com/documentation/how-to-instruction.yaml
+  - probe of https://openbanking.api.tieto.com/ on 2026-09-02
+- name: APPIDHeader
+  type: apiKey
+  in: header
+  parameter: X-APP-ID
+  description: Application ID to be used for authentication against Generic SSO.
+  scope: VAM
+  sources:
+  - openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
+  - openapi/tietoevry-tieto-xs2a-vam-users.yaml
+- name: TokenHeader
+  type: apiKey
+  in: header
+  parameter: X-Token
+  description: Token to be used for authentication against Generic SSO.
+  scope: VAM
+  sources:
+  - openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
+  - openapi/tietoevry-tieto-xs2a-vam-users.yaml
+- name: TokenTypeHeader
+  type: apiKey
+  in: header
+  parameter: X-Token-Type
+  description: Token type to be used for authentication against Generic SSO. This provides support for
+    different types of token by different issuing systems.
+  scope: VAM
+  sources:
+  - openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
+  - openapi/tietoevry-tieto-xs2a-vam-users.yaml
+consent_model:
+  note: 'Beyond credentials, every account-data and funds-confirmation call carries a Consent-ID header
+    naming a PSU consent that the customer authorised through an SCA redirect. Consent is the real
+    authorisation object in this API, not a scope.'
+  header: Consent-ID
+  statuses:
+  - received
+  - valid
+  - rejected
+  - expired
+  - revokedByPsu
+  - terminatedByTpp
+  - blocked
+  - deleted
+  max_validity: 'Recurring AIS consent validity is 90 days, extended to 180 days under the EBA SCA exemption
+    in Commission Delegated Regulation (EU) 2022/2360 RTS Article 10a; the provider states the 180-day
+    interface is available in the Sandbox environment.'

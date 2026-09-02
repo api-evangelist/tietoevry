@@ -1,0 +1,40 @@
+generated: '2026-09-02'
+method: searched
+source: 'Searched the three developer portals (api.tietoevry.com, openbanking.api.tietoevry.com,
+  aggregation.api.tieto.com, credit.api.tietoevry.com) and the corporate site''s 2,180-URL sitemap at
+  https://www.tieto.com/sitemap.xml (HTTP 200, 2026-09-02) for a pricing, plans, tiers or packaging page.
+  None exists.'
+summary:
+  plan_count: 0
+  model: enterprise sales
+  free_tier: true
+  free_tier_note: 'There IS a free, self-service, no-cost tier in the sense that matters to a developer — the
+    Open Banking sandbox is open to anyone who fills in contact details, requires no certificate and no card,
+    and gives immediate access to an API key. It is not a priced plan, it is a demo preview the provider
+    explicitly disclaims: "The service has been built only as a demo preview. Its performance, availability
+    and the data accuracy is not guaranteed."'
+  note: 'Tietoevry publishes NO price, no tier, no included quota and no overage for any of its APIs. The
+    buyer is a bank or a licensed TPP and the route to production is a contact form and a sales conversation:
+    the portals'' calls to action are "Contact us" and a whitepaper download, and moving from sandbox to live
+    additionally requires eIDAS QWAC/QSeal certificates and a regulator-issued PSD2 licence for the AIS/PIS
+    roles. The premium APIs are positioned as a revenue product for the BANK — "Our Premium APIs that allow
+    financial institutions to generate additional revenue by providing additional value-added services" —
+    which is a further sign that pricing is negotiated per deployment rather than listed.'
+plans: []
+pricing_urls_probed:
+- url: https://api.tietoevry.com/
+  status: 200
+  finding: API Hub landing page; three product cards, each ending in a contact form. No pricing.
+- url: https://openbanking.api.tietoevry.com/
+  status: 200
+  finding: Sign-up / sign-in and documentation. No pricing page in the application's router.
+- url: https://credit.api.tietoevry.com/
+  status: 200
+  finding: Credit Cloud portal landing; everything past it is behind a Keycloak sign-in. No pricing.
+- url: https://www.tieto.com/sitemap.xml
+  status: 200
+  finding: 2,180 URLs, no pricing or plans page for any API product.
+- url: https://www.tietoevry.com/en/banking/open-banking/
+  status: 301
+  finding: Redirects to the site root; the former open-banking product page no longer exists.
+contact_route: https://openbanking.api.tietoevry.com/contact-us

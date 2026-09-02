@@ -1,0 +1,2816 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Tieto OpenBanking XS2A apis description",
+    "version": "1.3.4",
+    "title": "Tieto OpenBanking XS2A apis"
+  },
+  "host": "openbanking.api.tieto.com",
+  "tags": [
+    {
+      "name": "Account information service",
+      "description": "Operations for managing account information."
+    },
+    {
+      "name": "Confirmation of Funds Service",
+      "description": "Operations for receiving funds confirmation."
+    },
+    {
+      "name": "Account consent service",
+      "description": "Operations for establish and managing account information consent."
+    },
+    {
+      "name": "Payment Initiation Service",
+      "description": "Operations for payments."
+    },
+    {
+      "name": "Confirmation of Funds Service consent",
+      "description": "Operations for establish and managing confirmation of funds consent."
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/sandbox/xs2a/v1.3/accounts": {
+      "get": {
+        "tags": [
+          "Account information service",
+          "accounts"
+        ],
+        "summary": "Read Account List",
+        "description": "Reads a list of bank accounts, with balances where required.",
+        "operationId": "getAccounts",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Return a list of accounts. Each account's _links section is using viewBalances and viewTransactions links.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountsResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/accounts/{account-id}": {
+      "get": {
+        "tags": [
+          "Account information service",
+          "accounts"
+        ],
+        "summary": "Read Account Details",
+        "description": "Reads details about an account, with balances where required.",
+        "operationId": "getAccount",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns an account. In _links section viewBalances and viewTransactions links will be used",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/accounts/{account-id}/balances": {
+      "get": {
+        "tags": [
+          "Account information service",
+          "accounts"
+        ],
+        "summary": "Read Balance",
+        "description": "Reads account data from a given account addressed by 'account-id'.",
+        "operationId": "getAccountBalances",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns the account's balances",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountBalancesResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/accounts/{account-id}/transactions": {
+      "get": {
+        "tags": [
+          "Account information service",
+          "accounts"
+        ],
+        "summary": "Read Transaction List",
+        "description": "Reads account data from a given account addressed by 'account-id'.",
+        "operationId": "getAccountTransactions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description": "ISODate\nStarting date of the transaction list",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "ISODate\nEnd date of the transaction list, default is now if not given",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "bookingStatus",
+            "in": "query",
+            "description": "Filter by transaction booking status",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "booked",
+              "pending",
+              "both"
+            ]
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns account's transactions. In _links section viewAccount link will be used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountTransactionsResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/accounts/{account-id}/transactions/{transactionId}": {
+      "get": {
+        "tags": [
+          "Account information service",
+          "accounts"
+        ],
+        "summary": "Read Transaction detail",
+        "description": "Reads transaction data from a given account addressed by 'account-id' and 'transactionId'. This call is only available on transactions as reported in a JSON format.",
+        "operationId": "getAccountTransaction",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "transactionId",
+            "in": "path",
+            "description": "This identification is denoting the addressed transaction. The transactionId is retrieved by using a “Read Transaction List” call. The transactionId is the “id” attribute of the transaction structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns transaction details.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountTransactionDetailsResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/consents": {
+      "post": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Establish Consent Transaction",
+        "description": "Creates an account information consent resource at the ASPSP regarding access to accounts specified in this request.\nAll permitted \"access\" attributes (\"accounts\", \"balances\" and \"transactions\") used in this message shall carry a non-empty array of account references, indicating the accounts where the type of access is requested. Please note that a \"transactions\", \"balances\" or \"accounts\" access right also gives access to the generic /accounts endpoints, i.e. is implicitly supporting also the \"accounts\" access.",
+        "operationId": "postConsent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostConsentsRequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostConsentsResponse"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section self link is used.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "uri",
+                "description": "Hyperlink for the status of the resource."
+              }
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;\nFrequencyPerDay isn't 1 when recurringIndicator is false;\nCombinedServiceIndicator is true",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/consents/{consent-id}": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get Consent Request",
+        "description": "Returns the content of an account information consent object.",
+        "operationId": "getConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns consent. In _links section viewAccounts link is used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Delete an Account Information Consent Object",
+        "description": "The TPP can delete an account information consent object.",
+        "operationId": "deleteConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No errors ocurred. Deleted consent"
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/consents/{consent-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "consentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Start authorisation process",
+        "description": "Starts an authorisation process in for establishing account information consent data on the server.",
+        "operationId": "consentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created authorisation sub-resource.",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/consents/{consent-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "consentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/consents/{consent-id}/status": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get Status Request",
+        "description": "Can check the status of an account information consent resource.",
+        "operationId": "getConsentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns the transactionStatus of the consent.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmations": {
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmations"
+        ],
+        "summary": "Confirmation of Funds Request",
+        "description": "Creates a confirmation of funds request at the ASPSP.\nIf no card number, but the PSU account identifier is contained: check on default account registered by customer.\nIf no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.\nIf card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.\nIf the card number is not registered for any of the accounts, the card number is ignored.",
+        "operationId": "getFundsConfirmation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonFundsConfirmationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred",
+            "schema": {
+              "$ref": "#/definitions/JsonFundsConfirmationResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, amount is not valid",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmation-consents": {
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Establish Funds Confirmation Consent Transaction",
+        "description": "Creates an funds confirmation consent resource at the ASPSP regarding access to make funds confirmation to specified accounts in this request.",
+        "operationId": "postFundsConfirmationConsent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostFundsConfirmationConsentsRequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostFundsConfirmationConsentsRequest"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section self link is used.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "uri",
+                "description": "Hyperlink for the status of the resource."
+              }
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;\nCombinedServiceIndicator is true",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmation-consents/{consent-id}": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get Funds Confirmation Consent Request",
+        "description": "Returns the content of an funds confirmation consent object.",
+        "operationId": "getFundsConfirmationConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns consent. In _links section viewAccounts link is used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetFundsConfirmationConsentResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Delete an Confirmation of Funds Service Object",
+        "description": "The TPP can delete a confirmation of funds consent object.",
+        "operationId": "deleteFundsConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Confirmation of Funds Service” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No errors ocurred. Deleted consent"
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmation-consents/{consent-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "fundsConfirmationConsentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Start authorisation process",
+        "description": "Starts an authorisation process in for establishing account information consent data on the server.",
+        "operationId": "fundsConfirmationConsentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          },
+          "201": {
+            "description": "Created authorisation sub-resource."
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmation-consents/{consent-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "fundsConfirmationConsentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/funds-confirmation-consents/{consent-id}/status": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service consent",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get Status Request",
+        "description": "Can check the status of an funds confirmation consent resource.",
+        "operationId": "getFundsConfirmationConsentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns the transactionStatus of the consent.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/payments/{payment-product}/{payment-id}": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "operationId": "getJSONPayment",
+        "description": "Returns the content of payment object.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Payment Details",
+        "parameters": [
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonGetPaymentResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "paymentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Start authorisation process",
+        "description": "Starts the authorisation process for a payment initiation.",
+        "operationId": "paymentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created authorisation sub-resource.",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "paymentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/payments/{payment-product}/{payment-id}/status": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get Status Request",
+        "description": "Can check the status of a payment initiation.",
+        "operationId": "getJSONPaymentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Resource Identification of the related payment.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors ocurred. Returns payment's transactionStatus",
+            "schema": {
+              "$ref": "#/definitions/JsonGetPaymentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Payment not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/sandbox/xs2a/v1.3/payments/{payment-product}": {
+      "post": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment Initiation with JSON encoding of the Payment Instruction",
+        "description": "Creates a payment initiation request at the ASPSP.",
+        "operationId": "initiateJSONPayment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostPaymentRequest"
+            }
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostPaymentResponse"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section redirect and self links are used."
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, creditor address is missing when payment product is cross-border-credit-transfers",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "invalid payment product",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JsonAccountAccess": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        }
+      }
+    },
+    "JsonAccountDetails": {
+      "type": "object",
+      "required": [
+        "currency"
+      ],
+      "properties": {
+        "iban": {
+          "type": "string"
+        },
+        "bban": {
+          "type": "string"
+        },
+        "pan": {
+          "type": "string"
+        },
+        "maskedPan": {
+          "type": "string"
+        },
+        "msisdn": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      },
+      "description": "JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field"
+    },
+    "JsonAccountReference": {
+      "type": "object",
+      "required": [
+        "currency"
+      ],
+      "properties": {
+        "iban": {
+          "type": "string"
+        },
+        "bban": {
+          "type": "string"
+        },
+        "pan": {
+          "type": "string"
+        },
+        "maskedPan": {
+          "type": "string"
+        },
+        "msisdn": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        }
+      },
+      "description": "Must contain one of iban,bban,maskedPan,msisdn or pan field"
+    },
+    "JsonAccountReport": {
+      "type": "object",
+      "required": [
+        "booked"
+      ],
+      "properties": {
+        "booked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonTransaction"
+          }
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonTransaction"
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonAddress": {
+      "type": "object",
+      "required": [
+        "country"
+      ],
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "buildingNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonAmount": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonBalance": {
+      "type": "object",
+      "required": [
+        "balanceAmount",
+        "balanceType"
+      ],
+      "properties": {
+        "balanceAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "balanceType": {
+          "type": "string"
+        },
+        "referenceDate": {
+          "type": "string"
+        },
+        "lastChangeDateTime": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonErrorResponse": {
+      "type": "object",
+      "required": [
+        "transactionStatus"
+      ],
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "transactionStatus": {
+          "$ref": "#/definitions/TransactionStatus"
+        }
+      }
+    },
+    "JsonFundsConfirmationRequest": {
+      "type": "object",
+      "required": [
+        "instructedAmount",
+        "account"
+      ],
+      "properties": {
+        "cardNumber": {
+          "type": "string"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payee": {
+          "type": "string"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        }
+      }
+    },
+    "JsonFundsConfirmationResponse": {
+      "type": "object",
+      "required": [
+        "fundsAvailable"
+      ],
+      "properties": {
+        "fundsAvailable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "JsonGetAccountBalancesResponse": {
+      "type": "object",
+      "required": [
+        "balances"
+      ],
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        }
+      }
+    },
+    "JsonGetAccountResponse": {
+      "type": "object",
+      "required": [
+        "account"
+      ],
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountDetails"
+        }
+      }
+    },
+    "JsonGetAccountTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "transactions": {
+          "$ref": "#/definitions/JsonAccountReport"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        }
+      }
+    },
+    "JsonGetAccountsResponse": {
+      "type": "object",
+      "required": [
+        "accounts"
+      ],
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountDetails"
+          }
+        }
+      }
+    },
+    "JsonGetAuthorisationStatusResponse": {
+      "type": "object",
+      "properties": {
+        "scaStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonGetAuthorisationsResponse": {
+      "type": "object",
+      "properties": {
+        "authorisationsIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "JsonGetConsentResponse": {
+      "type": "object",
+      "required": [
+        "access",
+        "combinedServiceIndicator",
+        "consentStatus",
+        "frequencyPerDay",
+        "recurringIndicator",
+        "validUntil"
+      ],
+      "properties": {
+        "access": {
+          "$ref": "#/definitions/JsonAccountAccess"
+        },
+        "recurringIndicator": {
+          "type": "boolean"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "frequencyPerDay": {
+          "type": "string"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": false
+        },
+        "consentStatus": {
+          "type": "string",
+          "enum": [
+            "received",
+            "rejected",
+            "valid",
+            "revokedByPsu",
+            "expired",
+            "terminatedByTpp"
+          ]
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetConsentStatusResponse": {
+      "type": "object",
+      "properties": {
+        "consentStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonGetFundsConfirmationConsentResponse": {
+      "type": "object",
+      "required": [
+        "account",
+        "instructedAmount",
+        "combinedServiceIndicator",
+        "consentStatus",
+        "validUntil"
+      ],
+      "properties": {
+        "cardNumber": {
+          "type": "string"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payee": {
+          "type": "string"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "validUntil": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": false
+        },
+        "consentStatus": {
+          "type": "string",
+          "enum": [
+            "received",
+            "rejected",
+            "valid",
+            "revokedByPsu",
+            "expired",
+            "terminatedByTpp"
+          ]
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetPaymentResponse": {
+      "type": "object",
+      "required": [
+        "creditorAddress",
+        "creditorAccount",
+        "creditorName",
+        "debtorAccount",
+        "instructedAmount"
+      ],
+      "properties": {
+        "endToEndIdentification": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAddress": {
+          "$ref": "#/definitions/JsonAddress"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        },
+        "transactionStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetBulkPaymentResponse": {
+      "type": "object",
+      "required": [
+        "debtorAccount",
+        "payments"
+      ],
+      "properties": {
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "creditorAddress",
+              "creditorAccount",
+              "creditorName",
+              "instructedAmount"
+            ],
+            "properties": {
+              "instructedAmount": {
+                "$ref": "#/definitions/JsonAmount"
+              },
+              "creditorName": {
+                "type": "string"
+              },
+              "creditorAddress": {
+                "$ref": "#/definitions/JsonAddress"
+              },
+              "creditorAccount": {
+                "$ref": "#/definitions/JsonAccountReference"
+              },
+              "remittanceInformationUnstructured": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "transactionStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostBulkPaymentRequest": {
+      "type": "object",
+      "required": [
+        "debtorAccount",
+        "payments"
+      ],
+      "properties": {
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "creditorAddress",
+              "creditorAccount",
+              "creditorName",
+              "instructedAmount"
+            ],
+            "properties": {
+              "instructedAmount": {
+                "$ref": "#/definitions/JsonAmount"
+              },
+              "creditorName": {
+                "type": "string"
+              },
+              "creditorAddress": {
+                "$ref": "#/definitions/JsonAddress"
+              },
+              "creditorAccount": {
+                "$ref": "#/definitions/JsonAccountReference"
+              },
+              "remittanceInformationUnstructured": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "JsonGetPaymentStatusResponse": {
+      "type": "object",
+      "required": [
+        "transactionStatus"
+      ],
+      "properties": {
+        "transactionStatus": {
+          "$ref": "#/definitions/TransactionStatus"
+        }
+      }
+    },
+    "JsonHref": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonLinks": {
+      "type": "object",
+      "properties": {
+        "scaRedirect": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "scaOAuth": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "self": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "status": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "balances": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "transactions": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "transactionDetails": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "first": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "next": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "previous": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "last": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "download": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "updatePsuIdentification": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "startAuthorisation": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "scaStatus": {
+          "$ref": "#/definitions/JsonHref"
+        }
+      }
+    },
+    "JsonMessage": {
+      "type": "object",
+      "required": [
+        "category",
+        "code"
+      ],
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonPostAuthorisationsResponse": {
+      "type": "object",
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "scaStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostConsentsRequest": {
+      "type": "object",
+      "required": [
+        "access",
+        "combinedServiceIndicator",
+        "frequencyPerDay",
+        "recurringIndicator",
+        "validUntil"
+      ],
+      "properties": {
+        "access": {
+          "$ref": "#/definitions/JsonAccountAccess"
+        },
+        "recurringIndicator": {
+          "type": "boolean"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "frequencyPerDay": {
+          "type": "string"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "JsonPostConsentsResponse": {
+      "type": "object",
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "consentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "consentStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostFundsConfirmationConsentsRequest": {
+      "type": "object",
+      "required": [
+        "account",
+        "combinedServiceIndicator",
+        "instructedAmount"
+      ],
+      "properties": {
+        "cardNumber": {
+          "type": "string"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payee": {
+          "type": "string"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "JsonPostPaymentRequest": {
+      "type": "object",
+      "required": [
+        "creditorAddress",
+        "creditorAccount",
+        "creditorName",
+        "debtorAccount",
+        "instructedAmount"
+      ],
+      "properties": {
+        "endToEndIdentification": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAddress": {
+          "$ref": "#/definitions/JsonAddress"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonPostPaymentResponse": {
+      "type": "object",
+      "required": [
+        "paymentId",
+        "transactionStatus"
+      ],
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "paymentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "transactionStatus": {
+          "$ref": "#/definitions/TransactionStatus"
+        },
+        "transactionFeeIndicator": {
+          "type": "boolean"
+        },
+        "transactionFees": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "_links": {
+          "readOnly": true,
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetAccountTransactionDetailsResponse": {
+      "type": "object",
+      "properties": {
+        "transactionsDetails": {
+          "$ref": "#/definitions/JsonTransaction"
+        }
+      }
+    },
+    "JsonTransaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string"
+        },
+        "debtorName": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "transactionAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "bookingDate": {
+          "type": "string"
+        },
+        "valueDate": {
+          "type": "string"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        }
+      }
+    },
+    "TransactionStatus": {
+      "type": "string",
+      "enum": [
+        "ACCC",
+        "ACCP",
+        "ACSC",
+        "ACSP",
+        "ACTC",
+        "ACWC",
+        "ACWP",
+        "RCVD",
+        "PDNG",
+        "RJCT",
+        "CANC",
+        "ACFC",
+        "PATC",
+        "PART"
+      ]
+    }
+  }
+}

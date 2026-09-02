@@ -1,0 +1,89 @@
+generated: '2026-09-02'
+method: searched
+source: 'openapi/tietoevry-how-to-instruction.yaml ("Getting started!", fetched from
+  https://openbanking.api.tietoevry.com/documentation/how-to-instruction.yaml, HTTP 200, 2026-09-02) and the
+  Open Banking portal application bundle fetched the same day'
+summary:
+  published: true
+  self_service: true
+  free: true
+  credentials_required_to_register: 'Contact details only. The provider states: "Signing up at Tietoevry Open
+    Banking portal takes just several minutes and requires no certificates - just fill in some contact
+    details and you are done!"'
+  applies_to:
+  - tietoevry-openbanking-xs2a
+  - tietoevry-sepa-direct-debits
+environments:
+  selector: 'A path segment, not a separate host. The provider states: "the hostname of all endpoints,
+    regardless of the API group or type, is the same: https://openbanking.api.tietoevry.com". The first path
+    segment is sandbox or live.'
+  sandbox_base: https://openbanking.api.tietoevry.com/sandbox
+  live_base: https://openbanking.api.tieto.com
+  live_note: 'The published contracts name openbanking.api.tieto.com as the live host. It resolves
+    (20.86.199.14) but presents a self-signed certificate chain to an ordinary client, consistent with an
+    eIDAS QWAC client-certificate gate. Sandbox traffic goes to openbanking.api.tietoevry.com.'
+  sepa_dd:
+    sandbox_base: https://payments.api.tieto.com/sandbox/v1/sepadd
+    live_base: https://payments.api.tieto.com/live/v1/sepadd
+    reachability: 'payments.api.tieto.com resolves (194.14.67.98) but returned no HTTPS response to an
+      anonymous client on 2026-09-02.'
+onboarding:
+  - step: Sign up
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - step: Sign in
+    url: https://openbanking.api.tietoevry.com/sign-in
+  - step: Create an application in My Apps
+    url: https://openbanking.api.tietoevry.com/workplace/applications/sandbox
+    detail: 'An application named "My Test App" is pre-created for every new account and works immediately.
+      Creating your own lets you pin the API group version and restrict which API sets the app may reach.
+      Fields collected: application name, description, API Group (choose XS2A for the PSD2-compliant APIs),
+      API group version, and the API sets PIS / AIS / PIIS in any combination.'
+  - step: Certificates
+    detail: 'A certificate step exists in the registration wizard and is skipped in sandbox. "QWAC and QSeal
+      certificates are not required in the Sandbox mode, so you can just click NEXT button." Legal data is
+      then entered and the application is created.'
+  - step: Copy the API key
+    detail: Open the app and click Manage; the API KEY is revealed by the eye icon or copied with COPY API
+      KEY. It must be sent as X-API-Key on every call.
+keys:
+  mode_distinction: 'Not by key prefix. The same X-API-Key is scoped to an application, and the application
+    itself is created under either the sandbox or the live workplace; the sandbox|live path segment selects
+    the environment. There is no documented test-key prefix such as sk_test_.'
+  format: UUID
+test_data:
+  psus:
+    note: 'Sandbox SCA is simulated. The scaRedirect link opens a mock bank authentication page and the
+      provider publishes fixed test users on the My Sandbox page; the manual works its examples with one of
+      them. Only the credentials the provider printed in its own manual are recorded here.'
+    listed_at: https://openbanking.api.tietoevry.com/workplace/sandbox
+    published_examples:
+    - name: Benjamin Lee
+      username: benlee
+      password: benlee
+      note: The PSU confirming a consent or a payment must be the owner of the account used in the request
+        body.
+  accounts:
+    note: Test IBANs used verbatim in the provider's own worked examples. They are not real IBANs — the
+      country/check prefix is the literal string BANK.
+    published_examples:
+    - BANK95273278098985433
+    - BANK98725222937647798
+  payment_products:
+  - sepa-credit-transfers
+tooling:
+  reset: 'The sandbox can be reset to its initial state from the My Sandbox page ("Are you sure you want to
+    reset the sandbox to initial state?"). The account itself can also be deleted from the portal.'
+  time_simulation: none published
+  fixture_triggers: 'None beyond the reset. There is no documented way to force a payment into RJCT, expire a
+    consent early, or fire a webhook on demand.'
+  use_cases: 'The portal publishes guided AISP, PISP and PIISP walkthroughs demonstrating the Berlin Group
+    flows end to end.'
+  api_catalog: https://openbanking.api.tietoevry.com/api-catalog
+disclaimer: 'Published verbatim by the provider: "The service has been built only as a demo preview. Its
+  performance, availability and the data accuracy is not guaranteed and could vary over time and without
+  notice."'
+gaps:
+  - The Financial API Aggregation service publishes no sandbox and no test data; its contract declares only
+    the production host aggregation.api.tieto.com.
+  - The Credit Cloud portal exposes no sandbox to an anonymous visitor; everything past the landing page is
+    behind a Keycloak sign-in.

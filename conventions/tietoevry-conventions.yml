@@ -1,0 +1,194 @@
+generated: '2026-09-02'
+method: searched
+source: 'The 24 published contracts in openapi/ (211 operations) read together with the provider''s
+  getting-started manual at https://openbanking.api.tietoevry.com/documentation/how-to-instruction.yaml
+  (HTTP 200, 2026-09-02)'
+cross_links:
+  errors: errors/tietoevry-problem-types.yml
+  decline_codes: errors/tietoevry-decline-codes.yml
+  lifecycle: lifecycle/tietoevry-lifecycle.yml
+  authentication: authentication/tietoevry-authentication.yml
+  rate_limits: rate-limits/tietoevry-rate-limits.yml
+  sandbox: sandbox/tietoevry-sandbox.yml
+auth_style:
+  primary: API key in the X-API-Key header, issued per registered application
+  secondary: OAuth 2.0 bearer token for the OAuth2 SCA approach; eIDAS QWAC client certificate for live
+  authorization_object: 'A PSU consent, referenced by the Consent-ID header. Consent — not a scope — decides
+    what a token may read.'
+base_url:
+  statement: 'Provider-stated: "the hostname of all endpoints, regardless of the API group or type, is the
+    same: https://openbanking.api.tietoevry.com"'
+  shape: https://openbanking.api.tietoevry.com/{sandbox|live}/{api-group}/{version}/{resource}
+  examples:
+  - https://openbanking.api.tietoevry.com/sandbox/xs2a/v1.3/consents
+  - https://openbanking.api.tietoevry.com/sandbox/xs2a-premium/v1.3/recall-payments/{payment-product}
+  - https://aggregation.api.tieto.com/v1/xs2a/v1.0/providers/{provider-id}/accounts
+  - https://payments.api.tieto.com/live/v1/sepadd/v1/creditor/payments
+versioning:
+  style: path segment, plus a per-application "API group version" pinned in the developer portal
+  current: '1.3'
+  see: lifecycle/tietoevry-lifecycle.yml
+idempotency:
+  supported: false
+  grade: absent
+  header: X-Request-ID
+  header_required_on: 186 of 211 operations
+  echoed_on: 38 responses
+  provider_wording: 'X-Request-ID is described only as "a unique identifier in UUID format". Nothing in the
+    contracts or the manual states that resending the same X-Request-ID replays a stored response, states a
+    retention window, or names an Idempotency-Key header.'
+  assessment: 'Treat X-Request-ID as a correlation and tracing identifier, not an idempotency key. Retrying a
+    failed POST /payments is NOT safe from the public contract''s point of view — a client that resends after
+    a timeout must first poll the payment status endpoint. This is the single largest runtime-semantics gap
+    in the surface, because the API''s write operations move money.'
+request_tracing:
+  header: X-Request-ID
+  format: UUID
+  echoed: true
+  note: The same value is returned as a response header on 38 operations, which makes it usable for
+    correlating a client log line with a provider-side record.
+pagination:
+  styles:
+  - surface: SEPA Direct Debits gateway
+    style: header-based
+    response_headers:
+    - X-Page-Number
+    - X-Page-Size
+    - X-Total-Elements
+    - Link
+    note: Link is RFC 8288.
+  - surface: XS2A account transactions
+    style: HATEOAS
+    fields: _links with next / previous hrefs, plus dateFrom, dateTo and bookingStatus query filters
+  - surface: Financial API Aggregation
+    style: none documented
+metadata_and_expansion:
+  sparse_fields: none
+  expansion: 'One flag only: withBalance=true on the account list operation embeds balances in the accounts
+    response.'
+  custom_metadata: none
+error_envelope:
+  shape: 'JsonErrorResponse { transactionStatus, tppMessages[] { category, code, text }, psuMessage }'
+  media_type: application/json
+  rfc9457: false
+  see: errors/tietoevry-problem-types.yml
+rate_limit_signaling:
+  status: 429
+  declared_on: 34 operations
+  headers: none declared
+  see: rate-limits/tietoevry-rate-limits.yml
+async_and_events:
+  callbacks: 'The SEPA Direct Debits gateway defines six webhook / callback operations and takes the
+    destination per request through Creditor-Notification-URI and Debtor-Notification-URI headers.'
+  see: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+  xs2a: 'No event surface. XS2A state changes are polled through /status sub-resources.'
+dry_run_mode:
+  supported: false
+  grade: na
+  note: 'No preview, validate-only or dry-run flag exists on any write operation. The nearest equivalent is
+    an entire simulated environment — the sandbox — rather than a per-request rehearsal.'
+reversibility:
+  grade: documented
+  credit_rationale: 'Reversal paths are first-class, published operations with named reason codes, so this is
+    not `absent`. It is not `verified` either: nowhere in the 24 contracts or the manual does Tietoevry state
+    a TIME WINDOW for any reversal. The cancellation boundary is named only qualitatively — "not cancellable,
+    e.g. due to cut off time passed" — with no cut-off time published, and the SEPA refund and chargeback
+    operations state no deadline at all even though the SEPA rulebook imposes one. No window is asserted
+    here, because inventing one is the error in this pipeline that could cost a user real money.'
+  write_surface: true
+  surfaces:
+  - api: tietoevry-openbanking-xs2a
+    action: Payment initiation
+    forward_operation: initiateJSONPayment
+    reversal_operation: deletePayment
+    reversal_kind: cancel
+    window_stated: false
+    window_note: 'The contract states only that a 405 is returned when "The addressed payment is not
+      cancellable e.g. due to cut off time passed or legal constraints." The cut-off time itself is not
+      published, and it is an ASPSP property rather than a Tietoevry one.'
+    status_after: CANC, or PDCR then RJCR if the cancellation is refused
+    docs: https://openbanking.api.tietoevry.com/documentation/xs2a
+  - api: tietoevry-openbanking-xs2a
+    action: Future-dated payment
+    forward_operation: initiateJSONPayment (xs2a-premium/future-dated-payments)
+    reversal_operation: deletePayment
+    reversal_kind: cancel
+    window_stated: false
+    window_note: A future-dated payment is by construction cancellable until its execution date, but the
+      contract does not state that rule.
+  - api: tietoevry-openbanking-xs2a
+    action: Periodic (standing order) payment
+    forward_operation: initiateJSONPayment (xs2a-premium/periodic-payments)
+    reversal_operation: deletePeriodicPayment
+    reversal_kind: cancel
+    window_stated: false
+  - api: tietoevry-openbanking-xs2a
+    action: Settled payment
+    forward_operation: initiateJSONPayment
+    reversal_operation: initiateJSONPaymentsRecall
+    reversal_kind: recall
+    window_stated: false
+    window_note: 'The premium recall-payments API is the post-settlement path, and it requires a fresh SCA
+      authorisation by the debtor. The provider''s worked example ends "the Payment Recall is confirmed and
+      it gets executed immediately" but states no eligibility deadline.'
+  - api: tietoevry-openbanking-xs2a
+    action: AIS / PIIS consent
+    forward_operation: postConsent, postFundsConfirmationConsent
+    reversal_operation: deleteConsent, deleteFundsConsent
+    reversal_kind: revoke
+    window_stated: true
+    window_note: 'Revocable at any time while the consent is valid. The consent''s own lifetime IS stated:
+      recurring AIS consent validity is 90 days, extended to 180 days under the RTS Article 10a exemption,
+      set through validUntil. Terminal states are terminatedByTpp (this operation) and revokedByPsu.'
+    docs: https://openbanking.api.tietoevry.com/getting-started
+  - api: tietoevry-sepa-direct-debits
+    action: Direct debit collection, creditor side
+    forward_operation: createPayment
+    reversal_operation: cancelPayment
+    reversal_kind: cancel (reverse)
+    reason_code_required: true
+    reason_code_example: MD05 — Collection not due
+    window_stated: false
+  - api: tietoevry-sepa-direct-debits
+    action: Direct debit collection, creditor side
+    forward_operation: createPayment
+    reversal_operation: createRefund
+    reversal_kind: refund
+    partial_supported: true
+    partial_note: 'The contract states the refund amount "must be equal to the original amount of the initial
+      Payment, minus all previously made refunds to that initial Payment", so repeated partial refunds are
+      supported and are bounded by the original amount.'
+    window_stated: false
+    window_note: 'No refund deadline is published, although the SEPA Core Direct Debit rulebook imposes one.
+      An integrator must get the applicable window from the scheme or from their contract with Tietoevry,
+      not from this API.'
+  - api: tietoevry-sepa-direct-debits
+    action: Direct debit collection, debtor side
+    forward_operation: createPayment (incoming)
+    reversal_operation: rejectPayment
+    reversal_kind: reject before settlement
+    reason_code_required: true
+    reason_code_example: MD01 — No Mandate
+    window_stated: false
+  - api: tietoevry-sepa-direct-debits
+    action: Settled direct debit, debtor side
+    forward_operation: createPayment (incoming)
+    reversal_operation: chargebackPayment
+    reversal_kind: chargeback
+    reason_code_required: true
+    reason_code_example: MD06 — Refund request by end customer
+    window_stated: false
+  - api: tietoevry-financial-api-aggregation
+    action: Aggregated payment initiation
+    forward_operation: initiateJSONPayment
+    reversal_operation: cancelPayment
+    reversal_kind: cancel
+    window_stated: false
+  - api: tietoevry-financial-api-aggregation
+    action: End user registration
+    forward_operation: createEndUser
+    reversal_operation: deleteEndUser
+    reversal_kind: delete
+    window_stated: false
+    restore_available: false
+    note: Deletion is not documented as recoverable; there is no restore or undelete operation.

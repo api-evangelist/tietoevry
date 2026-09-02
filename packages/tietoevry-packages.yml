@@ -1,0 +1,72 @@
+generated: '2026-09-02'
+method: searched
+source: 'Registry searches run 2026-09-02 against registry.npmjs.org (search "tietoevry" and "tieto
+  openbanking"), pypi.org/pypi/tietoevry/json, search.maven.org (q=tietoevry and g:com.tietoevry.quarkus),
+  plus the provider''s own getting-started manual and the three developer portals'
+summary:
+  package_count: 3
+  official_count: 3
+  client_sdk_count: 0
+  note: 'Tietoevry publishes NO client SDK for any of its APIs, in any language. The getting-started manual
+    tells developers to call the REST endpoints directly — "You can make your REST calls to our API by any
+    means: cURL calls, calls from your code or calls from specialized tools, like Postman" — and offers no
+    library. npm returns one unrelated third-party result for "tietoevry"; PyPI has no tietoevry project
+    (HTTP 404); no first-party package exists on RubyGems, NuGet, crates.io, Packagist or pkg.go.dev. The
+    only first-party packages anywhere are three Maven Central artifacts of one open-source SERVER-side
+    Quarkus extension, which does not wrap any Tietoevry API. Because no package here is an API client
+    library, this repo deliberately does NOT emit a type: SDKs pointer — doing so would credit Tietoevry with
+    an SDK surface it does not ship.'
+packages:
+- name: com.tietoevry.quarkus:quarkus-resteasy-problem
+  registry: maven
+  registry_url: https://search.maven.org/artifact/com.tietoevry.quarkus/quarkus-resteasy-problem
+  official: true
+  sdk: false
+  language: Java
+  version: 3.9.0
+  published: '2024-03-28'
+  license: Apache-2.0
+  repository: https://github.com/tietoevry/quarkus-resteasy-problem
+  description: 'Problem Details for HTTP APIs (RFC 7807) implementation for Quarkus / RESTeasy. A server-side
+    framework extension, not a client for any Tietoevry API.'
+  note: 'First-party: the POM names organization Tietoevry, team "Data Platforms", and the SCM
+    github.com/tietoevry/quarkus-resteasy-problem. That repository URL now redirects to
+    github.com/quarkiverse/quarkus-http-problem, i.e. the project was handed to the Quarkiverse community
+    org, and github.com/tietoevry itself now reports 0 public repositories. Last Tietoevry-coordinate release
+    is 3.9.0 on 2024-03-28 — roughly two and a half years stale as of this pass, consistent with the handover
+    rather than with abandonment of a supported SDK.'
+- name: com.tietoevry.quarkus:quarkus-resteasy-problem-deployment
+  registry: maven
+  registry_url: https://search.maven.org/artifact/com.tietoevry.quarkus/quarkus-resteasy-problem-deployment
+  official: true
+  sdk: false
+  language: Java
+  version: 3.9.0
+  published: '2024-03-28'
+  license: Apache-2.0
+  description: Build-time deployment module of the quarkus-resteasy-problem extension.
+- name: com.tietoevry.quarkus:quarkus-resteasy-problem-parent
+  registry: maven
+  registry_url: https://search.maven.org/artifact/com.tietoevry.quarkus/quarkus-resteasy-problem-parent
+  official: true
+  sdk: false
+  language: Java
+  version: 3.9.0
+  published: '2024-03-28'
+  license: Apache-2.0
+  description: Parent POM for the quarkus-resteasy-problem extension.
+registries_checked:
+- registry: npm
+  query: tietoevry
+  result: 1 result, third-party and unrelated (opengov-meetings)
+- registry: npm
+  query: tieto openbanking
+  result: 42 results, none published by Tietoevry
+- registry: pypi
+  query: tietoevry
+  result: HTTP 404
+- registry: maven
+  query: tietoevry
+  result: 3 artifacts, all com.tietoevry.quarkus
+- registry: rubygems
+  result: not searched — no Ruby surface referenced anywhere in the provider's docs or portals

@@ -1,0 +1,217 @@
+generated: '2026-09-02'
+method: derived
+source: 'Derived from the 136 distinct schema definitions and the $ref graph across the 24 documents in
+  openapi/, plus the id-reference fields carried in request and response bodies and in path templates. No
+  object reference page is published by the provider, so nothing here is upgraded to searched.'
+summary:
+  schemas: 136
+  root_entities: 12
+  id_style: 'UUID, opaque to the client. Every identifier is server-issued and returned in the creation
+    response; there are NO type prefixes (no cus_, pay_ style), so an identifier is not self-describing and
+    a client must remember which resource an id came from.'
+  navigation: 'HATEOAS. Almost every response carries a JsonLinks _links object of JsonHref values —
+    self, status, scaRedirect, balances, transactions, next, previous — and the provider''s own worked
+    examples navigate by following them.'
+entities:
+- name: Consent
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonPostConsentsRequest
+  - JsonPostConsentsResponse
+  - JsonGetConsentResponse
+  - JsonGetConsentStatusResponse
+  - JsonAccountAccess
+  identifier: consentId
+  state_field: consentStatus
+  states:
+  - received
+  - valid
+  - rejected
+  - expired
+  - revokedByPsu
+  - terminatedByTpp
+  - blocked
+  - deleted
+  note: 'The authorisation object of the whole AIS surface. Carries access (which accounts, balances and
+    transactions are covered), recurringIndicator, validUntil, frequencyPerDay and combinedServiceIndicator.'
+- name: FundsConfirmationConsent
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonPostFundsConfirmationConsentsRequest
+  - JsonGetFundsConfirmationConsentResponse
+  identifier: consentId
+  state_field: consentStatus
+- name: Authorisation
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonPostAuthorisationsResponse
+  - JsonGetAuthorisationsResponse
+  - JsonGetAuthorisationStatusResponse
+  - OtpChosenScaMethod
+  - OtpChallengeData
+  identifier: authorisationId
+  state_field: scaStatus
+  states:
+  - received
+  - started
+  - psuIdentified
+  - psuAuthenticated
+  - scaMethodSelected
+  - finalised
+  - failed
+  - exempted
+  note: 'The SCA sub-resource. It is the single most-referenced child in the model (authorisationId appears
+    in 13 schemas) because consents, payments, recalls and funds-confirmation consents each hang one off
+    themselves.'
+- name: Account
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonAccountDetails
+  - JsonGetAccountResponse
+  - JsonGetAccountsResponse
+  - JsonAccountReference
+  identifier: resourceId
+  natural_key: iban (plus currency)
+- name: Balance
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonBalance
+  - JsonGetAccountBalancesResponse
+  - BalanceType
+  identifier: none — balances are a list on an account, not addressable
+- name: Transaction
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonTransaction
+  - JsonAccountReport
+  - JsonGetAccountTransactionsResponse
+  - JsonGetAccountTransactionDetailsResponse
+  identifier: transactionId
+  note: Returned in a JsonAccountReport split into booked and pending collections.
+- name: Payment
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - JsonPostPaymentRequest
+  - JsonPostPaymentResponse
+  - JsonGetPaymentResponse
+  - JsonGetPaymentStatusResponse
+  - JsonPostPaymentResponseWithIbanOrPan
+  identifier: paymentId
+  state_field: transactionStatus
+  states_source: ISO 20022 external code set — see errors/tietoevry-decline-codes.yml
+  variants: single, bulk (JsonPostBulkPaymentRequest), future-dated, periodic, recall, request-to-pay
+- name: SigningBasket
+  api: tietoevry-openbanking-xs2a
+  identifier: basketId
+  note: Groups several consents and payments under one SCA.
+- name: CardAccount
+  api: tietoevry-openbanking-xs2a
+  identifier: resourceId
+  child_ids:
+  - cardTransactionId
+  - terminalId
+  - cardAcceptorId
+  note: Premium extension; consent access can be restricted to card accounts only.
+- name: VirtualAccount
+  api: tietoevry-openbanking-xs2a
+  schemas:
+  - AccountStatus
+  identifier: accountId
+  note: Virtual Account Management. Sibling entity VamUser carries userId, customerId and roleId.
+- name: Provider
+  api: tietoevry-financial-api-aggregation
+  identifier: providerId
+  note: 'A connected ASPSP. providerId is the second-most-referenced identifier in the surface (7 schemas)
+    because nearly every aggregation path is scoped by it.'
+- name: EndUser
+  api: tietoevry-financial-api-aggregation
+  identifier: endUserId
+  header: End-User-ID
+  note: The aggregation service's own tenant object; its providers list is set with setEndUserProviders.
+- name: DirectDebitPayment
+  api: tietoevry-sepa-direct-debits
+  identifier: paymentId
+  child_ids:
+  - refundId
+  - chargebackId
+  related_ids:
+  - mandateId
+  - creditorId
+  state_field: transactionStatus
+relationships:
+- from: Consent
+  to: Authorisation
+  type: has_many
+  via: authorisationId, addressed as /consents/{consent-id}/authorisations/{authorisation-id}
+- from: Consent
+  to: Account
+  type: has_many
+  via: JsonAccountAccess.accounts / balances / transactions, each a JsonAccountReference
+- from: Account
+  to: Balance
+  type: has_many
+  via: _links.balances
+- from: Account
+  to: Transaction
+  type: has_many
+  via: _links.transactions
+- from: Transaction
+  to: Account
+  type: belongs_to
+  via: resourceId in the path
+- from: Payment
+  to: Authorisation
+  type: has_many
+  via: /payments/{payment-product}/{payment-id}/authorisations
+- from: Payment
+  to: Account
+  type: belongs_to
+  via: debtorAccount and creditorAccount, both JsonAccountReference (iban / currency)
+- from: Payment
+  to: Amount
+  type: has_one
+  via: instructedAmount (JsonAmount)
+- from: FundsConfirmationConsent
+  to: Account
+  type: has_one
+  via: account (JsonAccountReference)
+- from: SigningBasket
+  to: Payment
+  type: has_many
+  via: basketId
+- from: SigningBasket
+  to: Consent
+  type: has_many
+  via: basketId
+- from: EndUser
+  to: Provider
+  type: has_many
+  via: setEndUserProviders / getEndUserProviders
+- from: Provider
+  to: Account
+  type: has_many
+  via: /providers/{provider-id}/accounts
+- from: DirectDebitPayment
+  to: Refund
+  type: has_many
+  via: refundId, /creditor/payments/{payment-id}/refunds/{refund-id}
+- from: DirectDebitPayment
+  to: Chargeback
+  type: has_many
+  via: chargebackId, /debtor/payments/{payment-id}/chargebacks/{chargeback-id}
+- from: DirectDebitPayment
+  to: Mandate
+  type: has_one
+  via: mandateId
+  note: Mandate is referenced but never itself exposed as an addressable resource in the public contract.
+shared_value_objects:
+- JsonAmount (currency + amount as a string)
+- JsonAccountReference (iban, bban, pan, maskedPan, msisdn, currency)
+- JsonAddress
+- JsonLinks / JsonHref
+- JsonMessage and XS2ATPPMessage (the error and warning carrier)
+gaps:
+- 'Mandate has an identifier and is required at payment creation but has no read operation — a consumer
+  cannot fetch a mandate through the public API.'
+- 'No entity is addressable outside the consent or provider that scopes it, so there is no global object
+  lookup.'

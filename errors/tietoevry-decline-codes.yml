@@ -1,0 +1,89 @@
+generated: '2026-09-02'
+method: derived
+source: 'Derived from the enumerations and operation descriptions in
+  openapi/tietoevry-sepa-direct-debit-api-gateway.yaml and the transactionStatus enums shared across the XS2A
+  payment specs in openapi/. No standalone decline-code reference page is published by the provider.'
+note: 'Tietoevry is a payment-initiation and direct-debit provider rather than a card acquirer, so there is no
+  card decline-code table. The equivalent surface is the pair of ISO 20022 external code sets it returns: a
+  transaction status on every payment, and a SEPA Direct Debit R-transaction reason code on every reversal.
+  Only the codes the contracts actually enumerate or name are listed here.'
+envelope_field: transactionStatus
+reason_code_field: reasonCode
+masked_to_buyers: 'Not applicable / not documented. The provider gives no guidance on which codes may be
+  shown to a payment service user; the envelope carries a separate free-text psuMessage field which is the
+  only element explicitly intended for display.'
+transaction_statuses:
+- code: RCVD
+  meaning: Received. The payment or recall has been received by the ASPSP but not yet authorised.
+  action: Send the PSU to the scaRedirect link to authorise.
+- code: PDNG
+  meaning: Pending. Awaiting further processing.
+  action: Poll the status endpoint.
+- code: PATC
+  meaning: AcceptedTechnicalValidation with a multi-authorisation still incomplete.
+  action: Collect the remaining authorisations.
+- code: ACTC
+  meaning: AcceptedTechnicalValidation. Syntactical and semantic validation passed.
+  action: None; continue polling.
+- code: ACCP
+  meaning: AcceptedCustomerProfile. Profile checks passed.
+  action: None.
+- code: ACFC
+  meaning: AcceptedFundsChecked. Funds availability confirmed.
+  action: None.
+- code: ACSP
+  meaning: AcceptedSettlementInProcess. Settlement has started.
+  action: Cancellation is generally no longer possible.
+- code: ACSC
+  meaning: AcceptedSettlementCompleted. Settled on the debtor side.
+  action: Terminal success. Reversal, where available, is a recall or refund rather than a cancellation.
+- code: ACCC
+  meaning: AcceptedSettlementCompleted, creditor account credited.
+  action: Terminal success.
+- code: ACWC
+  meaning: AcceptedWithChange. Accepted, but the ASPSP altered an element.
+  action: Read the returned payment to see what changed.
+- code: ACWP
+  meaning: AcceptedWithoutPosting. Accepted without posting to the creditor account.
+  action: None.
+- code: PART
+  meaning: PartiallyAccepted. Only some transactions of a bulk were accepted.
+  action: Read the bulk response to find the rejected members.
+- code: CANC
+  meaning: Cancelled.
+  action: Terminal.
+- code: CNCL
+  meaning: Cancelled (SEPA Direct Debits gateway spelling).
+  action: Terminal.
+- code: PDCR
+  meaning: PendingCancellationRequest.
+  action: Poll until CANC or the cancellation is refused.
+- code: RJCR
+  meaning: RejectedCancellationRequest. The cancellation itself was refused.
+  action: 'The payment stands. Escalate to a recall, refund or chargeback depending on the product.'
+- code: RJCT
+  meaning: Rejected. Terminal failure of the payment or request.
+  action: Read tppMessages[] for the ERROR entry carrying the reason.
+sepa_dd_reason_codes:
+- code: MD01
+  meaning: No Mandate.
+  used_on: rejectPayment (debtor role)
+  action: The debtor is refusing a collection for which no valid mandate exists; the creditor must obtain one
+    before re-presenting.
+  source: openapi/tietoevry-sepa-direct-debit-api-gateway.yaml operation rejectPayment description
+- code: MD05
+  meaning: Collection not due.
+  used_on: cancelPayment (creditor role)
+  action: Used by the creditor to cancel (reverse) a collection that should not have been presented.
+  source: openapi/tietoevry-sepa-direct-debit-api-gateway.yaml operation cancelPayment description
+- code: MD06
+  meaning: Refund request by end customer.
+  used_on: chargebackPayment (debtor role)
+  action: The debtor is claiming a refund for an authorised collection; the creditor receives the chargeback
+    through the Creditor-Notification-URI webhook.
+  source: openapi/tietoevry-sepa-direct-debit-api-gateway.yaml ReasonCode enum and chargebackPayment
+    description
+coverage_note: 'The ReasonCode enum in the published contract carries only MD05 and MD06; MD01 is named in
+  prose but is not in the enum. The full SEPA R-transaction reason set (AC01, AC04, AC06, AM04, MD02, MD07,
+  MS02, MS03, SL01 and the rest) is NOT enumerated in anything Tietoevry publishes, so an integrator cannot
+  build an exhaustive handler from the public contract.'

@@ -1,0 +1,4360 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Tieto Financial API Aggregation",
+    "version": "1.0.0",
+    "description": " Tieto Financial API Aggregation solution API reference.\n\nBase API version is 1.0.0. It contains the following API groups:\n- __Providers API__, version 1.0.0\n- __End Users API__, version 1.0.0\n- __XS2A API__, version 1.0.0"
+  },
+  "host": "aggregation.api.tieto.com",
+  "tags": [
+    {
+      "name": "Provider information",
+      "description": "Retrieve information about providers."
+    },
+    {
+      "name": "End User management",
+      "description": "Operations for managing anonymous End Users."
+    },
+    {
+      "name": "Aggregated services",
+      "description": "Operations, which are executed for multiple destination providers."
+    },
+    {
+      "name": "Account Information Service",
+      "description": "Operations for managing account information."
+    },
+    {
+      "name": "Pre-step SCA service",
+      "description": "Operations for establishing Pre-step SCA"
+    },
+    {
+      "name": "Account consent service",
+      "description": "Operations for establish and managing account information consent."
+    },
+    {
+      "name": "Confirmation of Funds Service",
+      "description": "Operations for receiving funds confirmation."
+    },
+    {
+      "name": "Payment Initiation Service",
+      "description": "Operations for payments."
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/v1/xs2a/v1.0/pre-auth": {
+      "post": {
+        "tags": [
+          "Aggregated services",
+          "pre-auth"
+        ],
+        "summary": "Initiate a Pre-step SCA, aggregated",
+        "description": "Initiates a Pre-step SCA process for all providers, which are selected for the End User and support Pre-step SCA.",
+        "operationId": "aggregatedPreAuth",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No errors occurred. Return list of pre-auth links for all selected providers throw the api key which requires it.",
+            "schema": {
+              "$ref": "#/definitions/JsonPreAuthProvidersResponse"
+            }
+          },
+          "405": {
+            "description": "Provider pre-auth is not available",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "Aggregated services",
+          "pre-auth"
+        ],
+        "summary": "Check Pre-step SCA support, aggregated",
+        "description": "Returns links to start pre-auth endpoint for providers, which support Pre-step SCA.",
+        "operationId": "aggregatedPreAuthOptions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. List of links to pre-authorization for all selected providers through the API Key which requires it created.",
+            "schema": {
+              "$ref": "#/definitions/JsonPreAuthProvidersResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/pre-auth": {
+      "post": {
+        "tags": [
+          "Pre-step SCA service",
+          "pre-auth"
+        ],
+        "summary": "Initiate a Pre-step SCA",
+        "description": "Initiates a Pre-step SCA process, returning SCA details, e.g. SCA redirect link.",
+        "operationId": "preAuth",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No errors occurred. Pre auth link created.",
+            "schema": {
+              "$ref": "#/definitions/JsonPreAuthProviderResponse"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "Pre-step SCA service",
+          "pre-auth"
+        ],
+        "summary": "Check, if Pre-step SCA is supported",
+        "description": "Returns allowed methods for the resource. If Pre-step SCA is supported by provider, then \"POST\" method is allowed. ",
+        "operationId": "preAuthOptions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return list of links to pre-authorization for all selected providers throw the api key which requires it.",
+            "headers": {
+              "Allow": {
+                "type": "string",
+                "description": "Returns available HTTP methods which can be used with this resource. If provider supports Pre-step SCA, then the \"POST\" method is returned among the allowed methods."
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/providers/v1.0/providers": {
+      "get": {
+        "tags": [
+          "Provider information",
+          "providers"
+        ],
+        "summary": "Retrieve information on providers",
+        "description": "Returns information on providers, which are available through the API Key, specified in header",
+        "operationId": "getProviders",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "fromAgreement",
+            "in": "query",
+            "description": "If \"false\", then read providers available through the API Key specified in header. If \"true\", then read all available providers based on the agreement.",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return a list of providers, which are available through the API Key, which has been specified in the request header.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetProvidersResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/providers/v1.0/providers/{provider-id}": {
+      "get": {
+        "tags": [
+          "Provider information",
+          "providers"
+        ],
+        "summary": "Retrieve information for a given provider",
+        "description": "Returns information for a given provider. The provider must be available through the API Key, specified in header",
+        "operationId": "getProvider",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return information about a provider.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetProviderResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/end-users/v1.0/end-users": {
+      "post": {
+        "tags": [
+          "End User management",
+          "end-users"
+        ],
+        "summary": "Create an anonymous End User",
+        "description": "Creates an anonymous End User and returns its ID for usage in other requests",
+        "operationId": "createEndUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "No errors occurred. End User ID is created and returned.",
+            "schema": {
+              "$ref": "#/definitions/JsonCreateEndUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/end-users/v1.0/end-users/{end-user-id}": {
+      "delete": {
+        "tags": [
+          "End User management",
+          "end-users"
+        ],
+        "summary": "Delete the anonymous End User record",
+        "description": "",
+        "operationId": "deleteEndUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "end-user-id",
+            "in": "path",
+            "description": "The system-issued anonymous End User ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. The End User resource is deleted."
+          }
+        }
+      }
+    },
+    "/v1/end-users/v1.0/end-users/{end-user-id}/providers": {
+      "get": {
+        "tags": [
+          "End User management",
+          "end-users"
+        ],
+        "summary": "Retrieve the provider selection for an End User",
+        "description": "",
+        "operationId": "getEndUserProviders",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "end-user-id",
+            "in": "path",
+            "description": "The system-issued anonymous End User ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns a list of references to the End User selected providers. Each of the referenced provider information resources is then asynchronously pushed (in case of HTTP/2) to the calling client.",
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Multiple 'rel=preload; as=fetch' links to provider information resources. These links correspond to the links in the response body."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JsonGetEndUserProvidersResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "End User management",
+          "end-users"
+        ],
+        "summary": "Set the provider selection for an End User",
+        "description": "",
+        "operationId": "setEndUserProviders",
+        "parameters": [
+          {
+            "name": "end-user-id",
+            "in": "path",
+            "description": "The system-issued anonymous End User ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Array of selected provider identifiers. These providers are verified against the agreement-defined provider list, not against the current API Key-defined provider list.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JsonPutEndUserProvidersRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred."
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/accounts": {
+      "get": {
+        "tags": [
+          "Aggregated services",
+          "accounts"
+        ],
+        "summary": "Retrieve aggregated List of Accounts",
+        "description": "Retrieves an aggregated List of bank Accounts from providers, which are selected for the End User.",
+        "operationId": "getAggregatedAccounts",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return a list of references to Account Lists from each separate provider. In addition, the results of fetching of these per-provider Account Lists are asynchronously pushed (in case of HTTP/2) to the calling side, as soon as a reply is received from a provider.",
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Multiple 'rel=preload; as=fetch' links to account lists by provider. These links correspond to the links in the response body."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JsonGetAggregatedAccountsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/accounts": {
+      "get": {
+        "tags": [
+          "Account Information Service",
+          "accounts"
+        ],
+        "summary": "Read Account List",
+        "description": "Reads a list of bank accounts, with balances where required.",
+        "operationId": "getAccounts",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return a list of accounts. Each account's _links section is using viewBalances and viewTransactions links.",
+            "headers": {
+              "myheader": {
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountsResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/accounts/{account-id}": {
+      "get": {
+        "tags": [
+          "Account Information Service",
+          "accounts"
+        ],
+        "summary": "Read Account Details",
+        "description": "Reads details about an account, with balances where required.",
+        "operationId": "getAccount",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns an account. In _links section viewBalances and viewTransactions links will be used",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/accounts/{account-id}/balances": {
+      "get": {
+        "tags": [
+          "Account Information Service",
+          "accounts"
+        ],
+        "summary": "Read Balance",
+        "description": "Reads account data from a given account addressed by 'account-id'.",
+        "operationId": "getAccountBalances",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns the account's balances",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountBalancesResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/accounts/{account-id}/transactions": {
+      "get": {
+        "tags": [
+          "Account Information Service",
+          "accounts"
+        ],
+        "summary": "Read Transaction List",
+        "description": "Reads account data from a given account addressed by 'account-id'.",
+        "operationId": "getAccountTransactions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "account-id",
+            "in": "path",
+            "description": "This identification is denoting the addressed account. The account-id is retrieved by using a “Read Account List” call. The account-id is the “id” attribute of the account structure. Its value is constant at least throughout the lifecycle of a given consent.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description": "ISODate\nStarting date of the transaction list",
+            "required": true,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "ISODate\nEnd date of the transaction list, default is now if not given",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "bookingStatus",
+            "in": "query",
+            "description": "Filter by transaction booking status",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "booked",
+              "pending",
+              "both"
+            ]
+          },
+          {
+            "name": "withBalance",
+            "in": "query",
+            "description": "If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns account's transactions. In _links section viewAccount link will be used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAccountTransactionsResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Consent expired, consent is not valid for requested resource",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "Consent absent, consent not authorized by user",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Account not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Consent access exceeded",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/consents": {
+      "post": {
+        "tags": [
+          "Aggregated services",
+          "consents"
+        ],
+        "summary": "Establish Consent Transactions, aggregated",
+        "description": "Starts the consent creation procedure in parallel for all providers, which are selected for the End User, using the same consent parameters for all providers.",
+        "operationId": "postAggregatedConsents",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/JsonAggregatedConsentCreation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Return a list of references to Consents creation results for each separate provider. In addition, the Consent creation results for each provider are asynchronously pushed (in case of HTTP/2) to the calling side, as soon as a reply is received from a provider, i.e. consent is created.",
+            "headers": {
+              "Link": {
+                "type": "string",
+                "description": "Multiple 'rel=preload; as=fetch' links to the consent creation results by provider. These links correspond to the links in the response body."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JsonAggregatedConsentsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/consents/creation-results/{correlation-id}": {
+      "get": {
+        "tags": [
+          "Aggregated services",
+          "consents"
+        ],
+        "summary": "Fetch consent creation result",
+        "description": "This is a temporary synchronization resource, reading which waits for the completion (for one provider) of a previously started aggregated consent creation, and returns a 303 status and a link to the created consent.",
+        "operationId": "getAggregatedConsentCreationResult",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "correlation-id",
+            "in": "path",
+            "description": "A unique id of the resource.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consent is created and can be fetched from the Location link. In addition, the consent record is asynchronously pushed (in case of HTTP/2) to the calling side together with this response.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "A link to the resulting new consent information record."
+              },
+              "Link": {
+                "type": "string",
+                "description": "A 'rel=preload; as=fetch' link to the resulting new consent information record. Corresponds to the Location."
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/JsonAggregatedConsentCreationResultResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/consents": {
+      "post": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Establish Consent Transaction",
+        "description": "Creates an account information consent resource at the ASPSP regarding access to accounts specified in this request.\nAll permitted \"access\" attributes (\"accounts\", \"balances\" and \"transactions\") used in this message shall either carry a non-empty array of account references, indicating the accounts where the type of access is requested, or shall carry an empty array to indicate that the type of access is requested for all available accounts. Note that some providers may not support pre-indicated accounts, and in such situations the request shall fall back to access to all available accounts.\nPlease note that a \"transactions\", \"balances\" or \"accounts\" access right also gives access to the generic /accounts endpoints, i.e. is implicitly supporting also the \"accounts\" access.",
+        "operationId": "postConsent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostConsentsRequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostConsentsResponse"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section self link is used.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "uri",
+                "description": "Hyperlink for the status of the resource."
+              }
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;\nFrequencyPerDay isn't 1 when recurringIndicator is false;\nCombinedServiceIndicator is true",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/consents/{consent-id}": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get Consent Request",
+        "description": "Returns the content of an account information consent object.",
+        "operationId": "getConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns consent. In _links section viewAccounts link is used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "The Consent-ID cannot be matched by the ASPSP relative to the TPP.",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Delete an Account Information Consent Object",
+        "description": "The TPP can delete an account information consent object.",
+        "operationId": "deleteConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No errors occurred. Deleted consent"
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/consents/{consent-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "consentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Start authorisation process",
+        "description": "Starts an authorisation process in for establishing account information consent data on the server.",
+        "operationId": "consentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          },
+          "201": {
+            "description": "Created authorisation sub-resource."
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/consents/{consent-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "consentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/consents/{consent-id}/status": {
+      "get": {
+        "tags": [
+          "Account consent service",
+          "consents"
+        ],
+        "summary": "Get Status Request",
+        "description": "Can check the status of an account information consent resource.",
+        "operationId": "getConsentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns the transactionStatus of the consent.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "403": {
+            "description": "The Consent-ID cannot be matched by the ASPSP relative to the TPP.",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmations": {
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmations"
+        ],
+        "summary": "Confirmation of Funds Request",
+        "description": "Creates a confirmation of funds request at the ASPSP.\nIf no card number, but the PSU account identifier is contained: check on default account registered by customer.\nIf no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.\nIf card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.\nIf the card number is not registered for any of the accounts, the card number is ignored.",
+        "operationId": "getFundsConfirmation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Consent-ID",
+            "in": "header",
+            "description": "Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.",
+            "required": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonFundsConfirmationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred",
+            "schema": {
+              "$ref": "#/definitions/JsonFundsConfirmationResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, amount is not valid",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents": {
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Establish Funds Confirmation Consent Transaction",
+        "description": "Creates an funds confirmation consent resource at the ASPSP regarding access to make funds confirmation to specified accounts in this request.",
+        "operationId": "postFundsConfirmationConsent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostFundsConfirmationConsentsRequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostFundsConfirmationConsentsRequest"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section self link is used.",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "uri",
+                "description": "Hyperlink for the status of the resource."
+              }
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;\nCombinedServiceIndicator is true",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get Funds Confirmation Consent Request",
+        "description": "Returns the content of an funds confirmation consent object.",
+        "operationId": "getFundsConfirmationConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns consent. In _links section viewAccounts link is used.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetFundsConfirmationConsentResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Delete an Confirmation of Funds Service Object",
+        "description": "The TPP can delete a confirmation of funds consent object.",
+        "operationId": "deleteFundsConfirmationConsent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Confirmation of Funds Service” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No errors occurred. Deleted consent"
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "fundsConfirmationConsentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Start authorisation process",
+        "description": "Starts an authorisation process in for establishing account information consent data on the server.",
+        "operationId": "fundsConfirmationConsentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          },
+          "201": {
+            "description": "Created authorisation sub-resource."
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "fundsConfirmationConsentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/status": {
+      "get": {
+        "tags": [
+          "Confirmation of Funds Service",
+          "funds-confirmation-consents"
+        ],
+        "summary": "Get Status Request",
+        "description": "Can check the status of an funds confirmation consent resource.",
+        "operationId": "getFundsConfirmationConsentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "consent-id",
+            "in": "path",
+            "description": "Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns the transactionStatus of the consent.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetConsentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Consent not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "operationId": "getPaymentProducts",
+        "description": "Returns the available payment products for the given provider.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Payment Products",
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonGetPaymentProductsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments/{payment-product}/{payment-id}": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "operationId": "getJSONPayment",
+        "description": "Returns the content of payment object.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Payment Details",
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonGetPaymentResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment cancellation for the specified product type and identifier",
+        "description": "Initiates the cancellation of the addressed payment with resource identification payment-id if applicable to the payment-service, payment-product and received in product related timelines.",
+        "operationId": "cancelPayment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "No errors occurred. Authorisation of the cancellation by the PSU is needed.",
+            "schema": {
+              "$ref": "#/definitions/JsonDeletePaymentResponse"
+            }
+          },
+          "204": {
+            "description": "No errors occurred."
+          },
+          "400": {
+            "description": "One of mandatory parameters (headers) missing or in incorrect format.",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "invalid payment product",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "405": {
+            "description": "The addressed payment is not cancellable e.g. due to cut off time passed or legal constraints. Or payment cancellation is not supported by the bank.",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments/{payment-product}/{payment-id}/authorisations": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get authorisation sub-resources request",
+        "description": "Will deliver an array of resource identifications of all generated authorisation sub-resources.",
+        "operationId": "paymentsGetAuthorizations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationsResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Start authorisation process",
+        "description": "Starts the authorisation process for a payment initiation.",
+        "operationId": "paymentsStartAuthorization",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostAuthorisationsResponse"
+            }
+          },
+          "201": {
+            "description": "Created authorisation sub-resource."
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments/{payment-product}/{payment-id}/authorisations/{authorisation-id}": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get SCA status request",
+        "description": "Checks the SCA status of a authorisation sub-resource.",
+        "operationId": "paymentsGetAuthorizationStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Identification of the related resource",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "description": "ID of the request, unique to the call, as determined by the initiating party.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorisation-id",
+            "in": "path",
+            "description": "Identification of the related authorisation sub-resource",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns array of authorisation sub-resources.",
+            "schema": {
+              "$ref": "#/definitions/JsonGetAuthorisationStatusResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments/{payment-product}/{payment-id}/status": {
+      "get": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment: Get Status Request",
+        "description": "Can check the status of a payment initiation.",
+        "operationId": "getJSONPaymentStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-id",
+            "in": "path",
+            "description": "Resource Identification of the related payment.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "application/json"
+            ]
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No errors occurred. Returns payment's transactionStatus",
+            "schema": {
+              "$ref": "#/definitions/JsonGetPaymentStatusResponse"
+            }
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Payment not found",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/xs2a/v1.0/providers/{provider-id}/payments/{payment-product}": {
+      "post": {
+        "tags": [
+          "Payment Initiation Service",
+          "payments"
+        ],
+        "summary": "Payment Initiation with JSON encoding of the Payment Instruction",
+        "description": "Creates a payment initiation request at the ASPSP.",
+        "operationId": "initiateJSONPayment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "provider-id",
+            "in": "path",
+            "description": "Identifier of an ASPSP, previously returned by the system",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "payment-product",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/JsonPostPaymentRequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "End-User-ID",
+            "in": "header",
+            "description": "The system-generated ID of an anonymous End User.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "description": "Authorisation key that can be acquired in Sandbox.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "TPP-Explicit-Authorisation-Preferred",
+            "in": "header",
+            "description": "If it equals \"true\", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals \"false\" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.",
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "name": "TPP-Redirect-URI",
+            "in": "header",
+            "description": "URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).",
+            "type": "string",
+            "format": "uri",
+            "required": true
+          },
+          {
+            "name": "TPP-Nok-Redirect-URI",
+            "in": "header",
+            "description": "If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.",
+            "type": "string",
+            "format": "uri"
+          },
+          {
+            "name": "PSU-IP-Address",
+            "in": "header",
+            "description": "The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/JsonPostPaymentResponse"
+            }
+          },
+          "201": {
+            "description": "No errors occurred. In _links section redirect and self links are used."
+          },
+          "400": {
+            "description": "One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, creditor address is missing when payment product is cross-border-credit-transfers",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          },
+          "404": {
+            "description": "invalid payment product",
+            "schema": {
+              "$ref": "#/definitions/JsonErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "JsonProvider": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "legalName": {
+          "type": "string"
+        },
+        "bankCode": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonGetProviderResponse": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "$ref": "#/definitions/JsonProvider"
+        }
+      }
+    },
+    "JsonGetProvidersResponse": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonProvider"
+          }
+        }
+      }
+    },
+    "JsonCreateEndUserResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID of an anonymous End User"
+        }
+      }
+    },
+    "JsonProviderRef": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string",
+          "description": "ID of a provider"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonHref"
+        }
+      }
+    },
+    "JsonPreAuthProviderResponse": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string",
+          "description": "ID of a provider"
+        },
+        "scaRedirect": {
+          "$ref": "#/definitions/JsonHref"
+        }
+      }
+    },
+    "JsonPreAuthProvidersResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/JsonPreAuthProviderResponse"
+      }
+    },
+    "JsonGetEndUserProvidersResponse": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonProviderRef"
+          }
+        }
+      }
+    },
+    "JsonProviderId": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonPutEndUserProvidersRequest": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonProviderId"
+          }
+        }
+      }
+    },
+    "JsonAggregatedAccountAccess": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "boolean"
+        },
+        "balances": {
+          "type": "boolean"
+        },
+        "transactions": {
+          "type": "boolean"
+        }
+      }
+    },
+    "JsonAccountAccess": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        }
+      }
+    },
+    "JsonAccountDetails": {
+      "type": "object",
+      "required": [
+        "currency"
+      ],
+      "properties": {
+        "iban": {
+          "type": "string"
+        },
+        "bban": {
+          "type": "string"
+        },
+        "pan": {
+          "type": "string"
+        },
+        "maskedPan": {
+          "type": "string"
+        },
+        "msisdn": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      },
+      "description": "JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field"
+    },
+    "JsonAccountReference": {
+      "type": "object",
+      "required": [
+        "currency"
+      ],
+      "properties": {
+        "iban": {
+          "type": "string"
+        },
+        "bban": {
+          "type": "string"
+        },
+        "pan": {
+          "type": "string"
+        },
+        "maskedPan": {
+          "type": "string"
+        },
+        "msisdn": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        }
+      },
+      "description": "Must contain one of iban,bban,maskedPan,msisdn or pan field"
+    },
+    "JsonAccountReport": {
+      "type": "object",
+      "required": [
+        "booked"
+      ],
+      "properties": {
+        "booked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonTransaction"
+          }
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonTransaction"
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonAddress": {
+      "type": "object",
+      "required": [
+        "country"
+      ],
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "buildingNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "description": "Two characters as defined by ISO 3166"
+        }
+      }
+    },
+    "JsonAmount": {
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonBalance": {
+      "type": "object",
+      "required": [
+        "balanceAmount",
+        "balanceType"
+      ],
+      "properties": {
+        "balanceAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "balanceType": {
+          "type": "string"
+        },
+        "referenceDate": {
+          "type": "string"
+        },
+        "lastChangeDateTime": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonErrorResponse": {
+      "type": "object",
+      "required": [
+        "transactionStatus"
+      ],
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "transactionStatus": {
+          "type": "string",
+          "enum": [
+            "ACCP",
+            "ACSC",
+            "ACSP",
+            "ACTC",
+            "ACWC",
+            "ACWP",
+            "RCVD",
+            "PDNG",
+            "RJCT",
+            "CANC",
+            "ACFC",
+            "PATC",
+            "PART"
+          ]
+        }
+      }
+    },
+    "JsonFundsConfirmationRequest": {
+      "type": "object",
+      "required": [
+        "instructedAmount",
+        "psuAccount"
+      ],
+      "properties": {
+        "cardNumber": {
+          "type": "string"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "payee": {
+          "type": "string"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        }
+      }
+    },
+    "JsonFundsConfirmationResponse": {
+      "type": "object",
+      "required": [
+        "fundsAvailable"
+      ],
+      "properties": {
+        "fundsAvailable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "JsonGetAccountBalancesResponse": {
+      "type": "object",
+      "required": [
+        "balances"
+      ],
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        }
+      }
+    },
+    "JsonGetAccountResponse": {
+      "type": "object",
+      "required": [
+        "account"
+      ],
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountDetails"
+        }
+      }
+    },
+    "JsonGetAccountTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "transactions": {
+          "$ref": "#/definitions/JsonAccountReport"
+        },
+        "balances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonBalance"
+          }
+        }
+      }
+    },
+    "JsonAccountList": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonHref"
+        }
+      }
+    },
+    "JsonGetAggregatedAccountsResponse": {
+      "type": "object",
+      "required": [
+        "accountLists"
+      ],
+      "properties": {
+        "accountLists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountList"
+          }
+        }
+      }
+    },
+    "JsonGetAccountsResponse": {
+      "type": "object",
+      "required": [
+        "accounts"
+      ],
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountDetails"
+          }
+        }
+      }
+    },
+    "JsonGetAuthorisationStatusResponse": {
+      "type": "object",
+      "properties": {
+        "scaStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonGetAuthorisationsResponse": {
+      "type": "object",
+      "properties": {
+        "authorisationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "JsonGetConsentResponse": {
+      "type": "object",
+      "required": [
+        "access",
+        "combinedServiceIndicator",
+        "consentStatus",
+        "frequencyPerDay",
+        "recurringIndicator",
+        "validUntil"
+      ],
+      "properties": {
+        "access": {
+          "$ref": "#/definitions/JsonAccountAccess"
+        },
+        "recurringIndicator": {
+          "type": "boolean"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "frequencyPerDay": {
+          "type": "string"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": false
+        },
+        "consentStatus": {
+          "type": "string",
+          "enum": [
+            "received",
+            "valid",
+            "blocked",
+            "expired",
+            "deleted",
+            "terminatedByTpp"
+          ]
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonNewConsentDetails": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "_links": {
+          "properties": {
+            "self": {
+              "$ref": "#/definitions/JsonHref"
+            }
+          }
+        }
+      }
+    },
+    "JsonGetNewConsentDetails": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "_links": {
+          "properties": {
+            "consent": {
+              "$ref": "#/definitions/JsonHref"
+            },
+            "self": {
+              "$ref": "#/definitions/JsonHref"
+            },
+            "scaRedirect": {
+              "$ref": "#/definitions/JsonHref"
+            },
+            "status": {
+              "$ref": "#/definitions/JsonHref"
+            }
+          }
+        }
+      }
+    },
+    "JsonAggregatedConsentCreationResultResponse": {
+      "type": "object",
+      "required": [
+        "newConsent"
+      ],
+      "properties": {
+        "newConsent": {
+          "$ref": "#/definitions/JsonGetNewConsentDetails"
+        }
+      }
+    },
+    "JsonAggregatedConsentsResponse": {
+      "type": "object",
+      "required": [
+        "newConsents"
+      ],
+      "properties": {
+        "newConsents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonNewConsentDetails"
+          }
+        }
+      }
+    },
+    "JsonAggregatedConsentCreation": {
+      "type": "object",
+      "description": "A unified request for an aggregated creation of consents. Specific provider IDs shall be given.",
+      "required": [
+        "access",
+        "recurringIndicator",
+        "combinedServiceIndicator",
+        "frequencyPerDay",
+        "validUntil"
+      ],
+      "properties": {
+        "access": {
+          "$ref": "#/definitions/JsonAggregatedAccountAccess"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "frequencyPerDay": {
+          "type": "string"
+        },
+        "recurringIndicator": {
+          "type": "boolean",
+          "example": true
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": true
+        },
+        "providerIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "JsonGetConsentStatusResponse": {
+      "type": "object",
+      "properties": {
+        "consentStatus": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonGetFundsConfirmationConsentResponse": {
+      "type": "object",
+      "required": [
+        "accounts",
+        "combinedServiceIndicator",
+        "consentStatus",
+        "validUntil"
+      ],
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "recurringIndicator": {
+          "type": "boolean"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": false
+        },
+        "consentStatus": {
+          "type": "string",
+          "enum": [
+            "received",
+            "valid",
+            "blocked",
+            "expired",
+            "deleted"
+          ]
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetPaymentProductsResponse": {
+      "type": "object",
+      "required": [
+        "paymentProducts"
+      ],
+      "properties": {
+        "paymentProducts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetPaymentResponse": {
+      "type": "object",
+      "required": [
+        "creditorAddress",
+        "creditorAccount",
+        "creditorName",
+        "debtorAccount",
+        "instructedAmount"
+      ],
+      "properties": {
+        "endToEndIdentification": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAddress": {
+          "$ref": "#/definitions/JsonAddress"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "enum": [
+            "ACCP",
+            "ACSC",
+            "ACSP",
+            "ACTC",
+            "ACWC",
+            "ACWP",
+            "RCVD",
+            "PDNG",
+            "RJCT",
+            "CANC",
+            "ACFC",
+            "PATC",
+            "PART"
+          ]
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonGetPaymentStatusResponse": {
+      "type": "object",
+      "required": [
+        "transactionStatus"
+      ],
+      "properties": {
+        "fundsAvailable": {
+          "type": "boolean"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "enum": [
+            "ACCP",
+            "ACSC",
+            "ACSP",
+            "ACTC",
+            "ACWC",
+            "ACWP",
+            "RCVD",
+            "PDNG",
+            "RJCT",
+            "CANC",
+            "ACFC",
+            "PATC",
+            "PART"
+          ]
+        }
+      }
+    },
+    "JsonHref": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonLinks": {
+      "type": "object",
+      "properties": {
+        "scaRedirect": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "scaOAuth": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "self": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "status": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "account": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "balances": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "transactions": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "transactionDetails": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "first": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "next": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "previous": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "last": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "download": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "updatePsuIdentification": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "startAuthorisation": {
+          "$ref": "#/definitions/JsonHref"
+        },
+        "scaStatus": {
+          "$ref": "#/definitions/JsonHref"
+        }
+      }
+    },
+    "JsonMessage": {
+      "type": "object",
+      "required": [
+        "category",
+        "code"
+      ],
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "JsonPostAuthorisationsResponse": {
+      "type": "object",
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "authorisationId": {
+          "type": "string"
+        },
+        "scaStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostConsentsRequest": {
+      "type": "object",
+      "required": [
+        "access",
+        "recurringIndicator",
+        "combinedServiceIndicator",
+        "frequencyPerDay",
+        "validUntil"
+      ],
+      "properties": {
+        "access": {
+          "$ref": "#/definitions/JsonAccountAccess"
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "frequencyPerDay": {
+          "type": "string"
+        },
+        "recurringIndicator": {
+          "type": "boolean",
+          "example": true
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "JsonPostConsentsResponse": {
+      "type": "object",
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "consentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "consentStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostFundsConfirmationConsentsRequest": {
+      "type": "object",
+      "required": [
+        "accounts",
+        "combinedServiceIndicator",
+        "validUntil"
+      ],
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonAccountReference"
+          }
+        },
+        "validUntil": {
+          "type": "string"
+        },
+        "combinedServiceIndicator": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "JsonPostPaymentRequest": {
+      "type": "object",
+      "required": [
+        "creditorAddress",
+        "creditorAccount",
+        "creditorName",
+        "debtorAccount",
+        "instructedAmount"
+      ],
+      "properties": {
+        "endToEndIdentification": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAddress": {
+          "$ref": "#/definitions/JsonAddress"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        },
+        "chargeBearer": {
+          "type": "string",
+          "enum": [
+            "DEBT",
+            "CRED",
+            "SHAR",
+            "SLEV"
+          ]
+        }
+      }
+    },
+    "JsonPostPaymentRequestWithIbanOrPan": {
+      "type": "object",
+      "required": [
+        "creditorAddress",
+        "creditorAccount",
+        "creditorName",
+        "debtorAccount",
+        "instructedAmount"
+      ],
+      "properties": {
+        "endToEndIdentification": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "instructedAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAddress": {
+          "$ref": "#/definitions/JsonAddress"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        },
+        "chargeBearer": {
+          "type": "string",
+          "enum": [
+            "DEBT",
+            "CRED",
+            "SHAR",
+            "SLEV"
+          ]
+        }
+      }
+    },
+    "JsonPostPaymentResponse": {
+      "type": "object",
+      "required": [
+        "paymentId",
+        "transactionStatus"
+      ],
+      "properties": {
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "paymentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "enum": [
+            "ACCP",
+            "ACSC",
+            "ACSP",
+            "ACTC",
+            "ACWC",
+            "ACWP",
+            "RCVD",
+            "PDNG",
+            "RJCT",
+            "CANC",
+            "ACFC",
+            "PATC",
+            "PART"
+          ]
+        },
+        "transactionFeeIndicator": {
+          "type": "boolean"
+        },
+        "transactionFees": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonPostPaymentResponseWithIbanOrPan": {
+      "type": "object",
+      "required": [
+        "paymentId",
+        "transactionStatus"
+      ],
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "psuMessage": {
+          "type": "string"
+        },
+        "tppMessages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JsonMessage"
+          }
+        },
+        "paymentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "enum": [
+            "ACCP",
+            "ACSC",
+            "ACSP",
+            "ACTC",
+            "ACWC",
+            "ACWP",
+            "RCVD",
+            "PDNG",
+            "RJCT",
+            "CANC",
+            "ACFC",
+            "PATC",
+            "PART"
+          ]
+        },
+        "transactionFeeIndicator": {
+          "type": "boolean"
+        },
+        "transactionFees": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonDeletePaymentResponse": {
+      "type": "object",
+      "properties": {
+        "transactionStatus": {
+          "type": "string"
+        },
+        "_links": {
+          "$ref": "#/definitions/JsonLinks"
+        }
+      }
+    },
+    "JsonTransaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "string"
+        },
+        "debtorName": {
+          "type": "string"
+        },
+        "debtorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "creditorName": {
+          "type": "string"
+        },
+        "creditorAccount": {
+          "$ref": "#/definitions/JsonAccountReference"
+        },
+        "transactionAmount": {
+          "$ref": "#/definitions/JsonAmount"
+        },
+        "bookingDate": {
+          "type": "string"
+        },
+        "valueDate": {
+          "type": "string"
+        },
+        "remittanceInformationUnstructured": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

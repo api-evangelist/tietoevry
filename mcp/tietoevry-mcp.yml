@@ -1,0 +1,108 @@
+generated: '2026-09-02'
+method: derived
+source: 'Derived from the 211 operations in openapi/ after a search for a published server missed. Probed
+  2026-09-02: https://api.tietoevry.com/mcp, https://openbanking.api.tietoevry.com/mcp (both HTTP 200 but
+  returning the portal single-page-app HTML shell, not JSON-RPC), https://mcp.tietoevry.com/ (no response,
+  DNS does not resolve), and /.well-known/oauth-authorization-server plus /.well-known/oauth-protected-resource
+  on all eight provider hosts (no document served anywhere).'
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: 'Tietoevry ships no MCP server, remote or local. There is no hosted endpoint, no npm or PyPI package,
+    and no mention of MCP, agents or tools anywhere in the developer portals or the getting-started manual.
+    The tools below are a DERIVED candidate mapping of what a server over the published REST surface could
+    expose; no endpoint is asserted and none should be inferred.'
+surfaces:
+  openapi: openapi/ (24 documents, 211 operations)
+  graphql: none published
+  mcp: none published
+candidate_tools:
+- name: list_accounts
+  rest:
+  - getAccounts
+  description: Read the list of PSU accounts covered by a valid AIS consent.
+  api: tietoevry-openbanking-xs2a
+- name: get_account
+  rest:
+  - getAccount
+  description: Read one account by resourceId.
+  api: tietoevry-openbanking-xs2a
+- name: get_account_balances
+  rest:
+  - getAccountBalances
+  description: Read balances for one account.
+  api: tietoevry-openbanking-xs2a
+- name: get_account_transactions
+  rest:
+  - getAccountTransactions
+  - getAccountTransaction
+  description: Read booked and pending transactions for one account.
+  api: tietoevry-openbanking-xs2a
+- name: create_consent
+  rest:
+  - postConsent
+  description: Establish an AIS consent and receive the scaRedirect the PSU must complete.
+  api: tietoevry-openbanking-xs2a
+  write: true
+- name: get_consent_status
+  rest:
+  - getConsentStatus
+  - getConsent
+  description: Read the status of an existing consent.
+  api: tietoevry-openbanking-xs2a
+- name: delete_consent
+  rest:
+  - deleteConsent
+  description: Terminate a consent (terminatedByTpp).
+  api: tietoevry-openbanking-xs2a
+  write: true
+- name: initiate_payment
+  rest:
+  - initiateJSONPayment
+  description: Initiate a single JSON-encoded payment for a payment product.
+  api: tietoevry-openbanking-xs2a
+  write: true
+- name: get_payment_status
+  rest:
+  - getJSONPaymentStatus
+  - getJSONPayment
+  description: Read the ISO 20022 transaction status of an initiated payment.
+  api: tietoevry-openbanking-xs2a
+- name: cancel_payment
+  rest:
+  - deletePayment
+  description: Cancel an initiated payment before the cut-off time.
+  api: tietoevry-openbanking-xs2a
+  write: true
+- name: confirm_funds
+  rest:
+  - getFundsConfirmation
+  description: Ask whether funds are available for an instructed amount (yes/no).
+  api: tietoevry-openbanking-xs2a
+- name: list_providers
+  rest:
+  - getProviders
+  - getProvider
+  description: List the connected ASPSPs reachable through the aggregation service.
+  api: tietoevry-financial-api-aggregation
+- name: aggregated_accounts
+  rest:
+  - getAggregatedAccounts
+  description: Read accounts across every connected provider for one end user.
+  api: tietoevry-financial-api-aggregation
+- name: create_sepa_dd_payment
+  rest:
+  - createPayment
+  description: Create a SEPA Direct Debit collection as creditor.
+  api: tietoevry-sepa-direct-debits
+  write: true
+- name: refund_sepa_dd_payment
+  rest:
+  - createRefund
+  - cancelPayment
+  - chargebackPayment
+  description: Reverse a SEPA Direct Debit — refund, cancel or chargeback with an ISO reason code.
+  api: tietoevry-sepa-direct-debits
+  write: true

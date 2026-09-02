@@ -1,0 +1,49 @@
+generated: '2026-09-02'
+method: searched
+source: 'Searched all three developer portals and the provider''s getting-started manual for a published
+  limits page (none exists), then read the 429 responses and the consent model declared across the 24
+  contracts in openapi/. Portal routes probed 2026-09-02: /documentation, /getting-started, /faq,
+  /documentation/glossary — all HTTP 200 but served as the single-page-app shell, with the backing content
+  service returning HTTP 502.'
+summary:
+  limit_count: 1
+  platform_limits_published: false
+  headers_published: false
+  note: 'Tietoevry publishes no platform rate limit — no requests-per-second, no per-key quota, no burst
+    allowance, and no RateLimit-*, X-RateLimit-* or Retry-After response header anywhere in 211 operations.
+    What it does publish is a CONSENT-scoped quota that the CLIENT sets itself, and a 429 that fires when
+    that quota is exhausted. An agent can therefore predict its own 429 for account data, but has no
+    machine-readable signal for anything else and no documented back-off.'
+limits:
+- id: consent-frequency-per-day
+  scope: per-consent
+  window: 1 day
+  limit: client-declared
+  parameter: frequencyPerDay
+  set_at: consent creation (postConsent request body)
+  applies_to: 'Account information reads made against a recurring consent (recurringIndicator: true)'
+  provider_wording: 'frequencyPerDay "sets the daily limit on using this consent for cases when
+    recurringIndicator is true." The provider''s own worked example sends 1000.'
+  exhausted_status: 429
+  exhausted_message: Consent access exceeded
+  declared_on_operations: 34
+  reset: 'Not documented. No Retry-After header and no reset timestamp is declared on the 429 response, so
+    the rollover moment is not machine-readable.'
+  source: openapi/tietoevry-how-to-instruction.yaml, openapi/tietoevry-tieto-xs2a-accounts.v1_3.yaml
+response_headers:
+  rate_limit: none declared
+  retry_after: none declared
+  observed: 'The only rate-limit-adjacent response headers declared anywhere in the surface are X-Request-ID
+    (correlation, 38 operations), Location, Link and the SEPA gateway''s X-Page-Number / X-Page-Size /
+    X-Total-Elements pagination headers.'
+related_ceilings:
+  - id: consent-validity
+    note: 'Not a rate limit but the other published ceiling on access: a recurring AIS consent is valid 90
+      days, or 180 days where the RTS Article 10a SCA exemption applies, after which consentStatus becomes
+      expired and reads return 401.'
+    source: openapi/tietoevry-how-to-instruction.yaml
+gaps:
+  - No limit is published for payment initiation, confirmation of funds, the premium APIs, VAM, the Financial
+    API Aggregation service or the SEPA Direct Debits gateway.
+  - No unauthenticated live response was available to observe headers on, because the sandbox requires a
+    registered application's X-API-Key and the live gateway is behind an eIDAS client-certificate gate.

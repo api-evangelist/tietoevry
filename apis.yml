@@ -1,23 +1,242 @@
 aid: tietoevry
 name: TietoEVRY
-description: 'TietoEVRY is a company surfaced via the API Evangelist harvest backlog (source: openehr-coalition)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'TietoEVRY (Tietoevry Corporation, listed as TIETO on Nasdaq Helsinki and Stockholm, rebranded
+  to "Tieto" in 2026) is a Nordic software and technology company of roughly 14,000 people operating in 20+
+  countries, serving banking, healthcare, public sector and industry. Its public API surface is published by
+  the banking business (Tieto Banktech / Tietoevry Banking) through the Tietoevry Banking API Hub at
+  api.tietoevry.com, which fronts three developer portals: an Open Banking PSD2/XS2A platform built on the
+  Berlin Group NextGenPSD2 framework with a free self-service sandbox, a Financial API Aggregation service
+  offering one integration to Nordic and Baltic banks, and a Credit Cloud platform for loan origination and
+  loan life-cycle management. 24 machine-readable Swagger 2.0 / OpenAPI 3.0 contracts covering 211 operations
+  are published unauthenticated from the Open Banking and Aggregation portals, including account information,
+  payment initiation, confirmation of funds, bulk and periodic payments, payment recall, request-to-pay,
+  signing baskets, virtual account management, card account information and a SEPA Direct Debits gateway with
+  a webhook event-notification surface.'
 url: https://raw.githubusercontent.com/api-evangelist/tietoevry/refs/heads/main/apis.yml
+image: https://www.tieto.com/images/tieto-logo.svg
 x-type: company
 x-source: harvest:openehr-coalition
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
 specificationVersion: '0.20'
 created: '2026-09-02'
 modified: '2026-09-02'
+x-enrichment:
+  date: '2026-09-02'
+  status: enriched
+  artifacts_added: 93
+  pass: local-v1
 tags:
 - Company
-apis: []
+- Banking
+- Open Banking
+- PSD2
+- XS2A
+- Berlin Group
+- Payments
+- SEPA
+- Account Information
+- Financial Services
+- Aggregation
+- Credit
+- Fintech
+- Nordic
+- Finland
+apis:
+- aid: tietoevry-openbanking-xs2a
+  name: Tietoevry Open Banking XS2A APIs
+  description: 'PSD2-compliant Access to Account (XS2A) APIs implementing the Berlin Group NextGenPSD2
+    framework, plus Tietoevry premium extensions beyond the PSD2 mandate. Covers account information (AIS),
+    payment initiation (PIS), confirmation of funds (PIIS), bulk payments, future-dated and periodic payments,
+    payment recall, request-to-pay and subscriptions to request-to-pay, signing baskets, card and card-account
+    information, extended account owner details, and Virtual Account Management (VAM). Every endpoint shares
+    one hostname and is selected by a sandbox|live path segment; a free self-service sandbox with simulated SCA
+    and fake PSUs requires no eIDAS certificate.'
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Open Banking
+  - PSD2
+  - XS2A
+  - Berlin Group
+  - Account Information
+  - Payment Initiation
+  - Confirmation of Funds
+  - Virtual Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-openbanking-xs2a-swagger.json
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-accounts.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-accounts.v1_2.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-accounts-premium.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-accounts-cards-premium.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-payments.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-payments.v1_2.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-bulk-payments.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-future-dated-payments-premium.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-periodic-payments-premium.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-recall-payments.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-request-to-pay.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-subscriptions-request-to-pay.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-signing-baskets.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-funds.v1_3.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-funds.v1_2.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-tieto-xs2a-vam-users.yaml
+  - type: Overlay
+    url: overlays/tietoevry-tieto-xs2a-accounts-v1-3-overlay.yaml
+  - type: Overlay
+    url: overlays/tietoevry-tieto-xs2a-payments-v1-3-overlay.yaml
+  - type: Overlay
+    url: overlays/tietoevry-openbanking-xs2a-swagger-overlay.yaml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+- aid: tietoevry-financial-api-aggregation
+  name: Tietoevry Financial API Aggregation
+  description: 'A single-integration aggregation layer over Nordic and Baltic banks, exposing provider
+    discovery, end-user management and aggregated XS2A operations (accounts, balances, transactions, consents,
+    confirmation of funds and payment initiation) across many connected ASPSPs behind one contract, with a
+    pre-step SCA service and aggregated consent creation.'
+  humanURL: https://aggregation.api.tieto.com/
+  baseURL: https://aggregation.api.tieto.com
+  tags:
+  - Aggregation
+  - Open Banking
+  - XS2A
+  - Multibanking
+  - Nordic
+  - Baltic
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-financial-api-aggregation-swagger.json
+  - type: Overlay
+    url: overlays/tietoevry-financial-api-aggregation-swagger-overlay.yaml
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+- aid: tietoevry-sepa-direct-debits
+  name: Tietoevry SEPA Direct Debits
+  description: 'A SEPA Direct Debit gateway for Creditor and Debtor roles, allowing creditors to initiate
+    payments, cancel (reverse) them and issue refunds, and debtors to reject payments and raise chargebacks,
+    with an event-notification webhook mechanism that pushes state changes for payments, refunds and incoming
+    collections to Creditor-Notification-URI and Debtor-Notification-URI endpoints.'
+  humanURL: https://openbanking.api.tietoevry.com/documentation/sepa-direct-debit
+  baseURL: https://payments.api.tieto.com/live/v1/sepadd
+  tags:
+  - SEPA
+  - Direct Debit
+  - Payments
+  - Chargebacks
+  - Refunds
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+  - type: OpenAPI
+    url: openapi/tietoevry-sepa-direct-debit.yaml
+  - type: Overlay
+    url: overlays/tietoevry-sepa-direct-debit-api-gateway-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry-credit-cloud
+  name: Tietoevry Credit Cloud
+  description: 'A credit platform used by banks and financial institutions in 20+ countries to manage
+    virtually any type of credit, organised around loan origination, loan life cycle and collection. The
+    developer portal is published but every API reference behind it sits behind a Keycloak sign-in, so no
+    machine-readable contract and no base URL are publicly stated.'
+  humanURL: https://credit.api.tietoevry.com/
+  tags:
+  - Credit
+  - Lending
+  - Loan Origination
+  - Collections
+  - Banking
+  properties:
+  - type: SignUp
+    url: https://credit.api.tietoevry.com/sign-up
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/tietoevry-domain-security.yml
+- type: Authentication
+  url: authentication/tietoevry-authentication.yml
 - type: Website
   url: https://www.tietoevry.com/en/
+- type: DeveloperPortal
+  url: https://api.tietoevry.com/
+- type: Documentation
+  url: https://openbanking.api.tietoevry.com/documentation
+- type: APIReference
+  url: https://openbanking.api.tietoevry.com/documentation/xs2a
+- type: GettingStarted
+  url: https://openbanking.api.tietoevry.com/getting-started
+- type: SignUp
+  url: https://openbanking.api.tietoevry.com/sign-up
+- type: Login
+  url: https://openbanking.api.tietoevry.com/sign-in
+- type: Support
+  url: https://openbanking.api.tietoevry.com/contact-us
+- type: HelpCenter
+  url: https://openbanking.api.tietoevry.com/faq
+- type: Glossary
+  url: https://openbanking.api.tietoevry.com/documentation/glossary
+- type: Blog
+  url: https://www.tieto.com/en/newsroom/
+- type: GitHubOrganization
+  url: https://github.com/tietoevry
+- type: TermsOfService
+  url: https://www.tietoevry.com/en/legal-notice/
+- type: PrivacyPolicy
+  url: https://www.tietoevry.com/en/privacy-notice/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/tietoevry
+- type: Packages
+  url: packages/tietoevry-packages.yml
+- type: LLMsTxt
+  url: llms/tietoevry-llms.txt
+- type: Conformance
+  url: conformance/tietoevry-conformance.yml
+- type: ErrorCatalog
+  url: errors/tietoevry-problem-types.yml
+- type: DeclineCodes
+  url: errors/tietoevry-decline-codes.yml
+- type: Lifecycle
+  url: lifecycle/tietoevry-lifecycle.yml
+- type: Sandbox
+  url: sandbox/tietoevry-sandbox.yml
+- type: Conventions
+  url: conventions/tietoevry-conventions.yml
+- type: ChangeLog
+  url: changelog/tietoevry-changelog.yml
+- type: DataModel
+  url: data-model/tietoevry-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/tietoevry-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/tietoevry-rate-limits.yml

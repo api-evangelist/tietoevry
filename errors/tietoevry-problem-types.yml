@@ -1,0 +1,119 @@
+generated: '2026-09-02'
+method: derived
+source: 'Derived from every 4xx/5xx response declared across the 24 documents in openapi/ (403 error responses
+  in total), enriched from the response descriptions the provider wrote into those contracts. No separate
+  error reference page is published — the portal has no error section, and the getting-started manual does not
+  document failure handling.'
+format: berlin-group-tpp-messages
+media_type: application/json
+note: 'Not RFC 9457. Errors use the Berlin Group NextGenPSD2 envelope. No operation declares
+  application/problem+json anywhere in the surface.'
+envelope:
+  schema: JsonErrorResponse
+  required:
+  - transactionStatus
+  properties:
+    transactionStatus: ISO 20022 external status code for the affected payment or request (RJCT on rejection)
+    tppMessages: array of JsonMessage / XS2ATPPMessage objects
+    psuMessage: free-text message intended for display to the payment service user
+  message_object:
+    category: ERROR or WARNING (XS2ATPPMessage.category); the SEPA gateway also emits MSG/INFO informational
+      messages in the same array
+    code: machine-readable message code
+    text: human-readable text
+  alternate_schemas:
+  - XS2AErrorResponse
+  - ErrorResponse
+status_distribution:
+  '400': 150
+  '404': 118
+  '403': 66
+  '401': 44
+  '429': 34
+  4XX: 15
+  5XX: 15
+  '405': 2
+  '500': 2
+problem_types:
+- status: 400
+  title: Malformed request
+  detail: One of the mandatory parameters (headers, request body or query parameters) is missing or in an
+    incorrect format.
+  occurrences: 139
+  remediation: 'Check the required header set for the operation. X-API-Key and X-Request-ID are required on
+    almost every call; X-Request-ID must be a UUID. Account and funds operations additionally require
+    Consent-ID.'
+- status: 400
+  title: XS2A field validation failure
+  detail: Format of certain request fields is invalid or not matching the XS2A requirements.
+  occurrences: 10
+  remediation: Validate IBANs, currency codes, amounts as strings, and date fields against the Berlin Group
+    field formats before retrying.
+- status: 401
+  title: Consent expired or not valid for the requested resource
+  detail: The consent referenced by Consent-ID has expired or does not cover this resource.
+  occurrences: 30
+  remediation: Read the consent status; if expired or revokedByPsu, establish a new consent and have the PSU
+    complete SCA again. Recurring AIS consents are valid 90 days, or 180 days where the RTS Article 10a
+    exemption applies.
+- status: 401
+  title: Authentication required
+  detail: Authentication is required and has failed or has not yet been provided.
+  occurrences: 10
+  remediation: Send a valid X-API-Key for a registered application, and the OAuth bearer token where the
+    OAuth2 SCA approach is in use.
+- status: 403
+  title: Consent absent or not authorised by the PSU
+  detail: The consent has not been authorised by the user, or cannot be matched to this TPP.
+  occurrences: 34
+  remediation: Send the PSU to the scaRedirect link returned at consent creation and wait for consentStatus
+    to reach valid.
+- status: 403
+  title: Authorisation sub-resource cannot be created while the consent is Pending
+  detail: Initial consent authorisation must be completed before another authorisation sub-resource is
+    started.
+  occurrences: 20
+  remediation: Poll the authorisation status until it is finalised or failed before starting a new one.
+- status: 403
+  title: Not authorized for this resource
+  detail: The user is not authorized to access the given resource or functionality.
+  occurrences: 10
+- status: 404
+  title: Consent not found
+  occurrences: 64
+- status: 404
+  title: Account not found
+  occurrences: 21
+- status: 404
+  title: Payment not found
+  occurrences: 14
+- status: 404
+  title: Invalid payment product
+  detail: The {payment-product} path value is not one this ASPSP supports.
+  occurrences: 11
+  remediation: Call the payment-products operation on the aggregation service, or use sepa-credit-transfers
+    on the sandbox.
+- status: 404
+  title: Card or card account not found
+  occurrences: 8
+- status: 405
+  title: Payment is not cancellable
+  detail: The addressed payment is not cancellable, e.g. due to cut-off time passed or legal constraints.
+  occurrences: 1
+  remediation: There is no recovery. Cancellation is only possible before the ASPSP cut-off; after it the
+    payment must be handled as a recall (premium recall-payments API) or, on SEPA Direct Debits, as a refund
+    or chargeback.
+- status: 405
+  title: Provider pre-auth is not available
+  detail: The aggregation provider does not offer the pre-step SCA service.
+  occurrences: 1
+- status: 429
+  title: Consent access exceeded
+  detail: The frequencyPerDay limit set on the consent has been exhausted for the day.
+  occurrences: 34
+  remediation: 'This is a consent-scoped quota, not a platform rate limit: set frequencyPerDay high enough at
+    consent creation, or wait for the daily window to roll over. No Retry-After or RateLimit-* header is
+    declared on the 429 response, so the reset time is not machine-readable.'
+- status: 500
+  title: Server error
+  occurrences: 2

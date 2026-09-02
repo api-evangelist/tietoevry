@@ -1,0 +1,96 @@
+# TietoEVRY (Tietoevry Corporation / Tieto)
+
+> Nordic software and technology company, ~14,000 people in 20+ countries, serving banking, healthcare,
+> public sector and industry. Its public API surface is published by the banking business (Tieto Banktech /
+> Tietoevry Banking) as three developer portals behind one API Hub. 24 machine-readable contracts covering
+> 211 operations are downloadable without an account.
+
+Provenance: generated 2026-09-02 by API Evangelist from the provider's published contracts and portals.
+Tietoevry serves no /llms.txt of its own — probed https://www.tieto.com/llms.txt (404) and
+https://www.tietoevry.com/llms.txt (200 but zero bytes) on 2026-09-02. This file is API Evangelist's
+generated description of a third party, not a document Tietoevry publishes.
+
+Naming note: the company is mid-rename. www.tietoevry.com now 301s to www.tieto.com ("We are Tieto"), and
+the banking unit's page moved from /en/banking/ to /en/banktech/. The API hosts have not all followed —
+sandbox and portals are on tietoevry.com, the aggregation portal and the live gateways are on tieto.com.
+
+## Developer entry points
+
+- [Tietoevry Banking API Hub](https://api.tietoevry.com/): the index of the three API products.
+- [Open Banking portal](https://openbanking.api.tietoevry.com/): PSD2 / XS2A, free self-service sandbox.
+- [Getting started manual](https://openbanking.api.tietoevry.com/getting-started): sign-up, app creation,
+  API key, and worked curl examples for consent, accounts, payments, recall and funds confirmation.
+- [Sign up](https://openbanking.api.tietoevry.com/sign-up) — contact details only, no certificate, no card.
+- [Financial API Aggregation portal](https://aggregation.api.tieto.com/)
+- [Credit Cloud portal](https://credit.api.tietoevry.com/) — landing page only; everything else is behind a
+  Keycloak sign-in.
+
+## APIs
+
+### Open Banking XS2A — base `https://openbanking.api.tietoevry.com/{sandbox|live}/xs2a/v1.3`
+
+Berlin Group NextGenPSD2 implementation, versions 1.2 and 1.3 published side by side, plus premium
+extensions beyond the PSD2 mandate.
+
+- Account information (AIS): consents, accounts, balances, transactions
+- Payment initiation (PIS): single, bulk, future-dated, periodic
+- Confirmation of funds (PIIS)
+- Premium: payment recall, request-to-pay and subscriptions to it, signing baskets, card and card-account
+  information, extended account owner name and address (no PSD2 licence required for that one)
+- Virtual Account Management (VAM): virtual accounts and VAM users
+
+### Financial API Aggregation — base `https://aggregation.api.tieto.com`
+
+One integration to many Nordic and Baltic banks. Provider discovery, end-user management, pre-step SCA, and
+aggregated XS2A operations across every connected ASPSP. 38 operations.
+
+### SEPA Direct Debits — base `https://payments.api.tieto.com/{sandbox|live}/v1/sepadd`
+
+Creditor and debtor roles. Create collections, cancel, refund, reject, charge back — each with an ISO reason
+code — plus seven webhook/callback operations for state changes and incoming collections. 15 operations.
+
+### Credit Cloud
+
+Loan origination, loan life cycle and collection for banks in 20+ countries. No public contract; the portal
+is sign-in gated.
+
+## How the API works
+
+- Auth: `X-API-Key` header, issued per application registered in the portal. Required on 171 of 211
+  operations.
+- `X-Request-ID` (UUID) required on 186 operations, echoed on 38 responses. It is a **correlation id, not an
+  idempotency key** — there is no documented replay guarantee.
+- Authorisation object is a PSU **consent**, passed as `Consent-ID`, not a scope. Recurring AIS consents last
+  90 days, or 180 days under the RTS Article 10a SCA exemption.
+- Environment is a path segment: `/sandbox/` or `/live/`. One hostname serves both, per the provider.
+- Live access needs eIDAS QWAC/QSealC certificates and the relevant PSD2 licence; sandbox needs neither.
+- Errors are the Berlin Group envelope `{ transactionStatus, tppMessages[{category,code,text}], psuMessage }`
+  — **not** RFC 9457 problem+json.
+- Payment and consent state use ISO 20022 external codes (RCVD, ACTC, ACSP, ACSC, RJCT, CANC…).
+- Rate limiting: no platform limit is published. A `429 Consent access exceeded` fires when the
+  `frequencyPerDay` you set at consent creation is exhausted. No `Retry-After` or `RateLimit-*` header.
+- Pagination: `_links.next` on XS2A transactions; `X-Page-Number` / `X-Page-Size` / `X-Total-Elements` plus
+  RFC 8288 `Link` on the SEPA gateway.
+
+## What Tietoevry does NOT publish
+
+Recorded so an agent does not go looking:
+
+- No client SDK in any language, and no CLI. The manual tells you to call REST directly.
+- No MCP server, no A2A agent card, no /llms.txt, no ai-plugin.json.
+- No /.well-known/ document of any kind on any host — no security.txt, no OpenID or OAuth metadata, no
+  api-catalog.
+- No status page (status.tietoevry.com and status.tieto.com do not resolve), no SLA, no deprecation or
+  sunset policy, no dated changelog and no feed.
+- No pricing, plans or quotas. Production is an enterprise sales conversation.
+- No AsyncAPI document, though a real webhook surface exists on the SEPA product.
+- No idempotency contract on write operations.
+
+## Optional
+
+- [API catalog](https://openbanking.api.tietoevry.com/api-catalog)
+- [FAQ](https://openbanking.api.tietoevry.com/faq)
+- [Glossary](https://openbanking.api.tietoevry.com/documentation/glossary)
+- [Newsroom](https://www.tieto.com/en/newsroom/)
+- [Legal notice](https://www.tietoevry.com/en/legal-notice/)
+- [Privacy notice](https://www.tietoevry.com/en/privacy-notice/)

@@ -1,0 +1,138 @@
+generated: '2026-09-02'
+method: searched
+source: 'The published contracts in openapi/ (24 documents, 211 operations) read together with the provider''s
+  own statements in openapi/tietoevry-how-to-instruction.yaml ("Getting started!") and the Open Banking portal
+  copy fetched 2026-09-02: "Detailed descriptions of our standard APIs. These are based on the Berlin Group
+  specifications and standards to ensure compliance with mandatory PSD2 requirements."'
+summary:
+  regime: psd2
+  domain_standard: Berlin Group NextGenPSD2 XS2A Framework
+  declared_in_contract: true
+conformance:
+- id: berlin-group-nextgenpsd2
+  name: Berlin Group NextGenPSD2 XS2A Framework
+  conforms: true
+  domain_standard: true
+  evidence: 'The contract itself is shaped by the standard, not merely described as compliant. Every XS2A
+    document titles itself "Tieto OpenBanking XS2A apis - <service>"; the resource model is the Berlin Group
+    one (/consents, /accounts/{account-id}/balances, /accounts/{account-id}/transactions,
+    /funds-confirmation-consents, /payments/{payment-product}, /signing-baskets, /authorisations); the
+    mandated header set is present on the operations (X-Request-ID, Consent-ID, PSU-ID, PSU-Corporate-ID,
+    PSU-IP-Address, TPP-Redirect-URI, TPP-Nok-Redirect-URI, TPP-Explicit-Authorisation-Preferred,
+    TPP-Oauth2-Preferred, TPP-Redirect-Preferred); the response envelope carries _links with self/status/
+    scaRedirect, tppMessages[] with category/code/text, psuMessage and transactionStatus; and consent and
+    SCA statuses use the Berlin Group vocabularies (received/valid/rejected/expired/revokedByPsu/
+    terminatedByTpp and started/psuIdentified/psuAuthenticated/scaMethodSelected/finalised/failed/exempted).
+    Versions 1.2 and 1.3 of the framework are both published.'
+  spec_locations:
+  - openapi/tietoevry-tieto-xs2a-accounts.v1_3.yaml
+  - openapi/tietoevry-tieto-xs2a-payments.v1_3.yaml
+  - openapi/tietoevry-tieto-xs2a-funds.v1_3.yaml
+  - openapi/tietoevry-tieto-xs2a-signing-baskets.v1_3.yaml
+- id: psd2
+  name: EU Payment Services Directive 2 (Directive (EU) 2015/2366) and its RTS on SCA and CSC
+  conforms: true
+  evidence: 'The three PSD2 TPP roles are the product''s own segmentation — the portal publishes AISP, PISP
+    and PIISP use-case walkthroughs and application registration asks which of PIS / AIS / PIIS API sets an
+    app may reach. The provider states its Banking solution "enables banks to become fully compliant with
+    PSD2 regulations". SCA is implemented as an scaRedirect authorisation sub-resource on consents and
+    payments, with an embedded-SCA variant documented separately.'
+  spec_locations:
+  - openapi/tietoevry-how-to-instruction.yaml
+  - openapi/tietoevry-tieto-oauth2-embedded-intro.yaml
+- id: eba-rts-article-10a
+  name: SCA exemption for AIS consents, Commission Delegated Regulation (EU) 2022/2360 RTS Article 10a
+  conforms: true
+  evidence: 'Named explicitly in the provider''s own release note inside the getting-started contract: "In
+    accordance with the EBA amendment under Commission Delegated Regulation (EU) 2022/2360, RTS Article 10a
+    for AISPs, an SCA exemption for AIS consents has been implemented. The validity period for 90-day consent
+    has been extended to 180-days." The provider states the interface is available in the Sandbox
+    environment.'
+  spec_locations:
+  - openapi/tietoevry-how-to-instruction.yaml
+- id: iso-20022
+  name: ISO 20022 external code sets
+  conforms: true
+  domain_standard: true
+  evidence: 'Payment and consent state is carried in ISO 20022 external code values, not in bespoke strings.
+    transactionStatus enumerates ACCC, ACCP, ACFC, ACSC, ACSP, ACTC, ACWC, ACWP, CANC, CNCL, PART, PATC,
+    PDCR, PDNG, PNDG, RCVD, RJCR and RJCT across JsonGetPaymentResponse, JsonGetPaymentStatusResponse,
+    JsonPostPaymentResponse and JsonErrorResponse. The SEPA Direct Debits gateway uses SDD R-transaction
+    reason codes (ReasonCode enumerates MD05 and MD06; the descriptions also name MD01) on cancel, reject and
+    chargeback. Payment products are the SEPA scheme names (sepa-credit-transfers).'
+  spec_locations:
+  - openapi/tietoevry-tieto-xs2a-payments.v1_3.yaml
+  - openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+- id: sepa-direct-debit
+  name: SEPA Direct Debit scheme (Core / B2B rulebook roles)
+  conforms: true
+  domain_standard: true
+  evidence: 'The SEPA Direct Debits gateway models the scheme''s own role split — /v1/creditor/... and
+    /v1/debtor/... — and its own R-transaction set: cancel (reverse) by the creditor, refund by the creditor,
+    reject and chargeback by the debtor, each carrying a scheme reason code. Mandate information is a required
+    element of payment initiation.'
+  spec_locations:
+  - openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+- id: eidas
+  name: eIDAS qualified certificates (QWAC / QSealC)
+  conforms: true
+  evidence: 'The provider states "QWAC and QSeal certificates are not required in the Sandbox mode",
+    establishing that they ARE required for live access, and application registration collects certificates
+    as a step that is skipped in sandbox. Probing the live XS2A host https://openbanking.api.tieto.com on
+    2026-09-02 returned no usable TLS session to an ordinary client (self-signed chain presented), consistent
+    with a client-certificate-gated gateway.'
+  spec_locations:
+  - openapi/tietoevry-how-to-instruction.yaml
+- id: oauth2
+  name: OAuth 2.0
+  conforms: true
+  evidence: 'A dedicated OAuth2 SCA flow introduction is published as openapi/tietoevry-oauth2-how-to.yaml
+    ("Introduction for Oauth2 SCA flow in XS2A") and TPP-Oauth2-Preferred is an accepted request header on 14
+    operations. No authorization-server metadata document is served on any host and no scope reference is
+    published, so the scope vocabulary is not machine-readable.'
+  spec_locations:
+  - openapi/tietoevry-oauth2-how-to.yaml
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: 'The only openIdConnect securityScheme in the whole surface, bearerToken in the SEPA Direct
+    Debits gateway, carries the literal placeholder openIdConnectUrl http://example/openid-connect.
+    /.well-known/openid-configuration returns no document on any of the eight probed hosts. The developer
+    portals themselves sign users in through Keycloak (/protocol/openid-connect/... routes), but that is the
+    portal login, not an API authorization server offered to consumers.'
+- id: rfc9457
+  name: RFC 9457 / RFC 7807 Problem Details for HTTP APIs
+  conforms: false
+  evidence: 'No operation declares application/problem+json. Errors use a Berlin Group envelope instead —
+    JsonErrorResponse { transactionStatus, tppMessages[] { category, code, text }, psuMessage } and
+    XS2AErrorResponse. Noted for the record: Tietoevry publishes an open-source RFC 7807 implementation for
+    Quarkus on Maven Central, but does not use that media type in its own public contracts.'
+- id: pagination
+  name: Documented pagination
+  conforms: true
+  evidence: 'Partial. The SEPA Direct Debits gateway returns X-Page-Number, X-Page-Size and X-Total-Elements
+    response headers alongside RFC 8288 Link headers. The XS2A surface paginates transactions with Berlin
+    Group _links (next/previous) rather than headers, and the aggregation service documents neither.'
+  spec_locations:
+  - openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
+- id: idempotency
+  name: Idempotency keys
+  conforms: false
+  evidence: 'X-Request-ID (UUID) is required on 186 operations and echoed back on 38 responses, but the
+    provider documents it only as "a unique identifier in UUID format" for correlation. Neither the specs nor
+    the manual state a replay window, a stored-response guarantee or an Idempotency-Key header, so this
+    cannot be scored as an idempotency contract.'
+- id: fapi
+  name: FAPI (Financial-grade API) security profile
+  conforms: false
+  evidence: No FAPI profile, conformance certification or FAPI-specific header is referenced anywhere in the
+    contracts or the portals.
+- id: scim
+  name: SCIM
+  conforms: false
+  evidence: No SCIM schema URN appears in any published document; user management in VAM is a bespoke
+    resource model.
+- id: odata
+  name: OData
+  conforms: false
+  evidence: No $metadata surface and no OData query conventions in any published document.
