@@ -13,6 +13,22 @@ description: 'TietoEVRY (Tietoevry Corporation, listed as TIETO on Nasdaq Helsin
   signing baskets, virtual account management, card account information and a SEPA Direct Debits gateway with
   a webhook event-notification surface.'
 url: https://raw.githubusercontent.com/api-evangelist/tietoevry/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - rate-limits
+  - security
+  - sandbox
+  - {url: 'https://www.tietoevry.com/en/', status: 301, note: 'declared website redirects to https://www.tieto.com/en/ — a different registrable domain (tietoevry.com -> tieto.com), possible rename or acquisition (probed 2026-09-03, roadmap#169)'}
+  generated: '2026-09-03'
+  method: derived
 image: https://www.tieto.com/images/tieto-logo.svg
 x-type: company
 x-source: harvest:openehr-coalition
