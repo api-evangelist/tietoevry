@@ -1,0 +1,14 @@
+{
+  "repo": "tietoevry",
+  "feeds": [
+    {
+      "source": "https://openbanking.api.tietoevry.com/documentation/glossary",
+      "feed_url": "https://openbanking.api.tietoevry.com/documentation/glossary",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-06T19:17:18Z"
+}
