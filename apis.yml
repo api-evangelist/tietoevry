@@ -78,133 +78,12 @@ tags_raw:
 - Nordic
 - Finland
 apis:
-- aid: tietoevry:tietoevry-openbanking-xs2a
-  name: Tietoevry Open Banking XS2A APIs
-  description: PSD2-compliant Access to Account (XS2A) APIs implementing the Berlin Group NextGenPSD2
-    framework, plus Tietoevry premium extensions beyond the PSD2 mandate. Covers account information (AIS),
-    payment initiation (PIS), confirmation of funds (PIIS), bulk payments, future-dated and periodic payments,
-    payment recall, request-to-pay and subscriptions to request-to-pay, signing baskets, card and card-account
-    information, extended account owner details, and Virtual Account Management (VAM). Every endpoint
-    shares one hostname and is selected by a sandbox|live path segment; a free self-service sandbox with
-    simulated SCA and fake PSUs requires no eIDAS certificate.
-  humanURL: https://openbanking.api.tietoevry.com/
-  baseURL: https://openbanking.api.tietoevry.com
-  tags:
-  - Open Banking
-  - PSD2
-  - XS2A
-  - Berlin Group
-  - Account Information
-  - Payment Initiation
-  - Confirmation of Funds
-  - Virtual Accounts
-  properties:
-  - type: OpenAPI
-    url: openapi/tietoevry-openbanking-xs2a-swagger.json
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-accounts.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-accounts.v1_2.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-accounts-premium.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-accounts-cards-premium.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-payments.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-payments.v1_2.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-bulk-payments.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-future-dated-payments-premium.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-periodic-payments-premium.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-recall-payments.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-request-to-pay.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-subscriptions-request-to-pay.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-signing-baskets.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-funds.v1_3.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-funds.v1_2.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-vam-accounts.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-tieto-xs2a-vam-users.yaml
-  - type: Overlay
-    url: overlays/tietoevry-tieto-xs2a-accounts-v1-3-overlay.yaml
-  - type: Overlay
-    url: overlays/tietoevry-tieto-xs2a-payments-v1-3-overlay.yaml
-  - type: Overlay
-    url: overlays/tietoevry-openbanking-xs2a-swagger-overlay.yaml
-  - type: GettingStarted
-    url: https://openbanking.api.tietoevry.com/getting-started
-  - type: Documentation
-    url: https://openbanking.api.tietoevry.com/documentation
-  - type: SignUp
-    url: https://openbanking.api.tietoevry.com/sign-up
-- aid: tietoevry:tietoevry-financial-api-aggregation
-  name: Tietoevry Financial API Aggregation
-  description: A single-integration aggregation layer over Nordic and Baltic banks, exposing provider
-    discovery, end-user management and aggregated XS2A operations (accounts, balances, transactions, consents,
-    confirmation of funds and payment initiation) across many connected ASPSPs behind one contract, with
-    a pre-step SCA service and aggregated consent creation.
-  humanURL: https://aggregation.api.tieto.com/
-  baseURL: https://aggregation.api.tieto.com
-  tags:
-  - Aggregation
-  - Open Banking
-  - XS2A
-  - Multibanking
-  - Nordic
-  - Baltic
-  properties:
-  - type: OpenAPI
-    url: openapi/tietoevry-financial-api-aggregation-swagger.json
-  - type: Overlay
-    url: overlays/tietoevry-financial-api-aggregation-swagger-overlay.yaml
-  - type: Documentation
-    url: https://aggregation.api.tieto.com/
-- aid: tietoevry:tietoevry-sepa-direct-debits
-  name: Tietoevry SEPA Direct Debits
-  description: A SEPA Direct Debit gateway for Creditor and Debtor roles, allowing creditors to initiate
-    payments, cancel (reverse) them and issue refunds, and debtors to reject payments and raise chargebacks,
-    with an event-notification webhook mechanism that pushes state changes for payments, refunds and incoming
-    collections to Creditor-Notification-URI and Debtor-Notification-URI endpoints.
-  humanURL: https://openbanking.api.tietoevry.com/documentation/sepa-direct-debit
-  baseURL: https://payments.api.tieto.com/live/v1/sepadd
-  tags:
-  - SEPA
-  - Direct Debit
-  - Payments
-  - Chargebacks
-  - Refunds
-  - Webhook
-  tags_raw:
-  - SEPA
-  - Direct Debit
-  - Payments
-  - Chargebacks
-  - Refunds
-  - Webhooks
-  properties:
-  - type: OpenAPI
-    url: openapi/tietoevry-sepa-direct-debit-api-gateway.yaml
-  - type: OpenAPI
-    url: openapi/tietoevry-sepa-direct-debit.yaml
-  - type: Overlay
-    url: overlays/tietoevry-sepa-direct-debit-api-gateway-overlay.yaml
-  - type: Webhooks
-    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
 - aid: tietoevry:tietoevry-credit-cloud
   name: Tietoevry Credit Cloud
-  description: A credit platform used by banks and financial institutions in 20+ countries to manage virtually
-    any type of credit, organised around loan origination, loan life cycle and collection. The developer
-    portal is published but every API reference behind it sits behind a Keycloak sign-in, so no machine-readable
+  description: >-
+    A credit platform used by banks and financial institutions in 20+ countries to manage virtually any
+    type of credit, organised around loan origination, loan life cycle and collection. The developer portal
+    is published but every API reference behind it sits behind a Keycloak sign-in, so no machine-readable
     contract and no base URL are publicly stated.
   humanURL: https://credit.api.tietoevry.com/
   tags:
@@ -222,12 +101,442 @@ apis:
   properties:
   - type: SignUp
     url: https://credit.api.tietoevry.com/sign-up
+- aid: tietoevry:tietoevry-account-consent-service-api
+  name: TietoEVRY Account consent service API
+  description: Operations for establish and managing account information consent.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Account consent service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-account-consent-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-account-information-service-api
+  name: TietoEVRY Account Information Service API
+  description: Operations for managing account information.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Account Information Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-account-information-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-aggregated-services-api
+  name: TietoEVRY Aggregated services API
+  description: Operations, which are executed for multiple destination providers.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Aggregated services
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-aggregated-services-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-bulk-payment-initiation-service-api
+  name: TietoEVRY Bulk Payment Initiation Service API
+  description: Operations for bulk payments.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Bulk Payment Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-bulk-payment-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-card-account-information-service-api
+  name: TietoEVRY Card account information service API
+  description: Operations for managing card account information.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Card account information service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-card-account-information-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-card-information-service-api
+  name: TietoEVRY Card information service API
+  description: Operations for managing card information.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Card information service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-card-information-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-confirmation-of-funds-service-api
+  name: TietoEVRY Confirmation of Funds Service API
+  description: Operations for receiving funds confirmation.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Confirmation of Funds Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-confirmation-of-funds-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-confirmation-of-funds-service-consent-api
+  name: TietoEVRY Confirmation of Funds Service consent API
+  description: Operations for establish and managing confirmation of funds consent.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Confirmation of Funds Service consent
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-confirmation-of-funds-service-consent-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-creditor-api
+  name: TietoEVRY Creditor API
+  description: Operation for creditors
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Creditor
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-creditor-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-debtor-api
+  name: TietoEVRY Debtor API
+  description: Operation for debtors
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Debtor
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-debtor-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-end-user-management-api
+  name: TietoEVRY End User management API
+  description: Operations for managing anonymous End Users.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - End User management
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-end-user-management-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-payment-initiation-service-api
+  name: TietoEVRY Payment Initiation Service API
+  description: Operations for payments.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Payment Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-payment-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-payment-recall-initiation-service-api
+  name: TietoEVRY Payment Recall Initiation Service API
+  description: Operations for recalling the payments.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Payment Recall Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-payment-recall-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-periodic-payment-initiation-service-api
+  name: TietoEVRY Periodic Payment Initiation Service API
+  description: Operations for periodic payments.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Periodic Payment Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-periodic-payment-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-pre-step-sca-service-api
+  name: TietoEVRY Pre-step SCA service API
+  description: Operations for establishing Pre-step SCA
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Pre-step SCA service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-pre-step-sca-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-provider-information-api
+  name: TietoEVRY Provider information API
+  description: Retrieve information about providers.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Provider information
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-provider-information-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-request-to-pay-initiation-service-api
+  name: TietoEVRY Request to pay Initiation Service API
+  description: Operations to request for payments.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Request to pay Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-request-to-pay-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-signing-baskets-service-api
+  name: TietoEVRY Signing Baskets Service API
+  description: Signing Baskets Service
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Signing Baskets Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-signing-baskets-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-subscription-initiation-service-api
+  name: TietoEVRY Subscription Initiation Service API
+  description: Operations to create subscription.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Subscription Initiation Service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-subscription-initiation-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-user-roles-service-api
+  name: TietoEVRY User Roles service API
+  description: Operations for managing user roles.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - User Roles service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-user-roles-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
+- aid: tietoevry:tietoevry-users-service-api
+  name: TietoEVRY Users service API
+  description: Operations for managing users.
+  humanURL: https://openbanking.api.tietoevry.com/
+  baseURL: https://openbanking.api.tietoevry.com
+  tags:
+  - Users service
+  properties:
+  - type: OpenAPI
+    url: openapi/tietoevry-users-service-api-openapi.yml
+  - type: GettingStarted
+    url: https://openbanking.api.tietoevry.com/getting-started
+  - type: Documentation
+    url: https://openbanking.api.tietoevry.com/documentation
+  - type: SignUp
+    url: https://openbanking.api.tietoevry.com/sign-up
+  - type: Documentation
+    url: https://aggregation.api.tieto.com/
+  - type: Webhooks
+    url: asyncapi/tietoevry-sepa-direct-debit-webhooks.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/tietoevry-tieto-xs2a-accounts-v1-3-overlay.yaml
+- type: Overlay
+  url: overlays/tietoevry-tieto-xs2a-payments-v1-3-overlay.yaml
+- type: Overlay
+  url: overlays/tietoevry-openbanking-xs2a-swagger-overlay.yaml
+- type: Overlay
+  url: overlays/tietoevry-financial-api-aggregation-swagger-overlay.yaml
+- type: Overlay
+  url: overlays/tietoevry-sepa-direct-debit-api-gateway-overlay.yaml
 - type: DomainSecurity
   url: security/tietoevry-domain-security.yml
 - type: Authentication
