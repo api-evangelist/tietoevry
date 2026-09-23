@@ -1,0 +1,126 @@
+openapi: 3.2.0
+info:
+  title: Tieto Financial API Aggregation Provider information API
+  version: 1.0.0
+  description: 'Tieto Financial API Aggregation solution API reference.
+
+
+    Base API version is 1.0.0. It contains the following API groups:
+
+    - __Providers API__, version 1.0.0
+
+    - __End Users API__, version 1.0.0
+
+    - __XS2A API__, version 1.0.0'
+servers:
+- url: https://aggregation.api.tieto.com
+tags:
+- name: Provider information
+  description: Retrieve information about providers.
+paths:
+  /v1/providers/v1.0/providers:
+    get:
+      tags:
+      - Provider information
+      summary: Retrieve information on providers
+      description: Returns information on providers, which are available through the API Key, specified in header
+      operationId: getProviders
+      parameters:
+      - name: fromAgreement
+        in: query
+        description: If "false", then read providers available through the API Key specified in header. If "true", then read all available providers based on the agreement.
+        required: false
+        schema:
+          type: boolean
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Return a list of providers, which are available through the API Key, which has been specified in the request header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetProvidersResponse'
+  /v1/providers/v1.0/providers/{provider-id}:
+    get:
+      tags:
+      - Provider information
+      summary: Retrieve information for a given provider
+      description: Returns information for a given provider. The provider must be available through the API Key, specified in header
+      operationId: getProvider
+      parameters:
+      - name: provider-id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Return information about a provider.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetProviderResponse'
+components:
+  schemas:
+    JsonGetProvidersResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonProvider'
+    JsonGetProviderResponse:
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/JsonProvider'
+    JsonProvider:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        legalName:
+          type: string
+        bankCode:
+          type: string

@@ -1,0 +1,716 @@
+openapi: 3.2.0
+info:
+  title: SEPA Direct Debits Creditor API
+  description: 'This service enables clients to initiate and accept SEPA Direct Debit payments.
+
+    It includes an API for Creditor and for Debtor roles, which allows to initiate Payments and Refunds, accept payments and create Chargebacks.
+
+    The API also includes an Event Notification mechanism to stay notified about the state changes of Payments, Refunds and about incoming Payments.'
+  version: '1'
+  contact:
+    name: Tietoevry Payment Services
+    url: https://tieto.ob5.konts.lv/documentation/payment-services/sepa-direct-debit/v1.0
+servers:
+- url: https://payments.api.tieto.com/sandbox/v1/sepadd
+  description: Sepa DD Sandbox service
+- url: https://payments.api.tieto.com/live/v1/sepadd
+  description: Sepa DD Live service
+security:
+- bearerToken: []
+tags:
+- name: Creditor
+  description: Operation for creditors
+paths:
+  /{verifyCreditorAndAccounts}:
+    post:
+      operationId: verifyCreditorAndAccounts
+      summary: (Webhook) Verify creditor and accounts
+      description: The system will call back to the client to verify the effective state of the Creditor and of the creditor's Accounts. This callback may occur multiple times during the processing of a payment, and the client must host an endpoint, which will be called by the system
+      tags:
+      - Creditor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                creditor:
+                  type: object
+                  properties:
+                    creditorId:
+                      type: string
+                      description: Identification of Creditors, e.g. a SEPA Creditor ID.
+                      example: DE452399865083
+                    creditorName:
+                      type: string
+                      description: Creditor Name
+                    creditorAddress:
+                      $ref: '#/components/schemas/Address'
+                account:
+                  type: object
+                  description: Account that need to be verified
+                  properties:
+                    iban:
+                      type: string
+                      description: IBAN of an account
+                      example: DE89370400440532013000
+                    currency:
+                      type: string
+                      description: ISO 4217 Alpha 3 currency code
+                      example: EUR
+                    ownerName:
+                      type: string
+                      description: Owner name
+                    name:
+                      type: string
+                    bic:
+                      type: string
+                      description: BICFI
+                      example: AAAADEBBXXX
+                    status:
+                      type: string
+                      description: Status of the account
+                      example: enabled
+      responses:
+        '204':
+          description: Successful creditor and account check
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /v1/creditor/payments:
+    post:
+      operationId: createPayment
+      summary: Create payment
+      description: To initiate a Payment, the Creditor must provide essential information, including the account information, the instructed amount, remittance and information about the Mandate.
+      tags:
+      - Creditor
+      parameters:
+      - $ref: '#/components/parameters/X-Request-ID'
+      - $ref: '#/components/parameters/Digest'
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Signature-Certificate'
+      - name: Creditor-Notification-URI
+        in: header
+        description: URI of a webhook, which will receive event notifications about the particular initiated payment
+        schema:
+          type: string
+      requestBody:
+        description: Payment body
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentRequest'
+              - type: object
+                properties:
+                  metadata:
+                    type: object
+                    description: Data that provides information about payment
+                    example:
+                      anyKey: value
+      responses:
+        '201':
+          description: Create payment message is received
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /{receivePaymentStatus}:
+    post:
+      operationId: receivePaymentStatus
+      summary: (Callback) Receive Payment Status
+      description: 'When creating a Payment, the client specifies a Creditor-Notification-URI header during the payment initiation request, the system will post event notifications to that specific URI.
+
+        Essentially, events, which change the state of a particular payment, are posted back to the client, to the specified URI.'
+      tags:
+      - Creditor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentStatus'
+              - $ref: '#/components/schemas/Event'
+      responses:
+        '204':
+          description: Received payment status processed succesfully
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /v1/creditor/payments/{payment-id}:
+    parameters:
+    - $ref: '#/components/parameters/payment-id'
+    get:
+      operationId: getPayment
+      summary: Get payment
+      description: Get previously initiated payment message
+      tags:
+      - Creditor
+      parameters:
+      - $ref: '#/components/parameters/X-Request-ID'
+      - $ref: '#/components/parameters/Digest'
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Signature-Certificate'
+      responses:
+        '200':
+          description: Previously initiated payment message is found
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentStatus'
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /v1/creditor/payments/{payment-id}/actions/cancel:
+    parameters:
+    - $ref: '#/components/parameters/payment-id'
+    post:
+      operationId: cancelPayment
+      summary: Cancel payment
+      description: To cancel (reverse) a payment, the following request can be used. The reason code should be specified, e.g. "MD05" - "Collection not due".
+      tags:
+      - Creditor
+      parameters:
+      - $ref: '#/components/parameters/X-Request-ID'
+      - $ref: '#/components/parameters/Digest'
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Signature-Certificate'
+      requestBody:
+        description: Reason
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reasonCode:
+                  $ref: '#/components/schemas/ReasonCode'
+      responses:
+        '204':
+          description: Payment cancellation request is processed successfully
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /v1/creditor/payments/{payment-id}/refunds:
+    parameters:
+    - $ref: '#/components/parameters/payment-id'
+    post:
+      operationId: createRefund
+      summary: Create a refund
+      description: 'To create a Refund for a previously initiated Payment, use the refunds endpoint.
+
+        The paymentId of the original Payment must be specified.
+
+        In addition, the original amount must be specified, and it must be equal to the original amount of the initial Payment, minus all previously made refunds to that initial Payment.
+
+
+        The Creditor-Notification-URI header in the request specifies the URI of a webhook, which will receive event notifications about the particular created refund.'
+      tags:
+      - Creditor
+      parameters:
+      - $ref: '#/components/parameters/X-Request-ID'
+      - $ref: '#/components/parameters/Digest'
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Signature-Certificate'
+      - name: Creditor-Notification-URI
+        in: header
+        description: URI of a webhook, which will receive event notifications about the particular initiated payment
+        schema:
+          type: string
+      requestBody:
+        description: Reason
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instructedAmount:
+                  $ref: '#/components/schemas/Amount'
+                originalAmount:
+                  $ref: '#/components/schemas/Amount'
+                metadata:
+                  type: object
+                  description: Data that provides information about payment
+                  example:
+                    anyKey: value
+      responses:
+        '201':
+          description: Refund request is received
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundStatus'
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /{receiveRefundStatus}:
+    post:
+      operationId: receiveRefundStatus
+      summary: (Callback) Receive Refund Status
+      description: 'When creating a Refund, the client specifies a Creditor-Notification-URI header during the refund creation request,
+
+        the system will post event notifications to that specific URI.
+
+        Essentially, events, which change the state of the refund, are posted back to the client, to the specified URI.'
+      tags:
+      - Creditor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RefundStatus'
+              - $ref: '#/components/schemas/Event'
+      responses:
+        '204':
+          description: Receive refund status processed succesfully
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+  /v1/creditor/payments/{payment-id}/refunds/{refund-id}:
+    parameters:
+    - $ref: '#/components/parameters/payment-id'
+    - name: refund-id
+      in: path
+      required: true
+      description: Refund identification
+      schema:
+        type: string
+    get:
+      operationId: getRefund
+      summary: Get refund
+      description: Get previously initiated refund request
+      tags:
+      - Creditor
+      parameters:
+      - $ref: '#/components/parameters/X-Request-ID'
+      - $ref: '#/components/parameters/Digest'
+      - $ref: '#/components/parameters/Signature'
+      - $ref: '#/components/parameters/Signature-Certificate'
+      responses:
+        '200':
+          description: Previously initiated refund request is found
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundStatus'
+        4XX:
+          description: Bad request
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        5XX:
+          description: Internal server error
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID-5XX'
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/EventName'
+            timestamp:
+              type: string
+              format: date-time
+              example: '2021-06-02T12:00:00Z'
+    Address:
+      type: object
+      properties:
+        streetName:
+          type: string
+        buildingNumber:
+          type: string
+        townName:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+          description: ISO 3166 ALPHA2 country code
+    RemittanceInformationStructured:
+      type: object
+      description: Structured remittance information
+      properties:
+        reference:
+          type: string
+          example: REF123123
+    EventName:
+      type: string
+      description: Event name
+      enum:
+      - SettledWithCreditor
+    ReasonCode:
+      type: string
+      description: '"MD05" - "Collection not due"
+
+        "MD06" - "Refund Request By End Customer"
+
+        '
+      enum:
+      - MD05
+      - MD06
+    PaymentStatus:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Payment identification
+          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          type: object
+          properties:
+            payment:
+              type: object
+              description: Link to payment resource
+              properties:
+                href:
+                  type: string
+                  description: Link to a resource
+    RefundStatus:
+      type: object
+      properties:
+        refundId:
+          type: string
+          description: Refund identification
+          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          type: object
+          properties:
+            refund:
+              type: object
+              description: Link to refund resource
+              properties:
+                href:
+                  type: string
+                  description: Link to a resource
+    PaymentRequest:
+      type: object
+      description: Data that describes the payment
+      properties:
+        instructedAmount:
+          $ref: '#/components/schemas/Amount'
+        debtorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        debtorName:
+          type: string
+          description: Debtor Name
+        creditorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        creditorName:
+          type: string
+          description: Creditor Name
+        creditorAgent:
+          type: string
+          description: BICFI
+          example: AAAADEBBXXX
+        creditorAgentName:
+          type: string
+        creditorId:
+          type: string
+          description: Identification of Creditors, e.g. a SEPA Creditor ID.
+          example: DE452399865083
+        endToEndIdentification:
+          type: string
+          example: 123-ZXCV-890
+        requestedExecutionDate:
+          type: string
+          format: date
+          example: '2021-06-01'
+        remittanceInformationStructured:
+          $ref: '#/components/schemas/RemittanceInformationStructured'
+        mandateInformation:
+          $ref: '#/components/schemas/MandateInformation'
+    MandateInformation:
+      type: object
+      properties:
+        mandateId:
+          type: string
+          description: Identification of Mandates, e.g. a SEPA Mandate ID.
+        recurringIndicator:
+          type: boolean
+          description: '"true", if the transaction is for recurring.
+
+
+            "false", if the transaction is for one time.
+
+            '
+          example: true
+        amount:
+          type: string
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+        currency:
+          type: string
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
+    TransactionStatus:
+      description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
+      type: string
+      enum:
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      example: ACCP
+    AccountReference:
+      type: object
+      required:
+      - iban
+      properties:
+        iban:
+          type: string
+          description: IBAN of an account
+          example: DE89370400440532013000
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+          example: '1000'
+        currency:
+          type: string
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
+    ErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        messages:
+          type: array
+          description: Messages on operational issues.
+          items:
+            type: object
+            required:
+            - category
+            - code
+            properties:
+              category:
+                type: string
+                description: Category of the message category
+                enum:
+                - ERROR
+                - WARNING
+              code:
+                type: string
+                enum:
+                - CERTIFICATE_INVALID
+                - CERTIFICATE_EXPIRED
+                - CERTIFICATE_BLOCKED
+                - CERTIFICATE_REVOKED
+                - CERTIFICATE_MISSING
+                - SIGNATURE_INVALID
+                - SIGNATURE_MISSING
+                - FORMAT_ERROR
+                - PARAMETER_NOT_SUPPORTED
+                - PSU_CREDENTIALS_INVALID
+                - SERVICE_INVALID
+                - SERVICE_BLOCKED
+                - TOKEN_UNKNOWN
+                - TOKEN_INVALID
+                - TOKEN_EXPIRED
+                - RESOURCE_UNKNOWN
+                - RESOURCE_EXPIRED
+                - TIMESTAMP_INVALID
+                - PERIOD_INVALID
+                - SCA_METHOD_UNKNOWN
+                - PRODUCT_INVALID
+                - PRODUCT_UNKNOWN
+                - PAYMENT_FAILED
+                - REQUIRED_KID_MISSING
+                - EXECUTION_DATE_INVALID
+                - ACCESS_EXCEEDED
+                - REQUESTED_FORMATS_INVALID
+                - CARD_INVALID
+                - NO_PIIS_ACTIVATION
+              text:
+                type: string
+                description: Additional explaining text
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+  parameters:
+    Signature-Certificate:
+      name: Signature-Certificate
+      in: header
+      description: 'The certificate used for signing the request, in base64 encoding.
+
+        Must be contained if a signature is contained.
+
+        '
+      schema:
+        type: string
+        format: byte
+      required: false
+    Signature:
+      name: Signature
+      in: header
+      description: 'A signature of the request by the TPP on application level. This might be mandated by ASPSP.
+
+        '
+      schema:
+        type: string
+      required: false
+      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D-Trust%20GmbH,C=DE",algorithm="rsa-sha256", headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date", signature="Base64(RSA-SHA256(signing string))"
+
+        '
+    payment-id:
+      name: payment-id
+      in: path
+      required: true
+      description: Payment identification
+      schema:
+        type: string
+    X-Request-ID:
+      name: X-Request-ID
+      in: header
+      description: ID of the request, unique to the call
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Digest:
+      name: Digest
+      in: header
+      description: Is contained if and only if the "Signature" element is contained in the header of the request.
+      schema:
+        type: string
+      required: false
+      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
+  headers:
+    X-Request-ID-5XX:
+      description: ID of the request, unique to the call
+      schema:
+        type: string
+        format: uuid
+    X-Request-ID:
+      description: ID of the request, unique to the call
+      required: true
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    bearerToken:
+      type: openIdConnect
+      openIdConnectUrl: http://example/openid-connect

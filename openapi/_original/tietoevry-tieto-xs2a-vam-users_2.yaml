@@ -1,0 +1,549 @@
+# x-archived-from: tietoevry-tieto-xs2a-vam-users.yaml
+# x-archived-on: 2026-09-16
+---
+swagger: "2.0"
+info:
+  description: Tietoevry vamapi Application - XS2A like Rest services
+  version: "1.3"
+  title: VAM API - XS2A like OpenAPI interface
+host: openbanking.api.tietoevry.com
+tags:
+  - name: Users service
+    description: Operations for managing users.
+  - name: User Roles service
+    description: Operations for managing user roles.
+schemes:
+  - https
+securityDefinitions:
+  APIKeyHeader:
+    type: apiKey
+    in: header
+    name: X-API-Key
+    description: API key of pre configured client application.
+  APPIDHeader:
+    type: apiKey
+    in: header
+    name: X-APP-ID
+    description: Application ID to be used for authentication against Generic SSO.
+  TokenHeader:
+    type: apiKey
+    in: header
+    name: X-Token
+    description: Token to be used for authentication against Generic SSO
+  TokenTypeHeader:
+    type: apiKey
+    in: header
+    name: X-Token-Type
+    description:
+      Token type to be used for authentication against Generic SSO. This
+      provides support for different types of token by different issuing systems
+security:
+  - APIKeyHeader: []
+    APPIDHeader: []
+    TokenTypeHeader: []
+    TokenHeader: []
+paths:
+  "/sandbox/xs2a-vam/v1.3/users":
+    parameters:
+      - "$ref": "#/parameters/X-Request-ID"
+      - "$ref": "#/parameters/PSU-ID"
+      - "$ref": "#/parameters/PSU-IP-Address"
+      - "$ref": "#/parameters/PSU-IP-Port"
+      - "$ref": "#/parameters/PSU-User-Agent"
+      - "$ref": "#/parameters/PSU-Accept"
+      - "$ref": "#/parameters/PSU-Accept-Charset"
+      - "$ref": "#/parameters/PSU-Accept-Encoding"
+      - "$ref": "#/parameters/PSU-Accept-Language"
+      - "$ref": "#/parameters/PSU-Device-ID"
+      - "$ref": "#/parameters/PSU-Geo-Location"
+    get:
+      tags:
+        - Users service
+      summary: List users
+      description: Get list of users defined for the bank
+      operationId: listUsers
+      parameters:
+        - "$ref": "#/parameters/pageNumber"
+        - "$ref": "#/parameters/pageSize"
+      responses:
+        "200":
+          description: Signals that the users list was successfully retrieved.
+          headers:
+            X-Page-Number:
+              description: Returned page number.
+              type: integer
+            X-Page-Size:
+              description: Returned page size.
+              type: integer
+            X-Total-Elements:
+              description: Total number of elements in list.
+              type: integer
+          schema:
+            "$ref": "#/definitions/UsersResponse"
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+    post:
+      tags:
+        - Users service
+      summary: Create user
+      description: Create user in context of specified bank
+      operationId: createUser
+      parameters: []
+      responses:
+        "201":
+          description: Signals that the users list was successfully retrieved.
+          schema:
+            "$ref": "#/definitions/UserResponse"
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+  "/sandbox/xs2a-vam/v1.3/users/{user-id}":
+    parameters:
+      - "$ref": "#/parameters/user-id"
+      - "$ref": "#/parameters/X-Request-ID"
+      - "$ref": "#/parameters/PSU-ID"
+      - "$ref": "#/parameters/PSU-IP-Address"
+      - "$ref": "#/parameters/PSU-IP-Port"
+      - "$ref": "#/parameters/PSU-User-Agent"
+      - "$ref": "#/parameters/PSU-Accept"
+      - "$ref": "#/parameters/PSU-Accept-Charset"
+      - "$ref": "#/parameters/PSU-Accept-Encoding"
+      - "$ref": "#/parameters/PSU-Accept-Language"
+      - "$ref": "#/parameters/PSU-Device-ID"
+      - "$ref": "#/parameters/PSU-Geo-Location"
+    get:
+      tags:
+        - Users service
+      summary: Get user details
+      description: Get details of specified user defined in context of the bank
+      operationId: getUser
+      parameters: []
+      responses:
+        "200":
+          description: Signals that the users list was successfully retrieved.
+          schema:
+            "$ref": "#/definitions/UserResponse"
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+    put:
+      tags:
+        - Users service
+      summary: Edit user
+      description: Edit specified user defined in context of the bank
+      operationId: editUser
+      parameters: []
+      responses:
+        "204":
+          description: Signals that the user was successfully deleted.
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+    delete:
+      tags:
+        - Users service
+      summary: Delete user
+      description: Delete specified user defined in context of the bank
+      operationId: deleteUser
+      parameters: []
+      responses:
+        "204":
+          description: Signals that the user was successfully deleted.
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+  "/sandbox/xs2a-vam/v1.3/user-roles/":
+    parameters:
+      - "$ref": "#/parameters/X-Request-ID"
+      - "$ref": "#/parameters/PSU-ID"
+      - "$ref": "#/parameters/PSU-IP-Address"
+      - "$ref": "#/parameters/PSU-IP-Port"
+      - "$ref": "#/parameters/PSU-User-Agent"
+      - "$ref": "#/parameters/PSU-Accept"
+      - "$ref": "#/parameters/PSU-Accept-Charset"
+      - "$ref": "#/parameters/PSU-Accept-Encoding"
+      - "$ref": "#/parameters/PSU-Accept-Language"
+      - "$ref": "#/parameters/PSU-Device-ID"
+      - "$ref": "#/parameters/PSU-Geo-Location"
+    get:
+      tags:
+        - User Roles service
+      summary: List user roles
+      description: Get list of user roles defined for the bank
+      operationId: listUserRoles
+      parameters: []
+      responses:
+        "200":
+          description: Signals that the user roles list was successfully retrieved.
+          schema:
+            "$ref": "#/definitions/UserRolesResponse"
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+  "/sandbox/xs2a-vam/v1.3/user-roles/{role-id}":
+    parameters:
+      - "$ref": "#/parameters/role-id"
+      - "$ref": "#/parameters/X-Request-ID"
+      - "$ref": "#/parameters/PSU-ID"
+      - "$ref": "#/parameters/PSU-IP-Address"
+      - "$ref": "#/parameters/PSU-IP-Port"
+      - "$ref": "#/parameters/PSU-User-Agent"
+      - "$ref": "#/parameters/PSU-Accept"
+      - "$ref": "#/parameters/PSU-Accept-Charset"
+      - "$ref": "#/parameters/PSU-Accept-Encoding"
+      - "$ref": "#/parameters/PSU-Accept-Language"
+      - "$ref": "#/parameters/PSU-Device-ID"
+      - "$ref": "#/parameters/PSU-Geo-Location"
+    get:
+      tags:
+        - User Roles service
+      summary: Get user role details
+      description: Get details of specified user role defined in context of the bank
+      operationId: getUserRole
+      parameters: []
+      responses:
+        "200":
+          description: Signals that the user role details were successfully retrieved.
+          schema:
+            "$ref": "#/definitions/UserRoleResponse"
+        "400":
+          description:
+            Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "401":
+          description:
+            Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+        "403":
+          description:
+            The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            "$ref": "#/definitions/XS2AErrorResponse"
+parameters:
+  user-id:
+    name: user-id
+    in: path
+    description: ID of the user as defined in VAM.
+    required: true
+    type: string
+  role-id:
+    name: role-id
+    in: path
+    description: ID of the user role as defined in VAM.
+    required: true
+    type: string
+  pageNumber:
+    name: pageNumber
+    in: query
+    description: Requested page number
+    type: integer
+    default: 1
+  pageSize:
+    name: pageSize
+    in: query
+    description: Number of entries per page number
+    type: integer
+    default: 20
+  X-Request-ID:
+    name: X-Request-ID
+    in: header
+    description:
+      ID of the request, unique to the call, as determined by the initiating
+      party.
+    type: string
+    required: true
+  PSU-ID:
+    name: PSU-ID
+    in: header
+    description: User ID of the user initiating the request.
+    required: true
+    type: string
+  PSU-IP-Address:
+    name: PSU-IP-Address
+    in: header
+    description: IP address of the source application
+    type: string
+  PSU-IP-Port:
+    name: PSU-IP-Port
+    in: header
+    description: IP port of the source application, if available.
+    type: string
+  PSU-User-Agent:
+    name: PSU-User-Agent
+    in: header
+    description: User-Agent header field of the source application, if available.
+    type: string
+  PSU-Accept:
+    name: PSU-Accept
+    in: header
+    description: Accept header field of the source application, if available.
+    type: string
+  PSU-Accept-Charset:
+    name: PSU-Accept-Charset
+    in: header
+    description: Accept-Charset header field of the source application, if available.
+    type: string
+  PSU-Accept-Encoding:
+    name: PSU-Accept-Encoding
+    in: header
+    description: Accept-Encoding header field of the source application, if available.
+    type: string
+  PSU-Accept-Language:
+    name: PSU-Accept-Language
+    in: header
+    description: Accept-Language header field of the source application, if available.
+    type: string
+  PSU-Device-ID:
+    name: PSU-Device-ID
+    in: header
+    description: UUID for a device, which is used by end user, if available.
+    type: string
+  PSU-Geo-Location:
+    name: PSU-Geo-Location
+    in: header
+    description: Geo Location of the source application, if available.
+    type: string
+definitions:
+  XS2AErrorResponse:
+    type: object
+    properties:
+      tppMessages:
+        type: array
+        items:
+          "$ref": "#/definitions/XS2ATPPMessage"
+  XS2ATPPMessage:
+    type: object
+    required:
+      - category
+      - code
+    properties:
+      category:
+        type: string
+        enum:
+          - ERROR
+          - WARNING
+      code:
+        type: string
+      path:
+        type: string
+        description: An explicit path to the request field causing error, if applicable.
+      text:
+        type: string
+        maxLength: 512
+        description: Additional explanatory text.
+  XS2APaginationLinks:
+    type: object
+    properties:
+      self:
+        "$ref": "#/definitions/XS2AHref"
+      first:
+        "$ref": "#/definitions/XS2AHref"
+      next:
+        "$ref": "#/definitions/XS2AHref"
+      previous:
+        "$ref": "#/definitions/XS2AHref"
+      last:
+        "$ref": "#/definitions/XS2AHref"
+  XS2AHref:
+    type: object
+    properties:
+      href:
+        type: string
+  UserType:
+    type: string
+    description: User type.
+    enum:
+      - BANK
+      - CUST
+      - CLNT
+  UsersResponse:
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          "$ref": "#/definitions/UserResponse"
+      _links:
+        "$ref": "#/definitions/XS2APaginationLinks"
+  UserResponse:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: User Id of the user.
+      userType:
+        "$ref": "#/definitions/UserType"
+      customerId:
+        type: string
+        description: Customer Id of the user.
+      numberOfVotes:
+        type: integer
+        description: Number of votes allowed for this user. Used in approval.
+        format: int32
+      activeFromDate:
+        type: string
+        description:
+          The date from which this user is active. This is an ISO 8601
+          date string (YYYY-MM-DD)
+        format: date
+      activeToDate:
+        type: string
+        description:
+          The date up to which this user would be active. This is an  ISO
+          8601 date string (YYYY-MM-DD)
+        format: date
+      firstName:
+        type: string
+        description: First name of the user.
+      lastName:
+        type: string
+        description: Last name of the user.
+      email:
+        type: string
+        description: Email address of the user.
+      phone:
+        type: string
+        description: Phone number of the user.
+      roles:
+        type: object
+        additionalProperties:
+          type: integer
+          description: Roles assigned to a user per bank Id.
+          format: int32
+        description: Roles assigned to a user per bank Id.
+      isSuspended:
+        type: boolean
+        description: Set to true if the user is suspended, else set to false.
+      _links:
+        type: object
+        properties:
+          self:
+            "$ref": "#/definitions/XS2AHref"
+  UserRolesResponse:
+    type: object
+    properties:
+      roles:
+        type: array
+        items:
+          "$ref": "#/definitions/UserRoleResponse"
+      _links:
+        type: object
+        properties:
+          self:
+            "$ref": "#/definitions/XS2AHref"
+  UserRoleResponse:
+    type: object
+    properties:
+      roleId:
+        type: integer
+        format: int32
+        description: User Role Id.
+      name:
+        type: string
+        description: Name of the User Role.
+      userType:
+        "$ref": "#/definitions/UserType"
+      active:
+        type: boolean
+        description: Set to true if the user role is enabled.
+      _links:
+        type: object
+        properties:
+          self:
+            "$ref": "#/definitions/XS2AHref"

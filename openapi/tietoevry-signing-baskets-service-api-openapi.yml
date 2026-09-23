@@ -1,0 +1,548 @@
+openapi: 3.2.0
+info:
+  title: Tieto OpenBanking XS2A Signing Baskets Service API
+  version: 1.3.4
+  description: Signing Baskets Service
+servers:
+- url: https://openbanking.api.tieto.com
+tags:
+- name: Signing Baskets Service
+  description: Signing Baskets Service
+paths:
+  /{sandbox|live}/xs2a/v1.3/signing-baskets/{basket-id}:
+    get:
+      tags:
+      - Signing Baskets Service
+      operationId: getSigningBasket
+      description: Returns the content of signing basket object.
+      summary: 'Signing Baskets: Get Signing Baskets Details'
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: basket-id
+        in: path
+        required: true
+        description: Resource Identification of the related signing basket.
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred. Returns signing basket. link is used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetSigningBasketResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Consent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a/v1.3/signing-baskets/{basket-id}/authorisations:
+    get:
+      tags:
+      - Signing Baskets Service
+      summary: 'Signing Baskets: Get authorisation sub-resources request'
+      description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
+      operationId: signingBasketsGetAuthorizations
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: basket-id
+        in: path
+        required: true
+        description: Resource Identification of the related signing basket.
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Returns array of authorisation sub-resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetAuthorisationsResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Consent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    post:
+      tags:
+      - Signing Baskets Service
+      summary: 'Signing Baskets: Start authorisation process'
+      description: Starts the authorisation process for a signing baskets.
+      operationId: signingBasketsStartAuthorization
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: basket-id
+        in: path
+        required: true
+        description: Resource Identification of the related signing basket.
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: TPP-Redirect-URI
+        in: header
+        description: URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        description: If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.
+        schema:
+          type: string
+          format: uri
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.
+        required: false
+        schema:
+          type: string
+      responses:
+        201:
+          description: Created authorisation sub-resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPostAuthorisationsResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format; No matching subResourceService for the requested SCA approach.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Can't create authorisation sub-resource because consent is in Pending state. Initial consent request may contain some validation errors, e.g. outdated expiration date.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Consent not found;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a/v1.3/signing-baskets/{basket-id}/authorisations/{authorisation-id}:
+    get:
+      tags:
+      - Signing Baskets Service
+      summary: 'Signing Baskets: Get SCA status request'
+      description: Checks the SCA status of a authorisation sub-resource.
+      operationId: signingBasketsGetAuthorizationStatus
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: basket-id
+        in: path
+        required: true
+        description: Resource Identification of the related signing basket.
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: authorisation-id
+        in: path
+        description: Identification of the related authorisation sub-resource
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Returns authorisation SCA status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Can't create authorisation sub-resource because consent is in Pending state. Initial consent request may contain some validation errors, e.g. outdated expiration date.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Consent not found; Authorisation sub-resource not found;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a/v1.3/signing-baskets/{basket-id}/status:
+    get:
+      tags:
+      - Signing Baskets Service
+      summary: 'Signing Baskets: Get Status Request'
+      description: Can check the status of a signing basket.
+      operationId: getSigningBasketStatus
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: basket-id
+        in: path
+        required: true
+        description: Resource Identification of the related signing basket.
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors ocurred. Returns signing basket's status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetSigningBasketStatusResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a/v1.3/signing-baskets:
+    post:
+      tags:
+      - Signing Baskets Service
+      summary: 'Signing Baskets: Create signing basket'
+      description: Creates a signing basket at the ASPSP.
+      operationId: initiateSigningBasket
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: TPP-Explicit-Authorisation-Preferred
+        in: header
+        description: If it equals "true", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals "false" or if the parameter is not used, there is no preference of the TPP.
+        schema:
+          type: boolean
+          default: false
+      - name: TPP-Redirect-URI
+        in: header
+        description: URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        description: If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.
+        schema:
+          type: string
+          format: uri
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: No errors occurred. In _links section redirect and self links are used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPostSigningBasketResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, creditor address is missing when payment product is cross-border-credit-transfers; Only EUR currency was used when payment product isn't cross-border-credit-transfers;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonPostSigningBasketRequest'
+        required: true
+components:
+  schemas:
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostSigningBasketResponse:
+      type: object
+      required:
+      - basketId
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        basketId:
+          type: string
+          format: uuid
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetSigningBasketResponse:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetSigningBasketStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostSigningBasketRequest:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+  parameters:
+    envParam:
+      name: sandbox|live
+      in: path
+      description: The addressed environment
+      required: true
+      schema:
+        type: string
+        enum:
+        - sandbox
+        - live

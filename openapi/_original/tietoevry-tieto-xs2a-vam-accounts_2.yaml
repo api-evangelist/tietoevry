@@ -1,0 +1,412 @@
+# x-archived-from: tietoevry-tieto-xs2a-vam-accounts.yaml
+# x-archived-on: 2026-09-16
+---
+swagger: '2.0'
+info:
+  description: Tietoevry VAM API Application - XS2A like Rest services
+  version: '1.3'
+  title: VAM API - XS2A like OpenAPI interface
+host: openbanking.api.tietoevry.com
+tags:
+  - name: Account information service
+    description: Operations for managing account information.
+schemes:
+  - https
+securityDefinitions:
+  APIKeyHeader:
+    type: apiKey
+    in: header
+    name: X-API-Key
+    description: API key of pre configured client application.
+  APPIDHeader:
+    type: apiKey
+    in: header
+    name: X-APP-ID
+    description: Application ID to be used for authentication against Generic SSO.
+  TokenHeader:
+    type: apiKey
+    in: header
+    name: X-Token
+    description: Token to be used for authentication against Generic SSO
+  TokenTypeHeader:
+    type: apiKey
+    in: header
+    name: X-Token-Type
+    description: Token type to be used for authentication against Generic SSO. This
+      provides support for different types of token by different issuing systems
+security:
+  - APIKeyHeader: []
+    APPIDHeader: []
+    TokenTypeHeader: []
+    TokenHeader: []
+paths:
+  '/sandbox/xs2a-vam/v1.3/accounts':
+    parameters:
+      - '$ref': '#/parameters/X-Request-ID'
+      - '$ref': '#/parameters/PSU-ID'
+      - '$ref': '#/parameters/PSU-IP-Address'
+      - '$ref': '#/parameters/PSU-IP-Port'
+      - '$ref': '#/parameters/PSU-User-Agent'
+      - '$ref': '#/parameters/PSU-Accept'
+      - '$ref': '#/parameters/PSU-Accept-Charset'
+      - '$ref': '#/parameters/PSU-Accept-Encoding'
+      - '$ref': '#/parameters/PSU-Accept-Language'
+      - '$ref': '#/parameters/PSU-Device-ID'
+      - '$ref': '#/parameters/PSU-Geo-Location'
+    get:
+      tags:
+        - Account information service
+      summary: Read Account List
+      description: Reads a list of bank accounts, with balances where required.
+      operationId: getAccounts
+      produces:
+        - application/json
+      parameters:
+        - name: withBalance
+          in: query
+          description: If enabled, adds account balances to response.
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: No errors ocurred. Return a list of accounts.
+          schema:
+            '$ref': '#/definitions/AccountsResponse'
+        '400':
+          description: Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '401':
+          description: Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '403':
+          description: The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+  '/sandbox/xs2a-vam/v1.3/accounts/{account-id}':
+    parameters:
+      - '$ref': '#/parameters/X-Request-ID'
+      - '$ref': '#/parameters/PSU-ID'
+      - '$ref': '#/parameters/PSU-IP-Address'
+      - '$ref': '#/parameters/PSU-IP-Port'
+      - '$ref': '#/parameters/PSU-User-Agent'
+      - '$ref': '#/parameters/PSU-Accept'
+      - '$ref': '#/parameters/PSU-Accept-Charset'
+      - '$ref': '#/parameters/PSU-Accept-Encoding'
+      - '$ref': '#/parameters/PSU-Accept-Language'
+      - '$ref': '#/parameters/PSU-Device-ID'
+      - '$ref': '#/parameters/PSU-Geo-Location'
+    get:
+      tags:
+        - Account information service
+      summary: Read Account Details
+      description: Reads details about an account, with balances where required.
+      operationId: getAccount
+      produces:
+        - application/json
+      parameters:
+        - name: account-id
+          in: path
+          description: This identification is denoting the addressed account as returned
+            by the “Read Account List” call. The account-id is the “resourceId” attribute
+            of the account structure.
+          required: true
+          type: string
+        - name: withBalance
+          in: query
+          description: If enabled, adds account balances to response.
+          required: false
+          type: boolean
+      responses:
+        '200':
+          description: No errors ocurred. Returns an account. In _links section viewBalances
+            and viewTransactions links will be used
+          schema:
+            '$ref': '#/definitions/AccountResponse'
+        '400':
+          description: Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '401':
+          description: Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '403':
+          description: The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '404':
+          description: Account not found
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+  '/sandbox/xs2a-vam/v1.3/accounts/{account-id}/balances':
+    get:
+      tags:
+        - Account information service
+      summary: Read Balance
+      description: Reads account balances for a given account addressed by 'account-id'.
+      operationId: getAccountBalances
+      produces:
+        - application/json
+      parameters:
+        - name: account-id
+          in: path
+          description: This identification is denoting the addressed account as returned
+            by the “Read Account List” call. The account-id is the “resourceId” attribute
+            of the account structure.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: No errors ocurred. Returns the account balances
+          schema:
+            '$ref': '#/definitions/AccountBalancesResponse'
+        '400':
+          description: Format of certain request fields are invalid or not matching
+            the XS2A requirements.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '401':
+          description: Authentication is required and has failed or has not yet been
+            provided.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '403':
+          description: The user is not authorized to access the given resource or
+            functionality.
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+        '404':
+          description: Account not found
+          schema:
+            '$ref': '#/definitions/XS2AErrorResponse'
+parameters:
+  user-id:
+    name: user-id
+    in: path
+    description: ID of the user as defined in VAM.
+    required: true
+    type: string
+  role-id:
+    name: role-id
+    in: path
+    description: ID of the user role as defined in VAM.
+    required: true
+    type: string
+  pageNumber:
+    name: pageNumber
+    in: query
+    description: Requested page number
+    type: integer
+    default: 1
+  pageSize:
+    name: pageSize
+    in: query
+    description: Number of entries per page number
+    type: integer
+    default: 20
+  X-Request-ID:
+    name: X-Request-ID
+    in: header
+    description: ID of the request, unique to the call, as determined by the initiating
+      party.
+    type: string
+    required: true
+  PSU-ID:
+    name: PSU-ID
+    in: header
+    description: User ID of the user initiating the request.
+    required: true
+    type: string
+  PSU-IP-Address:
+    name: PSU-IP-Address
+    in: header
+    description: IP address of the source application
+    type: string
+  PSU-IP-Port:
+    name: PSU-IP-Port
+    in: header
+    description: IP port of the source application, if available.
+    type: string
+  PSU-User-Agent:
+    name: PSU-User-Agent
+    in: header
+    description: User-Agent header field of the source application, if available.
+    type: string
+  PSU-Accept:
+    name: PSU-Accept
+    in: header
+    description: Accept header field of the source application, if available.
+    type: string
+  PSU-Accept-Charset:
+    name: PSU-Accept-Charset
+    in: header
+    description: Accept-Charset header field of the source application, if available.
+    type: string
+  PSU-Accept-Encoding:
+    name: PSU-Accept-Encoding
+    in: header
+    description: Accept-Encoding header field of the source application, if available.
+    type: string
+  PSU-Accept-Language:
+    name: PSU-Accept-Language
+    in: header
+    description: Accept-Language header field of the source application, if available.
+    type: string
+  PSU-Device-ID:
+    name: PSU-Device-ID
+    in: header
+    description: UUID for a device, which is used by end user, if available.
+    type: string
+  PSU-Geo-Location:
+    name: PSU-Geo-Location
+    in: header
+    description: Geo Location of the source application, if available.
+    type: string
+definitions:
+  XS2AErrorResponse:
+    type: object
+    properties:
+      tppMessages:
+        type: array
+        items:
+          '$ref': '#/definitions/XS2ATPPMessage'
+  XS2ATPPMessage:
+    type: object
+    required:
+      - category
+      - code
+    properties:
+      category:
+        type: string
+        enum:
+          - ERROR
+          - WARNING
+      code:
+        type: string
+      path:
+        type: string
+        description: An explicit path to the request field causing error, if applicable.
+      text:
+        type: string
+        maxLength: 512
+        description: Additional explanatory text.
+  XS2AHref:
+    type: object
+    properties:
+      href:
+        type: string
+  XS2AAccountDetails:
+    type: object
+    required:
+      - currency
+    properties:
+      iban:
+        type: string
+      bban:
+        type: string
+      pan:
+        type: string
+      maskedPan:
+        type: string
+      msisdn:
+        type: string
+      currency:
+        type: string
+      resourceId:
+        type: string
+      name:
+        type: string
+      cashAccountType:
+        type: string
+      status:
+        type: string
+      bic:
+        type: string
+      balances:
+        type: array
+        items:
+          '$ref': '#/definitions/XS2ABalance'
+      _links:
+        type: object
+        properties:
+          balances:
+            '$ref': '#/definitions/XS2AHref'
+    description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn
+      or pan field
+  XS2AAccountReference:
+    type: object
+    required:
+      - currency
+    properties:
+      iban:
+        type: string
+      bban:
+        type: string
+      pan:
+        type: string
+      maskedPan:
+        type: string
+      msisdn:
+        type: string
+      currency:
+        type: string
+    description: Must contain one of iban, bban, maskedPan, msisdn or pan field
+  XS2AAmount:
+    type: object
+    required:
+      - amount
+      - currency
+    properties:
+      currency:
+        type: string
+      amount:
+        type: string
+  XS2ABalance:
+    type: object
+    required:
+      - balanceAmount
+      - balanceType
+    properties:
+      balanceAmount:
+        '$ref': '#/definitions/XS2AAmount'
+      balanceType:
+        type: string
+      referenceDate:
+        type: string
+      lastChangeDateTime:
+        type: string
+  AccountBalancesResponse:
+    type: object
+    required:
+      - balances
+    properties:
+      account:
+        '$ref': '#/definitions/XS2AAccountReference'
+      balances:
+        type: array
+        items:
+          '$ref': '#/definitions/XS2ABalance'
+  AccountResponse:
+    type: object
+    required:
+      - account
+    properties:
+      account:
+        '$ref': '#/definitions/XS2AAccountDetails'
+  AccountsResponse:
+    type: object
+    required:
+      - accounts
+    properties:
+      accounts:
+        type: array
+        items:
+          '$ref': '#/definitions/XS2AAccountDetails'

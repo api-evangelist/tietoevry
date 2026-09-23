@@ -1,0 +1,221 @@
+openapi: 3.2.0
+info:
+  title: Tieto Financial API Aggregation End User management API
+  version: 1.0.0
+  description: 'Tieto Financial API Aggregation solution API reference.
+
+
+    Base API version is 1.0.0. It contains the following API groups:
+
+    - __Providers API__, version 1.0.0
+
+    - __End Users API__, version 1.0.0
+
+    - __XS2A API__, version 1.0.0'
+servers:
+- url: https://aggregation.api.tieto.com
+tags:
+- name: End User management
+  description: Operations for managing anonymous End Users.
+paths:
+  /v1/end-users/v1.0/end-users:
+    post:
+      tags:
+      - End User management
+      summary: Create an anonymous End User
+      description: Creates an anonymous End User and returns its ID for usage in other requests
+      operationId: createEndUser
+      parameters:
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '201':
+          description: No errors occurred. End User ID is created and returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonCreateEndUserResponse'
+  /v1/end-users/v1.0/end-users/{end-user-id}:
+    delete:
+      tags:
+      - End User management
+      summary: Delete the anonymous End User record
+      description: ''
+      operationId: deleteEndUser
+      parameters:
+      - name: end-user-id
+        in: path
+        description: The system-issued anonymous End User ID
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. The End User resource is deleted.
+  /v1/end-users/v1.0/end-users/{end-user-id}/providers:
+    get:
+      tags:
+      - End User management
+      summary: Retrieve the provider selection for an End User
+      description: ''
+      operationId: getEndUserProviders
+      parameters:
+      - name: end-user-id
+        in: path
+        description: The system-issued anonymous End User ID
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Returns a list of references to the End User selected providers. Each of the referenced provider information resources is then asynchronously pushed (in case of HTTP/2) to the calling client.
+          headers:
+            Link:
+              description: Multiple 'rel=preload; as=fetch' links to provider information resources. These links correspond to the links in the response body.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetEndUserProvidersResponse'
+    put:
+      tags:
+      - End User management
+      summary: Set the provider selection for an End User
+      description: ''
+      operationId: setEndUserProviders
+      parameters:
+      - name: end-user-id
+        in: path
+        description: The system-issued anonymous End User ID
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonPutEndUserProvidersRequest'
+        description: Array of selected provider identifiers. These providers are verified against the agreement-defined provider list, not against the current API Key-defined provider list.
+        required: true
+components:
+  schemas:
+    JsonGetEndUserProvidersResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonProviderRef'
+    JsonPutEndUserProvidersRequest:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonProviderId'
+    JsonProviderRef:
+      type: object
+      properties:
+        providerId:
+          type: string
+          description: ID of a provider
+        _links:
+          $ref: '#/components/schemas/JsonHref'
+    JsonProviderId:
+      type: object
+      properties:
+        providerId:
+          type: string
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonCreateEndUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of an anonymous End User

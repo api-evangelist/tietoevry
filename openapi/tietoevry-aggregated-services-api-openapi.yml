@@ -1,0 +1,445 @@
+openapi: 3.2.0
+info:
+  title: Tieto Financial API Aggregation Aggregated services API
+  version: 1.0.0
+  description: 'Tieto Financial API Aggregation solution API reference.
+
+
+    Base API version is 1.0.0. It contains the following API groups:
+
+    - __Providers API__, version 1.0.0
+
+    - __End Users API__, version 1.0.0
+
+    - __XS2A API__, version 1.0.0'
+servers:
+- url: https://aggregation.api.tieto.com
+tags:
+- name: Aggregated services
+  description: Operations, which are executed for multiple destination providers.
+paths:
+  /v1/xs2a/v1.0/pre-auth:
+    post:
+      tags:
+      - Aggregated services
+      summary: Initiate a Pre-step SCA, aggregated
+      description: Initiates a Pre-step SCA process for all providers, which are selected for the End User and support Pre-step SCA.
+      operationId: aggregatedPreAuth
+      parameters:
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: TPP-Redirect-URI
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '201':
+          description: No errors occurred. Return list of pre-auth links for all selected providers throw the api key which requires it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPreAuthProvidersResponse'
+        '405':
+          description: Provider pre-auth is not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    options:
+      tags:
+      - Aggregated services
+      summary: Check Pre-step SCA support, aggregated
+      description: Returns links to start pre-auth endpoint for providers, which support Pre-step SCA.
+      operationId: aggregatedPreAuthOptions
+      parameters:
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. List of links to pre-authorization for all selected providers through the API Key which requires it created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPreAuthProvidersResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /v1/xs2a/v1.0/accounts:
+    get:
+      tags:
+      - Aggregated services
+      summary: Retrieve aggregated List of Accounts
+      description: Retrieves an aggregated List of bank Accounts from providers, which are selected for the End User.
+      operationId: getAggregatedAccounts
+      parameters:
+      - name: withBalance
+        in: query
+        description: If contained, this function reads the list of accessible payment accounts including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent
+        required: false
+        schema:
+          type: boolean
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Return a list of references to Account Lists from each separate provider. In addition, the results of fetching of these per-provider Account Lists are asynchronously pushed (in case of HTTP/2) to the calling side, as soon as a reply is received from a provider.
+          headers:
+            Link:
+              description: Multiple 'rel=preload; as=fetch' links to account lists by provider. These links correspond to the links in the response body.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetAggregatedAccountsResponse'
+  /v1/xs2a/v1.0/consents:
+    post:
+      tags:
+      - Aggregated services
+      summary: Establish Consent Transactions, aggregated
+      description: Starts the consent creation procedure in parallel for all providers, which are selected for the End User, using the same consent parameters for all providers.
+      operationId: postAggregatedConsents
+      parameters:
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Return a list of references to Consents creation results for each separate provider. In addition, the Consent creation results for each provider are asynchronously pushed (in case of HTTP/2) to the calling side, as soon as a reply is received from a provider, i.e. consent is created.
+          headers:
+            Link:
+              description: Multiple 'rel=preload; as=fetch' links to the consent creation results by provider. These links correspond to the links in the response body.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonAggregatedConsentsResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonAggregatedConsentCreation'
+        required: true
+  /v1/xs2a/v1.0/consents/creation-results/{correlation-id}:
+    get:
+      tags:
+      - Aggregated services
+      summary: Fetch consent creation result
+      description: This is a temporary synchronization resource, reading which waits for the completion (for one provider) of a previously started aggregated consent creation, and returns a 303 status and a link to the created consent.
+      operationId: getAggregatedConsentCreationResult
+      parameters:
+      - name: correlation-id
+        in: path
+        description: A unique id of the resource.
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Consent is created and can be fetched from the Location link. In addition, the consent record is asynchronously pushed (in case of HTTP/2) to the calling side together with this response.
+          headers:
+            Location:
+              description: A link to the resulting new consent information record.
+              schema:
+                type: string
+            Link:
+              description: A 'rel=preload; as=fetch' link to the resulting new consent information record. Corresponds to the Location.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonAggregatedConsentCreationResultResponse'
+components:
+  schemas:
+    JsonPreAuthProviderResponse:
+      type: object
+      properties:
+        providerId:
+          type: string
+          description: ID of a provider
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+    JsonPreAuthProvidersResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/JsonPreAuthProviderResponse'
+    JsonAggregatedConsentCreation:
+      type: object
+      description: A unified request for an aggregated creation of consents. Specific provider IDs shall be given.
+      required:
+      - access
+      - recurringIndicator
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAggregatedAccountAccess'
+        validUntil:
+          type: string
+        frequencyPerDay:
+          type: string
+        recurringIndicator:
+          type: boolean
+          example: true
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+        providerIds:
+          type: array
+          items:
+            type: string
+    JsonGetAggregatedAccountsResponse:
+      type: object
+      required:
+      - accountLists
+      properties:
+        accountLists:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountList'
+    JsonNewConsentDetails:
+      type: object
+      properties:
+        providerId:
+          type: string
+        _links:
+          properties:
+            self:
+              $ref: '#/components/schemas/JsonHref'
+    JsonAccountList:
+      type: object
+      properties:
+        providerId:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonHref'
+    JsonAggregatedConsentsResponse:
+      type: object
+      required:
+      - newConsents
+      properties:
+        newConsents:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonNewConsentDetails'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonGetNewConsentDetails:
+      type: object
+      properties:
+        providerId:
+          type: string
+        _links:
+          properties:
+            consent:
+              $ref: '#/components/schemas/JsonHref'
+            self:
+              $ref: '#/components/schemas/JsonHref'
+            scaRedirect:
+              $ref: '#/components/schemas/JsonHref'
+            status:
+              $ref: '#/components/schemas/JsonHref'
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonAggregatedConsentCreationResultResponse:
+      type: object
+      required:
+      - newConsent
+      properties:
+        newConsent:
+          $ref: '#/components/schemas/JsonGetNewConsentDetails'
+    JsonAggregatedAccountAccess:
+      type: object
+      properties:
+        accounts:
+          type: boolean
+        balances:
+          type: boolean
+        transactions:
+          type: boolean
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string

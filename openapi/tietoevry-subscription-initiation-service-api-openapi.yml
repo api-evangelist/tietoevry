@@ -1,0 +1,249 @@
+openapi: 3.2.0
+info:
+  title: Premium - Subscriptions to request to pay Subscription…
+  version: 1.3.4
+  description: Operations to create subscription.
+servers:
+- url: https://openbanking.api.tieto.com/sandbox
+- url: https://openbanking.api.tieto.com/live
+tags:
+- name: Subscription Initiation Service
+  description: Operations to create subscription.
+paths:
+  /xs2a-premium/v1.3/subscriptions-request-to-pay/{subscription-Id}:
+    get:
+      tags:
+      - Subscription Initiation Service
+      summary: 'Subscription: Get Status Request'
+      description: Can check the status payments what has been requested.
+      operationId: getJSONSubscriptionStatus
+      parameters:
+      - name: subscription-Id
+        in: path
+        description: Resource Identification of the related payment.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        200:
+          description: No errors ocurred. Returns Subscription status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetSubscriptionStatusResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /xs2a-premium/v1.3/subscriptions-request-to-pay:
+    post:
+      tags:
+      - Subscription Initiation Service
+      summary: 'Subscription: Initiation with JSON encoding of Subscription'
+      description: Creates a Subscription initiation at the ASPSP.
+      operationId: initiateJSONSubscription
+      parameters:
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: TPP-Explicit-Authorisation-Preferred
+        in: header
+        description: If it equals "true", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals "false" or if the parameter is not used, there is no preference of the TPP.
+        schema:
+          type: boolean
+          default: false
+      - name: TPP-Redirect-URI
+        in: header
+        description: URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        description: If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.
+        schema:
+          type: string
+          format: uri
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonPostSubscriptionRequest'
+        required: true
+      responses:
+        201:
+          description: No errors occurred. In _links section redirect and self links are used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPostSubscriptionResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, creditor address is missing when payment product is cross-border-credit-transfers; Only EUR currency was used when payment product isn't cross-border-credit-transfers;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: invalid payment product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    JsonPostSubscriptionRequest:
+      required:
+      - iban
+      - apiClientPrimaryPushURI
+      type: object
+      properties:
+        subscriptionEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonaccountIdReference'
+          description: The URL to the service API what listens endpoints
+    JsonGetAccountIdReference:
+      type: object
+      properties:
+        accountId:
+          type: object
+          properties:
+            iban:
+              type: string
+        subscriptionEntryName:
+          type: string
+        subscriptionEntryId:
+          type: string
+        apiClientPrimaryPushURI:
+          type: string
+    JsonaccountIdReference:
+      type: object
+      properties:
+        accountId:
+          type: object
+          properties:
+            iban:
+              type: string
+        remittanceInformationUnstructured:
+          type: string
+      description: Must contain iban
+    SubscriptionStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+    JsonLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+    JsonMessage:
+      required:
+      - category
+      - code
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostSubscriptionResponse:
+      required:
+      - subscriptionStatus
+      - subscriptionId
+      - _links
+      - authorisationId
+      - tppMessages
+      type: object
+      properties:
+        subscriptionStatus:
+          type: string
+        subscriptionId:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+        authorisationId:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonTppMessages'
+    JsonTppMessages:
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        text:
+          type: string
+    JsonGetLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+    JsonErrorResponse:
+      required:
+      - transactionStatus
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonGetSubscriptionStatusResponse:
+      required:
+      - subscriptionStatus
+      type: object
+      properties:
+        subscriptionStatus:
+          $ref: '#/components/schemas/SubscriptionStatus'
+        _links:
+          $ref: '#/components/schemas/JsonGetLinks'
+        subscriptionEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonGetAccountIdReference'

@@ -1,0 +1,1122 @@
+openapi: 3.2.0
+info:
+  title: Tietoevry Confirmation of Funds Service API
+  version: '1.0'
+  description: 'Operations tagged Confirmation of Funds Service across 4 of this provider''s published API definitions: tietoevry-financial-api-aggregation-swagger.json, tietoevry-openbanking-xs2a-swagger.json, tietoevry-tieto-xs2a-funds.v1_2.yaml, tietoevry-tieto-xs2a-funds.v1_3.yaml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aggregation.api.tieto.com
+- url: http://openbanking.api.tieto.com
+- url: https://openbanking.api.tieto.com
+tags:
+- name: Confirmation of Funds Service
+  description: Operations for receiving funds confirmation.
+paths:
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmations:
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: Confirmation of Funds Request
+      description: 'Creates a confirmation of funds request at the ASPSP.
+
+        If no card number, but the PSU account identifier is contained: check on default account registered by customer.
+
+        If no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.
+
+        If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
+
+        If the card number is not registered for any of the accounts, the card number is ignored.'
+      operationId: getFundsConfirmation
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before. If absent, then the system will attempt to use the consent tied to the End User ID.
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: No errors occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonFundsConfirmationResponse'
+        '400':
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, amount is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonFundsConfirmationRequest'
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents:
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: Establish Funds Confirmation Consent Transaction
+      description: Creates an funds confirmation consent resource at the ASPSP regarding access to make funds confirmation to specified accounts in this request.
+      operationId: postFundsConfirmationConsent
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: TPP-Explicit-Authorisation-Preferred
+        in: header
+        description: If it equals "true", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals "false" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.
+        schema:
+          type: boolean
+          default: false
+      - name: TPP-Redirect-URI
+        in: header
+        description: URI of the TPP, where the transaction flow shall be redirected to after a Redirect. Mandated for the Redirect SCA Approach (including OAuth2 SCA approach).
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        description: If this URI is contained, the TPP is asking to redirect the transaction flow to this address instead of the TPP-Redirect-URI in case of a negative result of the redirect SCA method.
+        schema:
+          type: string
+          format: uri
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPostFundsConfirmationConsentsRequest'
+        '201':
+          description: No errors occurred. In _links section self link is used.
+          headers:
+            Location:
+              description: Hyperlink for the status of the resource.
+              schema:
+                type: string
+                format: uri
+        '400':
+          description: 'One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;
+
+            CombinedServiceIndicator is true'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonPostFundsConfirmationConsentsRequest'
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}:
+    get:
+      tags:
+      - Confirmation of Funds Service
+      summary: Get Funds Confirmation Consent Request
+      description: Returns the content of an funds confirmation consent object.
+      operationId: getFundsConfirmationConsent
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: No errors occurred. Returns consent. In _links section viewAccounts link is used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetFundsConfirmationConsentResponse'
+        '400':
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        '404':
+          description: Consent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    delete:
+      tags:
+      - Confirmation of Funds Service
+      summary: Delete an Confirmation of Funds Service Object
+      description: The TPP can delete a confirmation of funds consent object.
+      operationId: deleteFundsConfirmationConsent
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Shall be contained since “Confirmation of Funds Service” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No errors occurred. Deleted consent
+        '400':
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        '404':
+          description: Consent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/authorisations:
+    get:
+      tags:
+      - Confirmation of Funds Service
+      summary: Get authorisation sub-resources request
+      description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
+      operationId: fundsConfirmationConsentsGetAuthorizations
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Identification of the related resource
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns array of authorisation sub-resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetAuthorisationsResponse'
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: Start authorisation process
+      description: Starts an authorisation process in for establishing account information consent data on the server.
+      operationId: fundsConfirmationConsentsStartAuthorization
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Identification of the related resource
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: TPP-Explicit-Authorisation-Preferred
+        in: header
+        description: If it equals "true", the TPP prefers to start the authorisation process separately, e.g. because of the usage of a signing basket. If it equals "false" or if the parameter is not used, there is no preference of the TPP. This especially indicates that the TPP assumes a direct authorisation of the transaction in the next step, without using a signing basket.
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPostAuthorisationsResponse'
+        '201':
+          description: Created authorisation sub-resource.
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/authorisations/{authorisation-id}:
+    get:
+      tags:
+      - Confirmation of Funds Service
+      summary: Get SCA status request
+      description: Checks the SCA status of a authorisation sub-resource.
+      operationId: fundsConfirmationConsentsGetAuthorizationStatus
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Identification of the related resource
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: authorisation-id
+        in: path
+        description: Identification of the related authorisation sub-resource
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns array of authorisation sub-resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /v1/xs2a/v1.0/providers/{provider-id}/funds-confirmation-consents/{consent-id}/status:
+    get:
+      tags:
+      - Confirmation of Funds Service
+      summary: Get Status Request
+      description: Can check the status of an funds confirmation consent resource.
+      operationId: getFundsConfirmationConsentStatus
+      parameters:
+      - name: provider-id
+        in: path
+        description: Identifier of an ASPSP, previously returned by the system
+        required: true
+        schema:
+          type: string
+      - name: consent-id
+        in: path
+        description: Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: No errors occurred. Returns the transactionStatus of the consent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetConsentStatusResponse'
+        '400':
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        '404':
+          description: Consent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    servers:
+    - url: https://aggregation.api.tieto.com
+  /sandbox/xs2a/v1.3/funds-confirmations:
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: Confirmation of Funds Request
+      description: 'Creates a confirmation of funds request at the ASPSP.
+
+        If no card number, but the PSU account identifier is contained: check on default account registered by customer.
+
+        If no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.
+
+        If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
+
+        If the card number is not registered for any of the accounts, the card number is ignored.'
+      operationId: getFundsConfirmation
+      parameters:
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: No errors occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonFundsConfirmationResponse'
+        '400':
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, amount is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse_2'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonFundsConfirmationRequest_2'
+    servers:
+    - url: http://openbanking.api.tieto.com
+    - url: https://openbanking.api.tieto.com
+  /{sandbox|live}/xs2a/v1.2/funds-confirmations:
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: Confirmation of Funds Request
+      description: 'Creates a confirmation of funds request at the ASPSP.
+
+        If no card number, but the PSU account identifier is contained: check on default account registered by customer.
+
+        If no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.
+
+        If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
+
+        If the card number is not registered for any of the accounts, the card number is ignored.'
+      operationId: getFundsConfirmation
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-Request-ID
+        in: header
+        required: true
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        schema:
+          type: string
+          format: uuid
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonFundsConfirmationResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format, amount is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse_3'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonFundsConfirmationRequest_3'
+        required: true
+    servers:
+    - url: http://openbanking.api.tieto.com
+    - url: https://openbanking.api.tieto.com
+  /{sandbox|live}/xs2a/v1.3/funds-confirmations:
+    post:
+      tags:
+      - Confirmation of Funds Service
+      summary: 'Funds confirm: Confirmation of Funds Request'
+      description: 'Creates a confirmation of funds request at the ASPSP.
+
+        If no card number, but the PSU account identifier is contained: check on default account registered by customer.
+
+        If no card number but the PSU and the account identifier with currency is contained: check the availability of funds on the corresponding sub-account.
+
+        If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
+
+        If the card number is not registered for any of the accounts, the card number is ignored.'
+      operationId: getFundsConfirmation
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-Request-ID
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Funds Confirmation Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonFundsConfirmationResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format;
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse_4'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JsonFundsConfirmationRequest_4'
+        required: true
+    servers:
+    - url: https://openbanking.api.tieto.com
+components:
+  schemas:
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        authorisationId:
+          type: string
+        scaStatus:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonFundsConfirmationResponse:
+      type: object
+      required:
+      - fundsAvailable
+      properties:
+        fundsAvailable:
+          type: boolean
+    JsonGetConsentStatusResponse:
+      type: object
+      properties:
+        consentStatus:
+          type: string
+    JsonFundsConfirmationRequest:
+      type: object
+      required:
+      - instructedAmount
+      - psuAccount
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationIds:
+          type: array
+          items:
+            type: string
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
+    JsonGetFundsConfirmationConsentResponse:
+      type: object
+      required:
+      - accounts
+      - combinedServiceIndicator
+      - consentStatus
+      - validUntil
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        recurringIndicator:
+          type: boolean
+        validUntil:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+        consentStatus:
+          type: string
+          enum:
+          - received
+          - valid
+          - blocked
+          - expired
+          - deleted
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostFundsConfirmationConsentsRequest:
+      type: object
+      required:
+      - accounts
+      - combinedServiceIndicator
+      - validUntil
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        validUntil:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+    JsonFundsConfirmationRequest_2:
+      type: object
+      required:
+      - instructedAmount
+      - account
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonErrorResponse_2:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonFundsConfirmationRequest_3:
+      type: object
+      required:
+      - instructedAmount
+      - account
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference_2'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+    JsonErrorResponse_3:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - AcceptedCustomerProfile
+          - AcceptedSettlementCompleted
+          - AcceptedSettlementInProcess
+          - AcceptedTechnicalValidation
+          - AcceptedWithChange
+          - AcceptedWithoutPosting
+          - Received
+          - Pending
+          - Rejected
+    JsonAccountReference_2:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonFundsConfirmationRequest_4:
+      type: object
+      required:
+      - instructedAmount
+      - account
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+    JsonErrorResponse_4:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+  parameters:
+    envParam:
+      name: sandbox|live
+      in: path
+      description: The addressed environment
+      required: true
+      schema:
+        type: string
+        enum:
+        - sandbox
+        - live
+x-refined-from:
+- tietoevry-financial-api-aggregation-swagger.json
+- tietoevry-openbanking-xs2a-swagger.json
+- tietoevry-tieto-xs2a-funds.v1_2.yaml
+- tietoevry-tieto-xs2a-funds.v1_3.yaml

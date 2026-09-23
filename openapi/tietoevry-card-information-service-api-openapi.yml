@@ -1,0 +1,875 @@
+openapi: 3.2.0
+info:
+  title: Tieto OpenBanking XS2A apis - Card and Card account…
+  version: 1.3.4
+  description: Operations for managing card information.
+servers:
+- url: http://openbanking.api.tieto.com
+- url: https://openbanking.api.tieto.com
+tags:
+- name: Card information service
+  description: Operations for managing card information.
+paths:
+  /{sandbox|live}/xs2a-premium/v1.3/cards:
+    get:
+      tags:
+      - Card information service
+      summary: 'Card info: Read Card List'
+      description: Reads a list of bank cards, with balances where required.
+      operationId: getCards
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP. If PSU presence (currently IP address) is provided with recurring consent then recurring consent counter is not incremented. Therefore card data can be gathered without limits.
+        required: false
+        schema:
+          type: string
+      - name: withBalance
+        in: query
+        description: If contained, this function reads the list of accessible cards including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent
+        required: false
+        schema:
+          type: boolean
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred. Return a list of cards. Each cards's _links section is using viewBalances and viewTransactions links.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetCardsResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        401:
+          description: Consent expired; Consent is not valid for requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Consent not found; Consent not authorized by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        429:
+          description: Consent access exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a-premium/v1.3/cards/{card-id}:
+    get:
+      tags:
+      - Card information service
+      summary: 'Card info: Read Card Details'
+      description: Reads details about an card, with balances where required.
+      operationId: getCard
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: card-id
+        in: path
+        description: This identification is denoting the addressed card. The card-id is retrieved by using a “Read Card List” call. The card-id is the “id” attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent.
+        required: true
+        schema:
+          type: string
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP. If PSU presence (currently IP address) is provided with recurring consent then recurring consent counter is not incremented. Therefore account data can be gathered without limits.
+        required: false
+        schema:
+          type: string
+      - name: withBalance
+        in: query
+        description: If contained, this function reads the list of accessible cards including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent
+        required: false
+        schema:
+          type: boolean
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred. Returns a card. In _links section viewBalances and viewTransactions links will be used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetCardResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        401:
+          description: Consent expired, consent is not valid for requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Consent absent, consent not authorized by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        429:
+          description: Consent access exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a-premium/v1.3/cards/{card-id}/balances:
+    get:
+      tags:
+      - Card information service
+      summary: 'Card info: Read Balance'
+      description: Reads card data from a given card addressed by 'card-id'.
+      operationId: getCardBalances
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: card-id
+        in: path
+        description: This identification is denoting the addressed card. The card-id is retrieved by using a “Read Card List” call. The card-id is the “id” attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent.
+        required: true
+        schema:
+          type: string
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP. If PSU presence (currently IP address) is provided with recurring consent then recurring consent counter is not incremented. Therefore account data can be gathered without limits.
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors ocurred. Returns the card's balances
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetCardBalancesResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        401:
+          description: Consent expired, consent is not valid for requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Consent absent, consent not authorized by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        429:
+          description: Consent access exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a-premium/v1.3/cards/{card-id}/transactions:
+    get:
+      tags:
+      - Card information service
+      summary: 'Card info: Read Transaction List'
+      description: Reads card data from a given card addressed by 'card-id'.
+      operationId: getCardTransactions
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: card-id
+        in: path
+        description: This identification is denoting the addressed card. The card-id is retrieved by using a “Read Card List” call. The card-id is the “id” attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent.
+        required: true
+        schema:
+          type: string
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP. If PSU presence (currently IP address) is provided with recurring consent then recurring consent counter is not incremented. Therefore account data can be gathered without limits.
+        required: false
+        schema:
+          type: string
+      - name: dateFrom
+        in: query
+        description: 'ISODate
+
+          Starting date of the transaction list
+
+          Must not be farther then 90 days in past for recurring consent.
+
+          Must not be farther then 7 years in past for non-recurring consent.'
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: dateTo
+        in: query
+        description: 'ISODate
+
+          End date of the transaction list, default is now if not given
+
+          Must not be farther then 90 days in past for recurring consent.
+
+          Must not be farther then 7 years in past for non-recurring consent.'
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: bookingStatus
+        in: query
+        description: Filter by transaction booking status
+        required: true
+        schema:
+          type: string
+          enum:
+          - booked
+          - pending
+          - both
+      - name: withBalance
+        in: query
+        description: If contained, this function reads the list of accessible cards including the booking balance. This call will be rejected if the withBalance parameter is used in a case, where the access right on balances is not granted in the related consent
+        required: false
+        schema:
+          type: boolean
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors ocurred. Returns card's transactions. In _links section viewCard link will be used.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetCardTransactionsResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        401:
+          description: Consent expired, consent is not valid for requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Consent absent, consent not authorized by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        429:
+          description: Consent access exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+  /{sandbox|live}/xs2a-premium/v1.3/cards/{card-id}/transactions/{transactionId}:
+    get:
+      tags:
+      - Card information service
+      summary: 'Card info: Read Transaction details'
+      description: Reads transaction data from a given card addressed by 'card-id' and 'transactionId'. This call is only available on transactions as reported in a JSON format.
+      operationId: getCardTransaction
+      parameters:
+      - $ref: '#/components/parameters/envParam'
+      - name: card-id
+        in: path
+        description: This identification is denoting the addressed card. The card-id is retrieved by using a “Read Card List” call. The card-id is the “id” attribute of the card structure. Its value is constant at least throughout the lifecycle of a given consent.
+        required: true
+        schema:
+          type: string
+      - name: transactionId
+        in: path
+        description: This identification is denoting the addressed transaction. The transactionId is retrieved by using a “Read Transaction List” call. The transactionId is the “id” attribute of the transaction structure. Its value is constant at least throughout the lifecycle of a given consent.
+        required: true
+        schema:
+          type: string
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in TPP developer portal.
+        required: true
+        schema:
+          type: string
+      - name: Consent-ID
+        in: header
+        description: Shall be contained since “Establish Consent Transaction” was performed via this API before.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: PSU-IP-Address
+        in: header
+        description: The forwarded IP Address header field consists of the corresponding HTTP request IP Address field between PSU and TPP. If PSU presence (currently IP address) is provided with recurring consent then recurring consent counter is not incremented. Therefore account data can be gathered without limits.
+        required: false
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Is contained only, if an OAuth2 based SCA was performed in the related consent authorisation.
+        required: false
+        schema:
+          type: string
+      - name: PSU-ID
+        in: header
+        description: Client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      - name: PSU-Corporate-ID
+        in: header
+        description: Corporate client ID of the PSU in the bank.
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: No errors occurred. Returns transaction details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonGetCardTransactionDetailsResponse'
+        400:
+          description: One of mandatory parameters(headers, request body or query parameters) missing or in incorrect format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        401:
+          description: Consent expired, consent is not valid for requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        403:
+          description: Consent absent, consent not authorized by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        404:
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+        429:
+          description: Consent access exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+components:
+  schemas:
+    JsonAddress:
+      type: object
+      required:
+      - country
+      properties:
+        streetName:
+          type: string
+        buildingNumber:
+          type: string
+        townName:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+          description: Country Code
+    BalanceType:
+      type: string
+      enum:
+      - closingBooked
+      - expected
+      - openingBooked
+      - interimAvailable
+      - interimBooked
+      - forwardAvailable
+      - nonInvoiced
+    CashAccountType:
+      type: string
+      enum:
+      - CACC
+      - CARD
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonAccountReference:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+        cashAccountType:
+          $ref: '#/components/schemas/CashAccountType'
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    AccountUsage:
+      type: string
+      enum:
+      - PRIV
+      - ORGA
+    JsonCardAccountDetails:
+      type: object
+      required:
+      - maskedPan
+      - currency
+      properties:
+        maskedPan:
+          type: string
+        currency:
+          type: string
+        resourceId:
+          type: string
+        ownerName:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
+        product:
+          type: string
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        usage:
+          $ref: '#/components/schemas/AccountUsage'
+        details:
+          type: string
+        creditLimit:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+      description: JsonCardAccountDetails must contain maskedPan field
+    JsonGetCardTransactionDetailsResponse:
+      type: object
+      properties:
+        transactionsDetails:
+          $ref: '#/components/schemas/JsonCardTransaction'
+    JsonGetCardResponse:
+      type: object
+      required:
+      - card
+      properties:
+        card:
+          $ref: '#/components/schemas/JsonCardAccountDetails'
+    JsonBalance:
+      type: object
+      required:
+      - balanceAmount
+      - balanceType
+      properties:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          $ref: '#/components/schemas/BalanceType'
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
+        lastCommittedTransaction:
+          type: string
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonCardAccountReport:
+      type: object
+      required:
+      - booked
+      - _links
+      properties:
+        booked:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardTransaction'
+        pending:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardTransaction'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetCardTransactionsResponse:
+      type: object
+      properties:
+        card:
+          $ref: '#/components/schemas/JsonAccountReference'
+        cardTransactions:
+          $ref: '#/components/schemas/JsonCardAccountReport'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonReportExchangeRate:
+      type: object
+      required:
+      - sourceCurrency
+      - exchangeRate
+      - unitCurrency
+      properties:
+        sourceCurrency:
+          type: string
+        exchangeRate:
+          type: string
+        unitCurrency:
+          type: string
+    JsonGetCardsResponse:
+      type: object
+      required:
+      - cards
+      properties:
+        cards:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardAccountDetails'
+    JsonGetCardBalancesResponse:
+      type: object
+      required:
+      - balances
+      properties:
+        card:
+          $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
+    JsonCardTransaction:
+      type: object
+      required:
+      - transactionAmount
+      properties:
+        cardTransactionId:
+          type: string
+        terminalId:
+          type: string
+        transactionDate:
+          type: string
+        acceptorTransactionDateTime:
+          type: string
+        bookingDate:
+          type: string
+        transactionAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        currencyExchange:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonReportExchangeRate'
+        originalAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        markupFee:
+          $ref: '#/components/schemas/JsonAmount'
+        markupFeePercentage:
+          type: string
+        cardAcceptorId:
+          type: string
+        cardAcceptorAddress:
+          $ref: '#/components/schemas/JsonAddress'
+        cardAcceptorPhone:
+          type: string
+        merchantCategoryCode:
+          type: string
+        maskedPAN:
+          type: string
+        transactionDetails:
+          type: string
+        invoiced:
+          type: boolean
+        proprietaryBankTransactionCode:
+          type: string
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    AccountStatus:
+      type: string
+      enum:
+      - enabled
+      - deleted
+      - blocked
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+  parameters:
+    envParam:
+      name: sandbox|live
+      in: path
+      description: The addressed environment
+      required: true
+      schema:
+        type: string
+        enum:
+        - sandbox
+        - live

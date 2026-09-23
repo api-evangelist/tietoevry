@@ -1,0 +1,275 @@
+openapi: 3.2.0
+info:
+  description: Tietoevry vamapi Application - XS2A like Rest services
+  version: '1.3'
+  title: VAM API - XS2A like OpenAPI interface User Roles service API
+servers:
+- url: https://openbanking.api.tietoevry.com
+security:
+- APIKeyHeader: []
+  APPIDHeader: []
+  TokenTypeHeader: []
+  TokenHeader: []
+tags:
+- name: User Roles service
+  description: Operations for managing user roles.
+paths:
+  /sandbox/xs2a-vam/v1.3/user-roles/:
+    parameters:
+    - $ref: '#/components/parameters/X-Request-ID'
+    - $ref: '#/components/parameters/PSU-ID'
+    - $ref: '#/components/parameters/PSU-IP-Address'
+    - $ref: '#/components/parameters/PSU-IP-Port'
+    - $ref: '#/components/parameters/PSU-User-Agent'
+    - $ref: '#/components/parameters/PSU-Accept'
+    - $ref: '#/components/parameters/PSU-Accept-Charset'
+    - $ref: '#/components/parameters/PSU-Accept-Encoding'
+    - $ref: '#/components/parameters/PSU-Accept-Language'
+    - $ref: '#/components/parameters/PSU-Device-ID'
+    - $ref: '#/components/parameters/PSU-Geo-Location'
+    get:
+      tags:
+      - User Roles service
+      summary: List user roles
+      description: Get list of user roles defined for the bank
+      operationId: listUserRoles
+      responses:
+        '200':
+          description: Signals that the user roles list was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRolesResponse'
+        '400':
+          description: Format of certain request fields are invalid or not matching the XS2A requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+        '401':
+          description: Authentication is required and has failed or has not yet been provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+        '403':
+          description: The user is not authorized to access the given resource or functionality.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+  /sandbox/xs2a-vam/v1.3/user-roles/{role-id}:
+    parameters:
+    - $ref: '#/components/parameters/role-id'
+    - $ref: '#/components/parameters/X-Request-ID'
+    - $ref: '#/components/parameters/PSU-ID'
+    - $ref: '#/components/parameters/PSU-IP-Address'
+    - $ref: '#/components/parameters/PSU-IP-Port'
+    - $ref: '#/components/parameters/PSU-User-Agent'
+    - $ref: '#/components/parameters/PSU-Accept'
+    - $ref: '#/components/parameters/PSU-Accept-Charset'
+    - $ref: '#/components/parameters/PSU-Accept-Encoding'
+    - $ref: '#/components/parameters/PSU-Accept-Language'
+    - $ref: '#/components/parameters/PSU-Device-ID'
+    - $ref: '#/components/parameters/PSU-Geo-Location'
+    get:
+      tags:
+      - User Roles service
+      summary: Get user role details
+      description: Get details of specified user role defined in context of the bank
+      operationId: getUserRole
+      responses:
+        '200':
+          description: Signals that the user role details were successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRoleResponse'
+        '400':
+          description: Format of certain request fields are invalid or not matching the XS2A requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+        '401':
+          description: Authentication is required and has failed or has not yet been provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+        '403':
+          description: The user is not authorized to access the given resource or functionality.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XS2AErrorResponse'
+components:
+  schemas:
+    UserRolesResponse:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRoleResponse'
+        _links:
+          type: object
+          properties:
+            self:
+              $ref: '#/components/schemas/XS2AHref'
+    XS2AHref:
+      type: object
+      properties:
+        href:
+          type: string
+    UserType:
+      type: string
+      description: User type.
+      enum:
+      - BANK
+      - CUST
+      - CLNT
+    XS2AErrorResponse:
+      type: object
+      properties:
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2ATPPMessage'
+    XS2ATPPMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+        code:
+          type: string
+        path:
+          type: string
+          description: An explicit path to the request field causing error, if applicable.
+        text:
+          type: string
+          maxLength: 512
+          description: Additional explanatory text.
+    UserRoleResponse:
+      type: object
+      properties:
+        roleId:
+          type: integer
+          format: int32
+          description: User Role Id.
+        name:
+          type: string
+          description: Name of the User Role.
+        userType:
+          $ref: '#/components/schemas/UserType'
+        active:
+          type: boolean
+          description: Set to true if the user role is enabled.
+        _links:
+          type: object
+          properties:
+            self:
+              $ref: '#/components/schemas/XS2AHref'
+  parameters:
+    PSU-User-Agent:
+      name: PSU-User-Agent
+      in: header
+      description: User-Agent header field of the source application, if available.
+      schema:
+        type: string
+    X-Request-ID:
+      name: X-Request-ID
+      in: header
+      description: ID of the request, unique to the call, as determined by the initiating party.
+      required: true
+      schema:
+        type: string
+    PSU-IP-Address:
+      name: PSU-IP-Address
+      in: header
+      description: IP address of the source application
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: Accept-Encoding header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept:
+      name: PSU-Accept
+      in: header
+      description: Accept header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Language:
+      name: PSU-Accept-Language
+      in: header
+      description: Accept-Language header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Device-ID:
+      name: PSU-Device-ID
+      in: header
+      description: UUID for a device, which is used by end user, if available.
+      schema:
+        type: string
+    PSU-IP-Port:
+      name: PSU-IP-Port
+      in: header
+      description: IP port of the source application, if available.
+      schema:
+        type: string
+    PSU-ID:
+      name: PSU-ID
+      in: header
+      description: User ID of the user initiating the request.
+      required: true
+      schema:
+        type: string
+    role-id:
+      name: role-id
+      in: path
+      description: ID of the user role as defined in VAM.
+      required: true
+      schema:
+        type: string
+    PSU-Geo-Location:
+      name: PSU-Geo-Location
+      in: header
+      description: Geo Location of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
+      in: header
+      description: Accept-Charset header field of the source application, if available.
+      schema:
+        type: string
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key of pre configured client application.
+    APPIDHeader:
+      type: apiKey
+      in: header
+      name: X-APP-ID
+      description: Application ID to be used for authentication against Generic SSO.
+    TokenHeader:
+      type: apiKey
+      in: header
+      name: X-Token
+      description: Token to be used for authentication against Generic SSO
+    TokenTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Token-Type
+      description: Token type to be used for authentication against Generic SSO. This provides support for different types of token by different issuing systems

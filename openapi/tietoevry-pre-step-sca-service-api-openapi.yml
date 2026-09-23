@@ -1,0 +1,185 @@
+openapi: 3.2.0
+info:
+  title: Tieto Financial API Aggregation Pre-step SCA service API
+  version: 1.0.0
+  description: 'Tieto Financial API Aggregation solution API reference.
+
+
+    Base API version is 1.0.0. It contains the following API groups:
+
+    - __Providers API__, version 1.0.0
+
+    - __End Users API__, version 1.0.0
+
+    - __XS2A API__, version 1.0.0'
+servers:
+- url: https://aggregation.api.tieto.com
+tags:
+- name: Pre-step SCA service
+  description: Operations for establishing Pre-step SCA
+paths:
+  /v1/xs2a/v1.0/providers/{provider-id}/pre-auth:
+    post:
+      tags:
+      - Pre-step SCA service
+      summary: Initiate a Pre-step SCA
+      description: Initiates a Pre-step SCA process, returning SCA details, e.g. SCA redirect link.
+      operationId: preAuth
+      parameters:
+      - name: provider-id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: TPP-Redirect-URI
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: TPP-Nok-Redirect-URI
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        '201':
+          description: No errors occurred. Pre auth link created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonPreAuthProviderResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+    options:
+      tags:
+      - Pre-step SCA service
+      summary: Check, if Pre-step SCA is supported
+      description: Returns allowed methods for the resource. If Pre-step SCA is supported by provider, then "POST" method is allowed.
+      operationId: preAuthOptions
+      parameters:
+      - name: provider-id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        required: true
+        schema:
+          type: string
+          enum:
+          - application/json
+      - name: X-API-Key
+        in: header
+        description: Authorisation key that can be acquired in Sandbox.
+        required: true
+        schema:
+          type: string
+      - name: X-Request-ID
+        in: header
+        description: ID of the request, unique to the call, as determined by the initiating party.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: End-User-ID
+        in: header
+        description: The system-generated ID of an anonymous End User.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: No errors occurred. Return list of links to pre-authorization for all selected providers throw the api key which requires it.
+          headers:
+            Allow:
+              description: Returns available HTTP methods which can be used with this resource. If provider supports Pre-step SCA, then the "POST" method is returned among the allowed methods.
+              schema:
+                type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonErrorResponse'
+components:
+  schemas:
+    JsonPreAuthProviderResponse:
+      type: object
+      properties:
+        providerId:
+          type: string
+          description: ID of a provider
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string

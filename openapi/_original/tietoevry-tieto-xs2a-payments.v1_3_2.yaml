@@ -1,0 +1,910 @@
+# x-archived-from: tietoevry-tieto-xs2a-payments.v1_3.yaml
+# x-archived-on: 2026-09-16
+---
+swagger: "2.0"
+info:
+  title: "Tieto OpenBanking XS2A apis - Payment Initiation Service"
+  version: "1.3.4"
+host: "openbanking.api.tieto.com"
+tags:
+- name: "Payment Initiation Service"
+  description: "Operations for payments."
+parameters:
+  envParam:
+    name: "sandbox|live"
+    in: "path"
+    description: "The addressed environment"
+    required: true
+    type: "string"
+    enum:
+    - "sandbox"
+    - "live"
+paths:
+  /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}:
+    get:
+      tags:
+      - "Payment Initiation Service"
+      operationId: "getJSONPayment"
+      description: "Returns the content of payment object."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      summary: "Payment: Get Payment Details"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "payment-id"
+        in: "path"
+        required: true
+        type: "string"
+        format: "uuid"
+        description: "Resource Identification of the related payment."
+      - name: "X-Request-ID"
+        in: "header"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based SCA was performed in the\
+          \ related consent authorisation."
+        required: false
+        type: "string"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "No errors occurred. Returns consent. link is used."
+          schema:
+            $ref: "#/definitions/JsonGetPaymentResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Consent not found"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+    delete:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Delete a Payment Object"
+      description: "The TPP can delete a payment object."
+      operationId: "deletePayment"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "payment-id"
+        in: "path"
+        description: "Identification of the related resource"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "ID of the request, unique to the call, as determined by the\
+          \ initiating party."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based SCA was performed in the\
+          \ related consent authorisation."
+        required: false
+        type: "string"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      responses:
+        204:
+          description: "No errors ocurred. Deleted payment"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Payment not found"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+  /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations:
+    get:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Get authorisation sub-resources request"
+      description: "Will deliver an array of resource identifications of all generated\
+        \ authorisation sub-resources."
+      operationId: "paymentsGetAuthorizations"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "payment-id"
+        in: "path"
+        required: true
+        type: "string"
+        format: "uuid"
+        description: "Resource Identification of the related payment."
+      - name: "X-Request-ID"
+        in: "header"
+        description: "ID of the request, unique to the call, as determined by the\
+          \ initiating party."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based SCA was performed in the\
+          \ related consent authorisation."
+        required: false
+        type: "string"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Returns array of authorisation sub-resources."
+          schema:
+            $ref: "#/definitions/JsonGetAuthorisationsResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Consent not found"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+    post:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Start authorisation process"
+      description: "Starts the authorisation process for a payment initiation."
+      operationId: "paymentsStartAuthorization"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "payment-id"
+        in: "path"
+        description: "Identification of the related resource"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "ID of the request, unique to the call, as determined by the\
+          \ initiating party."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "TPP-Redirect-URI"
+        in: "header"
+        description: "URI of the TPP, where the transaction flow shall be redirected\
+          \ to after a Redirect. Mandated for the Redirect SCA Approach (including\
+          \ OAuth2 SCA approach)."
+        type: "string"
+        format: "uri"
+        required: true
+      - name: "TPP-Nok-Redirect-URI"
+        in: "header"
+        description: "If this URI is contained, the TPP is asking to redirect the\
+          \ transaction flow to this address instead of the TPP-Redirect-URI in case\
+          \ of a negative result of the redirect SCA method."
+        type: "string"
+        format: "uri"
+      - name: "PSU-IP-Address"
+        in: "header"
+        description: "The forwarded IP Address header field consists of the corresponding\
+          \ HTTP request IP Address field between PSU and TPP."
+        required: false
+        type: "string"
+      - name: "TPP-Oauth2-Preferred"
+        in: "header"
+        description: "If contains true, then OAuth2 SCA is used, otherwise if contains\
+          \ false or header is missing, then redirect SCA is used."
+        required: false
+        type: "boolean"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based PSU authentication pre-step\
+          \ was performed."
+        required: false
+        type: "string"
+      - name: "TPP-Redirect-Preferred"
+        in: "header"
+        description: "If set 'true' then TPP prefers Redirect SCA flow. IF set 'false'\
+          \ then TPP prefers Embedded SCA flow."
+        required: false
+        default: true
+        type: "string"
+      responses:
+        201:
+          description: "Created authorisation sub-resource."
+          schema:
+            $ref: "#/definitions/JsonPostAuthorisationsResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format; No matching subResourceService\
+            \ for the requested SCA approach."
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        403:
+          description: "Can't create authorisation sub-resource because consent is\
+            \ in Pending state. Initial consent request may contain some validation\
+            \ errors, e.g. outdated expiration date."
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Consent not found;"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+  /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations/{authorisation-id}:
+    get:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Get SCA status request"
+      description: "Checks the SCA status of a authorisation sub-resource."
+      operationId: "paymentsGetAuthorizationStatus"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-id"
+        in: "path"
+        description: "Identification of the related resource"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "ID of the request, unique to the call, as determined by the\
+          \ initiating party."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "authorisation-id"
+        in: "path"
+        description: "Identification of the related authorisation sub-resource"
+        required: true
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based SCA was performed in the\
+          \ related consent authorisation."
+        required: false
+        type: "string"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Returns authorisation SCA status."
+          schema:
+            $ref: "#/definitions/JsonGetAuthorisationStatusResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format;"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        403:
+          description: "Can't create authorisation sub-resource because consent is\
+            \ in Pending state. Initial consent request may contain some validation\
+            \ errors, e.g. outdated expiration date."
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Consent not found; Authorisation sub-resource not found;"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+  /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/status:
+    get:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Get Status Request"
+      description: "Can check the status of a payment initiation."
+      operationId: "getJSONPaymentStatus"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - name: "payment-id"
+        in: "path"
+        description: "Resource Identification of the related payment."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "X-Request-ID"
+        in: "header"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based SCA was performed in the\
+          \ related consent authorisation."
+        required: false
+        type: "string"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "No errors ocurred. Returns payment's transactionStatus"
+          schema:
+            $ref: "#/definitions/JsonGetPaymentStatusResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "Payment not found"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+  /{sandbox|live}/xs2a/v1.3/payments/{payment-product}:
+    post:
+      tags:
+      - "Payment Initiation Service"
+      summary: "Payment: Payment Initiation with JSON encoding of the Payment Instruction"
+      description: "Creates a payment initiation request at the ASPSP."
+      operationId: "initiateJSONPayment"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/envParam"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/JsonPostPaymentRequest"
+      - name: "payment-product"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "sepa-credit-transfers"
+        - "instant-sepa-credit-transfers"
+        - "target-2-payments"
+        - "cross-border-credit-transfers"
+      - name: "Content-Type"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "X-Request-ID"
+        in: "header"
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "X-API-Key"
+        in: "header"
+        description: "Authorisation key that can be acquired in TPP developer portal."
+        required: true
+        type: "string"
+      - name: "TPP-Explicit-Authorisation-Preferred"
+        in: "header"
+        description: "If it equals \"true\", the TPP prefers to start the authorisation\
+          \ process separately, e.g. because of the usage of a signing basket. If\
+          \ it equals \"false\" or if the parameter is not used, there is no preference\
+          \ of the TPP."
+        type: "boolean"
+        default: false
+      - name: "TPP-Redirect-URI"
+        in: "header"
+        description: "URI of the TPP, where the transaction flow shall be redirected\
+          \ to after a Redirect. Mandated for the Redirect SCA Approach (including\
+          \ OAuth2 SCA approach)."
+        type: "string"
+        format: "uri"
+        required: true
+      - name: "TPP-Nok-Redirect-URI"
+        in: "header"
+        description: "If this URI is contained, the TPP is asking to redirect the\
+          \ transaction flow to this address instead of the TPP-Redirect-URI in case\
+          \ of a negative result of the redirect SCA method."
+        type: "string"
+        format: "uri"
+      - name: "PSU-IP-Address"
+        in: "header"
+        description: "The forwarded IP Address header field consists of the corresponding\
+          \ HTTP request IP Address field between PSU and TPP."
+        required: true
+        type: "string"
+      - name: "TPP-Oauth2-Preferred"
+        in: "header"
+        description: "If contains true, then OAuth2 SCA is used, otherwise if contains\
+          \ false or header is missing, then redirect SCA is used."
+        required: false
+        type: "boolean"
+      - name: "PSU-ID"
+        in: "header"
+        description: "Client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "PSU-Corporate-ID"
+        in: "header"
+        description: "Corporate client ID of the PSU in the bank."
+        required: false
+        type: "string"
+      - name: "Authorization"
+        in: "header"
+        description: "Is contained only, if an OAuth2 based PSU authentication pre-step\
+          \ was performed."
+        required: false
+        type: "string"
+      - name: "TPP-Redirect-Preferred"
+        in: "header"
+        description: "If set 'true' then TPP prefers Redirect SCA flow. IF set 'false'\
+          \ then TPP prefers Embedded SCA flow."
+        required: false
+        default: true
+        type: "string"
+      responses:
+        201:
+          description: "No errors occurred. In _links section redirect and self links\
+            \ are used."
+          schema:
+            $ref: "#/definitions/JsonPostPaymentResponse"
+        400:
+          description: "One of mandatory parameters(headers, request body or query\
+            \ parameters) missing or in incorrect format, creditor address is missing\
+            \ when payment product is cross-border-credit-transfers; Only EUR currency\
+            \ was used when payment product isn't cross-border-credit-transfers;"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+        404:
+          description: "invalid payment product"
+          schema:
+            $ref: "#/definitions/JsonErrorResponse"
+definitions:
+  JsonErrorResponse:
+    type: "object"
+    required:
+    - "transactionStatus"
+    properties:
+      psuMessage:
+        type: "string"
+      tppMessages:
+        type: "array"
+        items:
+          $ref: "#/definitions/JsonMessage"
+      transactionStatus:
+        $ref: "#/definitions/TransactionStatus"
+  JsonPostPaymentRequest:
+    type: "object"
+    required:
+    - "creditorAddress"
+    - "creditorAccount"
+    - "creditorName"
+    - "debtorAccount"
+    - "instructedAmount"
+    properties:
+      endToEndIdentification:
+        type: "string"
+        description: "Unique end to end identity."
+      debtorAccount:
+        $ref: "#/definitions/JsonAccountReference"
+      instructedAmount:
+        $ref: "#/definitions/JsonAmount"
+      creditorName:
+        type: "string"
+      creditorAddress:
+        $ref: "#/definitions/JsonAddress"
+      creditorAccount:
+        $ref: "#/definitions/JsonAccountReference"
+      remittanceInformationUnstructured:
+        type: "string"
+        description: "Reference issued used to establish a link between the payment\
+          \ of an invoice and the invoice instance."
+      remittanceInformationStructured:
+        type: "object"
+        required:
+        - "reference"
+        description: "You can use only one group of Remittance Information fields\
+          \ in payload. Exception – Estonia internal payments – then both Remittance\
+          \ Information types can be provided in the same payload"
+        properties:
+          reference:
+            type: "string"
+          referenceType:
+            type: "string"
+          referenceIssuer:
+            type: "string"
+  JsonPostPaymentResponse:
+    type: "object"
+    required:
+    - "paymentId"
+    - "transactionStatus"
+    properties:
+      psuMessage:
+        type: "string"
+      tppMessages:
+        type: "array"
+        items:
+          $ref: "#/definitions/JsonMessage"
+      paymentId:
+        type: "string"
+        format: "uuid"
+      transactionStatus:
+        $ref: "#/definitions/TransactionStatus"
+      transactionFeeIndicator:
+        type: "boolean"
+      transactionFees:
+        $ref: "#/definitions/JsonAmount"
+      _links:
+        readOnly: true
+        $ref: "#/definitions/JsonLinks"
+      chosenScaMethod:
+        $ref: "#/definitions/OtpChosenScaMethod"
+      challengeData:
+        $ref: "#/definitions/OtpChallengeData"
+  JsonGetPaymentResponse:
+    type: "object"
+    required:
+    - "creditorAddress"
+    - "creditorAccount"
+    - "creditorName"
+    - "debtorAccount"
+    - "instructedAmount"
+    properties:
+      endToEndIdentification:
+        type: "string"
+        description: "Unique end to end identity."
+      debtorAccount:
+        $ref: "#/definitions/JsonAccountReference"
+      instructedAmount:
+        $ref: "#/definitions/JsonAmount"
+      creditorName:
+        type: "string"
+      creditorAddress:
+        $ref: "#/definitions/JsonAddress"
+      creditorAccount:
+        $ref: "#/definitions/JsonAccountReference"
+      remittanceInformationUnstructured:
+        type: "string"
+        description: "Reference issued used to establish a link between the payment\
+          \ of an invoice and the invoice instance."
+      transactionStatus:
+        $ref: "#/definitions/TransactionStatus"
+      _links:
+        readOnly: true
+        $ref: "#/definitions/JsonLinks"
+      remittanceInformationStructured:
+        type: "object"
+        required:
+        - "reference"
+        properties:
+          reference:
+            type: "string"
+          referenceType:
+            type: "string"
+          referenceIssuer:
+            type: "string"
+  JsonGetPaymentStatusResponse:
+    type: "object"
+    required:
+    - "transactionStatus"
+    properties:
+      transactionStatus:
+        $ref: "#/definitions/TransactionStatus"
+  JsonPostAuthorisationsResponse:
+    type: "object"
+    properties:
+      psuMessage:
+        type: "string"
+      tppMessages:
+        type: "array"
+        items:
+          $ref: "#/definitions/JsonMessage"
+      scaStatus:
+        $ref: "#/definitions/ScaStatus"
+      _links:
+        readOnly: true
+        $ref: "#/definitions/JsonLinks"
+      chosenScaMethod:
+        $ref: "#/definitions/OtpChosenScaMethod"
+      challengeData:
+        $ref: "#/definitions/OtpChallengeData"
+  JsonGetAuthorisationStatusResponse:
+    type: "object"
+    properties:
+      scaStatus:
+        $ref: "#/definitions/ScaStatus"
+      authorisationId:
+        type: "string"
+      _links:
+        readOnly: true
+        $ref: "#/definitions/JsonLinks"
+  JsonGetAuthorisationsResponse:
+    type: "object"
+    properties:
+      authorisationsIds:
+        type: "array"
+        items:
+          type: "string"
+  JsonAccountReference:
+    type: "object"
+    properties:
+      iban:
+        type: "string"
+      bban:
+        type: "string"
+      pan:
+        type: "string"
+      maskedPan:
+        type: "string"
+      msisdn:
+        type: "string"
+      currency:
+        type: "string"
+    description: "Must contain one of iban,bban,maskedPan,msisdn or pan field"
+  JsonAddress:
+    type: "object"
+    required:
+    - "country"
+    properties:
+      country:
+        type: "string"
+  JsonAmount:
+    type: "object"
+    required:
+    - "amount"
+    - "currency"
+    properties:
+      currency:
+        type: "string"
+      amount:
+        type: "string"
+  JsonHref:
+    type: "object"
+    properties:
+      href:
+        type: "string"
+  JsonLinks:
+    type: "object"
+    properties:
+      scaRedirect:
+        $ref: "#/definitions/JsonHref"
+      scaOAuth:
+        $ref: "#/definitions/JsonHref"
+      self:
+        $ref: "#/definitions/JsonHref"
+      status:
+        $ref: "#/definitions/JsonHref"
+      account:
+        $ref: "#/definitions/JsonHref"
+      balances:
+        $ref: "#/definitions/JsonHref"
+      transactions:
+        $ref: "#/definitions/JsonHref"
+      transactionDetails:
+        $ref: "#/definitions/JsonHref"
+      first:
+        $ref: "#/definitions/JsonHref"
+      next:
+        $ref: "#/definitions/JsonHref"
+      previous:
+        $ref: "#/definitions/JsonHref"
+      last:
+        $ref: "#/definitions/JsonHref"
+      download:
+        $ref: "#/definitions/JsonHref"
+      updatePsuIdentification:
+        $ref: "#/definitions/JsonHref"
+      startAuthorisation:
+        $ref: "#/definitions/JsonHref"
+      scaStatus:
+        $ref: "#/definitions/JsonHref"
+  JsonMessage:
+    type: "object"
+    required:
+    - "category"
+    - "code"
+    properties:
+      category:
+        type: "string"
+      code:
+        type: "string"
+      path:
+        type: "string"
+      text:
+        type: "string"
+  TransactionStatus:
+    type: "string"
+    enum:
+    - "ACCC"
+    - "ACCP"
+    - "ACSC"
+    - "ACSP"
+    - "ACTC"
+    - "ACWC"
+    - "ACWP"
+    - "RCVD"
+    - "PDNG"
+    - "RJCT"
+    - "CANC"
+    - "ACFC"
+    - "PATC"
+    - "PART"
+  ScaStatus:
+    type: "string"
+    enum:
+    - "received"
+    - "psuIdentified"
+    - "psuAuthenticated"
+    - "scaMethodSelected"
+    - "started"
+    - "finalised"
+    - "failed"
+    - "exempted"
+  OtpChosenScaMethod:
+    type: "object"
+    properties:
+      authenticationType:
+        type: "string"
+        enum:
+        - "SMS_OTP"
+        - "CHIP_OTP"
+        - "PHOTO_OTP"
+        - "PUSH_OTP"
+        - "SMTP_OTP"
+      authenticationVersion:
+        type: "string"
+      authenticationMethodId:
+        type: "string"
+      name:
+        type: "string"
+      explanation:
+        type: "string"
+  OtpChallengeData:
+    type: "object"
+    properties:
+      image:
+        type: "string"
+      data:
+        type: "array"
+        items:
+          type: "string"
+      imageLink:
+        type: "string"
+      otpMaxLength:
+        type: "string"
+      otpFormat:
+        type: "string"
+      additionalInformation:
+        type: "string"
