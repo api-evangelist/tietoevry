@@ -430,7 +430,7 @@ paths:
       - Account Information Service
       summary: Read Account List
       description: Reads a list of bank accounts, with balances where required.
-      operationId: getAccounts
+      operationId: getSandboxXs2aV13Accounts
       parameters:
       - name: Accept
         in: header
@@ -502,6 +502,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccounts
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -511,7 +513,7 @@ paths:
       - Account Information Service
       summary: Read Account Details
       description: Reads details about an account, with balances where required.
-      operationId: getAccount
+      operationId: getSandboxXs2aV13AccountsByAccountId
       parameters:
       - name: Accept
         in: header
@@ -595,6 +597,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccount
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -604,7 +608,7 @@ paths:
       - Account Information Service
       summary: Read Balance
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountBalances
+      operationId: getSandboxXs2aV13AccountsByAccountIdBalances
       parameters:
       - name: Accept
         in: header
@@ -682,6 +686,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountBalances
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -691,7 +697,7 @@ paths:
       - Account Information Service
       summary: Read Transaction List
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountTransactions
+      operationId: getSandboxXs2aV13AccountsByAccountIdTransactions
       parameters:
       - name: Accept
         in: header
@@ -803,6 +809,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransactions
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -905,7 +913,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Account List'
       description: Reads a list of bank accounts, with balances where required.
-      operationId: getAccounts
+      operationId: getXs2aPremiumV13Accounts
       parameters:
       - name: Consent-ID
         in: header
@@ -983,6 +991,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccounts
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -992,7 +1002,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Account Details'
       description: Reads details about an account, with balances where required.
-      operationId: getAccount
+      operationId: getXs2aPremiumV13AccountsByAccountId
       parameters:
       - name: account-id
         in: path
@@ -1082,6 +1092,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccount
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1091,7 +1103,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Balance'
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountBalances
+      operationId: getXs2aPremiumV13AccountsByAccountIdBalances
       parameters:
       - name: account-id
         in: path
@@ -1176,6 +1188,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountBalances
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1185,7 +1199,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Transaction List'
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountTransactions
+      operationId: getXs2aPremiumV13AccountsByAccountIdTransactions
       parameters:
       - name: account-id
         in: path
@@ -1310,6 +1324,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransactions
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1319,7 +1335,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Transaction details'
       description: Reads transaction data from a given account addressed by 'account-id' and 'transactionId'. This call is only available on transactions as reported in a JSON format.
-      operationId: getAccountTransaction
+      operationId: getXs2aPremiumV13AccountsByAccountIdTransactionsByTransactionId
       parameters:
       - name: account-id
         in: path
@@ -1410,6 +1426,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransaction
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1419,7 +1437,7 @@ paths:
       - Account Information Service
       summary: Read Account List
       description: Reads a list of bank accounts, with balances where required.
-      operationId: getAccounts
+      operationId: getBySandbox|liveXs2aV12Accounts
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -1504,6 +1522,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccounts
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1513,7 +1533,7 @@ paths:
       - Account Information Service
       summary: Read Account Details
       description: Reads details about an account, with balances where required.
-      operationId: getAccount
+      operationId: getBySandbox|liveXs2aV12AccountsByAccountId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -1610,6 +1630,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccount
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1619,7 +1641,7 @@ paths:
       - Account Information Service
       summary: Read Balance
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountBalances
+      operationId: getBySandbox|liveXs2aV12AccountsByAccountIdBalances
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -1710,6 +1732,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountBalances
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1719,7 +1743,7 @@ paths:
       - Account Information Service
       summary: Read Transaction List
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountTransactions
+      operationId: getBySandbox|liveXs2aV12AccountsByAccountIdTransactions
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -1852,6 +1876,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransactions
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1861,7 +1887,7 @@ paths:
       - Account Information Service
       summary: Read Transaction detail
       description: Reads transaction data from a given account addressed by 'account-id' and 'transactionId'. This call is only available on transactions as reported in a JSON format.
-      operationId: getAccountTransaction
+      operationId: getBySandbox|liveXs2aV12AccountsByAccountIdTransactionsByTransactionId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -1958,6 +1984,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransaction
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1967,7 +1995,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Account List'
       description: Reads a list of bank accounts, with balances where required.
-      operationId: getAccounts
+      operationId: getBySandbox|liveXs2aV13Accounts
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: X-API-Key
@@ -2051,6 +2079,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccounts
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2060,7 +2090,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Account Details'
       description: Reads details about an account, with balances where required.
-      operationId: getAccount
+      operationId: getBySandbox|liveXs2aV13AccountsByAccountId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: account-id
@@ -2156,6 +2186,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccount
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2165,7 +2197,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Balance'
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountBalances
+      operationId: getBySandbox|liveXs2aV13AccountsByAccountIdBalances
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: account-id
@@ -2255,6 +2287,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountBalances
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2264,7 +2298,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Transaction List'
       description: Reads account data from a given account addressed by 'account-id'.
-      operationId: getAccountTransactions
+      operationId: getBySandbox|liveXs2aV13AccountsByAccountIdTransactions
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: account-id
@@ -2396,6 +2430,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransactions
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2405,7 +2441,7 @@ paths:
       - Account Information Service
       summary: 'Account info: Read Transaction details'
       description: Reads transaction data from a given account addressed by 'account-id' and 'transactionId'. This call is only available on transactions as reported in a JSON format.
-      operationId: getAccountTransaction
+      operationId: getBySandbox|liveXs2aV13AccountsByAccountIdTransactionsByTransactionId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: account-id
@@ -2501,6 +2537,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountTransaction
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2522,7 +2560,7 @@ paths:
       - Account Information Service
       summary: Read Account List
       description: Reads a list of bank accounts, with balances where required.
-      operationId: getAccounts
+      operationId: getSandboxXs2aVamV13Accounts
       parameters:
       - name: withBalance
         in: query
@@ -2560,6 +2598,8 @@ paths:
         APPIDHeader: []
         TokenTypeHeader: []
         TokenHeader: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccounts
     servers:
     - url: https://openbanking.api.tietoevry.com
   /sandbox/xs2a-vam/v1.3/accounts/{account-id}:
@@ -2580,7 +2620,7 @@ paths:
       - Account Information Service
       summary: Read Account Details
       description: Reads details about an account, with balances where required.
-      operationId: getAccount
+      operationId: getSandboxXs2aVamV13AccountsByAccountId
       parameters:
       - name: account-id
         in: path
@@ -2630,6 +2670,8 @@ paths:
         APPIDHeader: []
         TokenTypeHeader: []
         TokenHeader: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccount
     servers:
     - url: https://openbanking.api.tietoevry.com
   /sandbox/xs2a-vam/v1.3/accounts/{account-id}/balances:
@@ -2638,7 +2680,7 @@ paths:
       - Account Information Service
       summary: Read Balance
       description: Reads account balances for a given account addressed by 'account-id'.
-      operationId: getAccountBalances
+      operationId: getSandboxXs2aVamV13AccountsByAccountIdBalances
       parameters:
       - name: account-id
         in: path
@@ -2682,10 +2724,33 @@ paths:
         APPIDHeader: []
         TokenTypeHeader: []
         TokenHeader: []
+      x-operation-id-source: normalized
+      x-operation-id-original: getAccountBalances
     servers:
     - url: https://openbanking.api.tietoevry.com
 components:
   schemas:
+    JsonGetAccountBalancesResponse:
+      type: object
+      required:
+      - balances
+      properties:
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
     JsonTransaction:
       type: object
       properties:
@@ -2742,13 +2807,20 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAccountResponse:
+    JsonBalance:
       type: object
       required:
-      - account
+      - balanceAmount
+      - balanceType
       properties:
-        account:
-          $ref: '#/components/schemas/JsonAccountDetails'
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          type: string
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
     JsonMessage:
       type: object
       required:
@@ -2772,6 +2844,78 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonAccountDetails'
+    JsonAccountReport:
+      type: object
+      required:
+      - booked
+      properties:
+        booked:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonTransaction'
+        pending:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonTransaction'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAccountResponse:
+      type: object
+      required:
+      - account
+      properties:
+        account:
+          $ref: '#/components/schemas/JsonAccountDetails'
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
     JsonAccountDetails:
       type: object
       required:
@@ -2800,31 +2944,6 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field
-    JsonBalance:
-      type: object
-      required:
-      - balanceAmount
-      - balanceType
-      properties:
-        balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        balanceType:
-          type: string
-        referenceDate:
-          type: string
-        lastChangeDateTime:
-          type: string
-    JsonGetAccountBalancesResponse:
-      type: object
-      required:
-      - balances
-      properties:
-        account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonBalance'
     JsonGetAccountTransactionsResponse:
       type: object
       properties:
@@ -2836,81 +2955,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonBalance'
-    JsonAccountReport:
-      type: object
-      required:
-      - booked
-      properties:
-        booked:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonTransaction'
-        pending:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonTransaction'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          type: string
-          enum:
-          - ACCP
-          - ACSC
-          - ACSP
-          - ACTC
-          - ACWC
-          - ACWP
-          - RCVD
-          - PDNG
-          - RJCT
-          - CANC
-          - ACFC
-          - PATC
-          - PART
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonHref:
+    JsonGetAccountTransactionDetailsResponse:
       type: object
       properties:
-        href:
-          type: string
-    JsonAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
+        transactionsDetails:
+          $ref: '#/components/schemas/JsonTransaction'
     TransactionStatus:
       type: string
       enum:
@@ -2928,11 +2977,19 @@ components:
       - ACFC
       - PATC
       - PART
-    JsonGetAccountTransactionDetailsResponse:
+    JsonErrorResponse_2:
       type: object
+      required:
+      - transactionStatus
       properties:
-        transactionsDetails:
-          $ref: '#/components/schemas/JsonTransaction'
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountDetails_2:
       type: object
       required:
@@ -2961,29 +3018,6 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonErrorResponse_2:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    BalanceType:
-      type: string
-      enum:
-      - closingBooked
-      - expected
-      - openingBooked
-      - interimAvailable
-      - interimBooked
-      - forwardAvailable
-      - nonInvoiced
     JsonTransaction_2:
       type: object
       properties:
@@ -3017,6 +3051,59 @@ components:
               type: string
             referenceIssuer:
               type: string
+    BalanceType:
+      type: string
+      enum:
+      - closingBooked
+      - expected
+      - openingBooked
+      - interimAvailable
+      - interimBooked
+      - forwardAvailable
+      - nonInvoiced
+    JsonBalance_2:
+      required:
+      - balanceAmount
+      - balanceType
+      type: object
+      properties:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          $ref: '#/components/schemas/BalanceType'
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
+    JsonAccountReference_2:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonErrorResponse_3:
+      required:
+      - transactionStatus
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountDetails_3:
       required:
       - currency
@@ -3049,49 +3136,6 @@ components:
         ownerAddress:
           type: string
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonBalance_2:
-      required:
-      - balanceAmount
-      - balanceType
-      type: object
-      properties:
-        balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        balanceType:
-          $ref: '#/components/schemas/BalanceType'
-        referenceDate:
-          type: string
-        lastChangeDateTime:
-          type: string
-    JsonErrorResponse_3:
-      required:
-      - transactionStatus
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonAccountReference_2:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonTransaction_3:
       type: object
       properties:
@@ -3124,6 +3168,45 @@ components:
               type: string
             referenceIssuer:
               type: string
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonErrorResponse_4:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - AcceptedCustomerProfile
+          - AcceptedSettlementCompleted
+          - AcceptedSettlementInProcess
+          - AcceptedTechnicalValidation
+          - AcceptedWithChange
+          - AcceptedWithoutPosting
+          - Received
+          - Pending
+          - Rejected
     JsonAccountDetails_4:
       type: object
       properties:
@@ -3150,45 +3233,6 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonErrorResponse_4:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          type: string
-          enum:
-          - AcceptedCustomerProfile
-          - AcceptedSettlementCompleted
-          - AcceptedSettlementInProcess
-          - AcceptedTechnicalValidation
-          - AcceptedWithChange
-          - AcceptedWithoutPosting
-          - Received
-          - Pending
-          - Rejected
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonTransaction_4:
       type: object
       properties:
@@ -3222,6 +3266,49 @@ components:
               type: string
             referenceIssuer:
               type: string
+    JsonBalance_3:
+      type: object
+      required:
+      - balanceAmount
+      - balanceType
+      properties:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          $ref: '#/components/schemas/BalanceType'
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
+    JsonAccountReference_4:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonErrorResponse_5:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountDetails_5:
       type: object
       required:
@@ -3250,49 +3337,29 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonBalance_3:
+    AccountsResponse:
+      type: object
+      required:
+      - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2AAccountDetails'
+    XS2ABalance:
       type: object
       required:
       - balanceAmount
       - balanceType
       properties:
         balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
+          $ref: '#/components/schemas/XS2AAmount'
         balanceType:
-          $ref: '#/components/schemas/BalanceType'
+          type: string
         referenceDate:
           type: string
         lastChangeDateTime:
           type: string
-    JsonErrorResponse_5:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonAccountReference_4:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     XS2AErrorResponse:
       type: object
       properties:
@@ -3300,6 +3367,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/XS2ATPPMessage'
+    AccountBalancesResponse:
+      type: object
+      required:
+      - balances
+      properties:
+        account:
+          $ref: '#/components/schemas/XS2AAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2ABalance'
     XS2AAccountDetails:
       type: object
       required:
@@ -3337,43 +3415,6 @@ components:
             balances:
               $ref: '#/components/schemas/XS2AHref'
       description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field
-    XS2AAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
-    XS2AAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban, bban, maskedPan, msisdn or pan field
-    AccountsResponse:
-      type: object
-      required:
-      - accounts
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/XS2AAccountDetails'
     XS2AHref:
       type: object
       properties:
@@ -3399,31 +3440,24 @@ components:
           type: string
           maxLength: 512
           description: Additional explanatory text.
-    XS2ABalance:
+    XS2AAccountReference:
       type: object
       required:
-      - balanceAmount
-      - balanceType
+      - currency
       properties:
-        balanceAmount:
-          $ref: '#/components/schemas/XS2AAmount'
-        balanceType:
+        iban:
           type: string
-        referenceDate:
+        bban:
           type: string
-        lastChangeDateTime:
+        pan:
           type: string
-    AccountBalancesResponse:
-      type: object
-      required:
-      - balances
-      properties:
-        account:
-          $ref: '#/components/schemas/XS2AAccountReference'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/XS2ABalance'
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban, bban, maskedPan, msisdn or pan field
     AccountResponse:
       type: object
       required:
@@ -3431,6 +3465,16 @@ components:
       properties:
         account:
           $ref: '#/components/schemas/XS2AAccountDetails'
+    XS2AAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
   parameters:
     envParam:
       name: sandbox|live
@@ -3442,16 +3486,10 @@ components:
         enum:
         - sandbox
         - live
-    PSU-IP-Port:
-      name: PSU-IP-Port
+    PSU-Device-ID:
+      name: PSU-Device-ID
       in: header
-      description: IP port of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Charset:
-      name: PSU-Accept-Charset
-      in: header
-      description: Accept-Charset header field of the source application, if available.
+      description: UUID for a device, which is used by end user, if available.
       schema:
         type: string
     X-Request-ID:
@@ -3461,22 +3499,22 @@ components:
       required: true
       schema:
         type: string
-    PSU-User-Agent:
-      name: PSU-User-Agent
+    PSU-Accept-Language:
+      name: PSU-Accept-Language
       in: header
-      description: User-Agent header field of the source application, if available.
+      description: Accept-Language header field of the source application, if available.
       schema:
         type: string
-    PSU-Accept-Encoding:
-      name: PSU-Accept-Encoding
+    PSU-IP-Address:
+      name: PSU-IP-Address
       in: header
-      description: Accept-Encoding header field of the source application, if available.
+      description: IP address of the source application
       schema:
         type: string
-    PSU-Accept:
-      name: PSU-Accept
+    PSU-IP-Port:
+      name: PSU-IP-Port
       in: header
-      description: Accept header field of the source application, if available.
+      description: IP port of the source application, if available.
       schema:
         type: string
     PSU-Geo-Location:
@@ -3485,16 +3523,16 @@ components:
       description: Geo Location of the source application, if available.
       schema:
         type: string
-    PSU-Accept-Language:
-      name: PSU-Accept-Language
+    PSU-User-Agent:
+      name: PSU-User-Agent
       in: header
-      description: Accept-Language header field of the source application, if available.
+      description: User-Agent header field of the source application, if available.
       schema:
         type: string
-    PSU-Device-ID:
-      name: PSU-Device-ID
+    PSU-Accept:
+      name: PSU-Accept
       in: header
-      description: UUID for a device, which is used by end user, if available.
+      description: Accept header field of the source application, if available.
       schema:
         type: string
     PSU-ID:
@@ -3504,10 +3542,16 @@ components:
       required: true
       schema:
         type: string
-    PSU-IP-Address:
-      name: PSU-IP-Address
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
       in: header
-      description: IP address of the source application
+      description: Accept-Charset header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: Accept-Encoding header field of the source application, if available.
       schema:
         type: string
   securitySchemes:

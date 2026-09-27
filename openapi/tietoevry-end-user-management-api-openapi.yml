@@ -181,13 +181,6 @@ paths:
         required: true
 components:
   schemas:
-    JsonGetEndUserProvidersResponse:
-      type: object
-      properties:
-        providers:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonProviderRef'
     JsonPutEndUserProvidersRequest:
       type: object
       properties:
@@ -195,6 +188,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonProviderId'
+    JsonProviderId:
+      type: object
+      properties:
+        providerId:
+          type: string
+    JsonCreateEndUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of an anonymous End User
     JsonProviderRef:
       type: object
       properties:
@@ -203,19 +207,15 @@ components:
           description: ID of a provider
         _links:
           $ref: '#/components/schemas/JsonHref'
-    JsonProviderId:
+    JsonGetEndUserProvidersResponse:
       type: object
       properties:
-        providerId:
-          type: string
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonProviderRef'
     JsonHref:
       type: object
       properties:
         href:
           type: string
-    JsonCreateEndUserResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of an anonymous End User

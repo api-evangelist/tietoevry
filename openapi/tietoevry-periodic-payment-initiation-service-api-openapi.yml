@@ -599,7 +599,35 @@ paths:
               $ref: '#/components/schemas/JsonPostPeriodicPaymentRequest'
         required: true
 components:
+  parameters:
+    envParam:
+      name: sandbox|live
+      in: path
+      description: The addressed environment
+      required: true
+      schema:
+        type: string
+        enum:
+        - sandbox
+        - live
   schemas:
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -614,6 +642,164 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostPeriodicPaymentResponse:
+      type: object
+      required:
+      - paymentId
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
+          type: string
+          format: uuid
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostPeriodicPaymentRequest:
+      type: object
+      required:
+      - creditorAddress
+      - creditorAccount
+      - creditorName
+      - debtorAccount
+      - instructedAmount
+      - startDate
+      - frequency
+      properties:
+        endToEndIdentification:
+          type: string
+          description: Unique end to end identity.
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        creditorName:
+          type: string
+        creditorAddress:
+          $ref: '#/components/schemas/JsonAddress'
+        creditorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        startDate:
+          type: string
+          description: The first applicable day of execution starting from this date is the first payment. The content is date in ISODate Format, e.g. 2017-10-30.
+        endDate:
+          type: string
+          description: The last applicable day of execution. If not given, it is an infinite standing order. The content is date in ISODate Format, e.g. 2017-10-30.
+        frequency:
+          type: string
+          description: The frequency of the recurring payment resulting from this standing order.
+          enum:
+          - Daily
+          - Weekly
+          - Monthly
+          - Quarterly
+        remittanceInformationUnstructured:
+          type: string
+          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
+        remittanceInformationStructured:
+          type: object
+          required:
+          - reference
+          properties:
+            reference:
+              type: string
+            referenceType:
+              type: string
+            referenceIssuer:
+              type: string
+    JsonAccountReference:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
     JsonGetPeriodicPaymentResponse:
       type: object
       required:
@@ -672,10 +858,19 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostPeriodicPaymentResponse:
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse:
       type: object
       required:
-      - paymentId
       - transactionStatus
       properties:
         psuMessage:
@@ -684,18 +879,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
     JsonAddress:
       type: object
       required:
@@ -711,148 +901,6 @@ components:
           type: string
         country:
           type: string
-    JsonPostPeriodicPaymentRequest:
-      type: object
-      required:
-      - creditorAddress
-      - creditorAccount
-      - creditorName
-      - debtorAccount
-      - instructedAmount
-      - startDate
-      - frequency
-      properties:
-        endToEndIdentification:
-          type: string
-          description: Unique end to end identity.
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        creditorName:
-          type: string
-        creditorAddress:
-          $ref: '#/components/schemas/JsonAddress'
-        creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        startDate:
-          type: string
-          description: The first applicable day of execution starting from this date is the first payment. The content is date in ISODate Format, e.g. 2017-10-30.
-        endDate:
-          type: string
-          description: The last applicable day of execution. If not given, it is an infinite standing order. The content is date in ISODate Format, e.g. 2017-10-30.
-        frequency:
-          type: string
-          description: The frequency of the recurring payment resulting from this standing order.
-          enum:
-          - Daily
-          - Weekly
-          - Monthly
-          - Quarterly
-        remittanceInformationUnstructured:
-          type: string
-          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
-        remittanceInformationStructured:
-          type: object
-          required:
-          - reference
-          properties:
-            reference:
-              type: string
-            referenceType:
-              type: string
-            referenceIssuer:
-              type: string
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonLinks:
-      type: object
-      properties:
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-        scaOAuth:
-          $ref: '#/components/schemas/JsonHref'
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        account:
-          $ref: '#/components/schemas/JsonHref'
-        balances:
-          $ref: '#/components/schemas/JsonHref'
-        transactions:
-          $ref: '#/components/schemas/JsonHref'
-        transactionDetails:
-          $ref: '#/components/schemas/JsonHref'
-        first:
-          $ref: '#/components/schemas/JsonHref'
-        next:
-          $ref: '#/components/schemas/JsonHref'
-        previous:
-          $ref: '#/components/schemas/JsonHref'
-        last:
-          $ref: '#/components/schemas/JsonHref'
-        download:
-          $ref: '#/components/schemas/JsonHref'
-        updatePsuIdentification:
-          $ref: '#/components/schemas/JsonHref'
-        startAuthorisation:
-          $ref: '#/components/schemas/JsonHref'
-        scaStatus:
-          $ref: '#/components/schemas/JsonHref'
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonGetPeriodicPaymentStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     ScaStatus:
       type: string
       enum:
@@ -864,58 +912,10 @@ components:
       - finalised
       - failed
       - exempted
-    JsonErrorResponse:
+    JsonGetPeriodicPaymentStatusResponse:
       type: object
       required:
       - transactionStatus
       properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonAccountReference:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
-  parameters:
-    envParam:
-      name: sandbox|live
-      in: path
-      description: The addressed environment
-      required: true
-      schema:
-        type: string
-        enum:
-        - sandbox
-        - live

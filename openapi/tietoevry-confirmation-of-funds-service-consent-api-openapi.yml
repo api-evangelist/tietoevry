@@ -381,7 +381,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: Establish Funds Confirmation Consent Transaction
       description: Creates an funds confirmation consent resource at the ASPSP regarding access to make funds confirmation to specified accounts in this request.
-      operationId: postFundsConfirmationConsent
+      operationId: postBySandbox|liveXs2aV12FundsConfirmationConsents
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -468,6 +468,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostFundsConfirmationConsentsRequest'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: postFundsConfirmationConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -477,7 +479,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: Get Funds Confirmation Consent Request
       description: Returns the content of an funds confirmation consent object.
-      operationId: getFundsConfirmationConsent
+      operationId: getBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -538,12 +540,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmationConsent
     delete:
       tags:
       - Confirmation of Funds Service consent
       summary: Delete an Confirmation of Funds Service Object
       description: The TPP can delete a confirmation of funds consent object.
-      operationId: deleteFundsConsent
+      operationId: deleteBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -593,6 +597,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteFundsConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -602,7 +608,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: Get authorisation sub-resources request
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: fundsConfirmationConsentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -644,12 +650,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationsResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsGetAuthorizations
     post:
       tags:
       - Confirmation of Funds Service consent
       summary: Start authorisation process
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: fundsConfirmationConsentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -697,6 +705,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonPostAuthorisationsResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -706,7 +716,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: Get SCA status request
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: fundsConfirmationConsentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -754,6 +764,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -763,7 +775,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: Get Status Request
       description: Can check the status of an funds confirmation consent resource.
-      operationId: getFundsConfirmationConsentStatus
+      operationId: getBySandbox|liveXs2aV12FundsConfirmationConsentsByConsentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -824,6 +836,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmationConsentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -833,7 +847,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Establish Funds Confirmation Consent Transaction'
       description: Creates an funds confirmation consent resource at the ASPSP regarding access to make funds confirmation to specified accounts in this request.
-      operationId: postFundsConfirmationConsent
+      operationId: postBySandbox|liveXs2aV13FundsConfirmationConsents
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -941,6 +955,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostFundsConfirmationConsentsRequest_2'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: postFundsConfirmationConsent
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/funds-confirmation-consents/{consent-id}:
@@ -949,7 +965,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Get Funds Confirmation Consent Request'
       description: Returns the content of an funds confirmation consent object.
-      operationId: getFundsConfirmationConsent
+      operationId: getBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: X-Request-ID
@@ -1009,12 +1025,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmationConsent
     delete:
       tags:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Delete an Confirmation of Funds Service Object'
       description: The TPP can delete a confirmation of funds consent object.
-      operationId: deleteFundsConsent
+      operationId: deleteBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1070,6 +1088,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteFundsConsent
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/funds-confirmation-consents/{consent-id}/authorisations:
@@ -1078,7 +1098,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: fundsConfirmationConsentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1138,12 +1158,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsGetAuthorizations
     post:
       tags:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Start authorisation process'
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: fundsConfirmationConsentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1241,6 +1263,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsStartAuthorization
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/funds-confirmation-consents/{consent-id}/authorisations/{authorisation-id}:
@@ -1249,7 +1273,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: fundsConfirmationConsentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1321,6 +1345,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: fundsConfirmationConsentsGetAuthorizationStatus
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/funds-confirmation-consents/{consent-id}/status:
@@ -1329,7 +1355,7 @@ paths:
       - Confirmation of Funds Service consent
       summary: 'Funds confirm: Get Status Request'
       description: Can check the status of an funds confirmation consent resource.
-      operationId: getFundsConfirmationConsentStatus
+      operationId: getBySandbox|liveXs2aV13FundsConfirmationConsentsByConsentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1389,10 +1415,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmationConsentStatus
     servers:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    JsonPostFundsConfirmationConsentsRequest:
+      type: object
+      required:
+      - account
+      - combinedServiceIndicator
+      - instructedAmount
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -1407,70 +1470,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetConsentStatusResponse:
-      type: object
-      properties:
-        consentStatus:
-          type: string
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonLinks:
-      type: object
-      properties:
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-        scaOAuth:
-          $ref: '#/components/schemas/JsonHref'
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        account:
-          $ref: '#/components/schemas/JsonHref'
-        balances:
-          $ref: '#/components/schemas/JsonHref'
-        transactions:
-          $ref: '#/components/schemas/JsonHref'
-        transactionDetails:
-          $ref: '#/components/schemas/JsonHref'
-        first:
-          $ref: '#/components/schemas/JsonHref'
-        next:
-          $ref: '#/components/schemas/JsonHref'
-        previous:
-          $ref: '#/components/schemas/JsonHref'
-        last:
-          $ref: '#/components/schemas/JsonHref'
-        download:
-          $ref: '#/components/schemas/JsonHref'
-        updatePsuIdentification:
-          $ref: '#/components/schemas/JsonHref'
-        startAuthorisation:
-          $ref: '#/components/schemas/JsonHref'
-        scaStatus:
-          $ref: '#/components/schemas/JsonHref'
     JsonGetFundsConfirmationConsentResponse:
       type: object
       required:
@@ -1506,11 +1505,41 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse:
+    JsonLinks:
       type: object
       properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
         scaStatus:
-          type: string
+          $ref: '#/components/schemas/JsonHref'
     JsonMessage:
       type: object
       required:
@@ -1525,37 +1554,11 @@ components:
           type: string
         text:
           type: string
-    JsonPostFundsConfirmationConsentsRequest:
+    JsonGetConsentStatusResponse:
       type: object
-      required:
-      - account
-      - combinedServiceIndicator
-      - instructedAmount
       properties:
-        cardNumber:
+        consentStatus:
           type: string
-        account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        payee:
-          type: string
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        combinedServiceIndicator:
-          type: boolean
-          example: true
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountReference:
       type: object
       required:
@@ -1574,21 +1577,62 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonHref:
       type: object
       properties:
         href:
           type: string
-    JsonAmount:
+    JsonAccountReference_2:
       type: object
-      required:
-      - amount
-      - currency
       properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
         currency:
           type: string
-        amount:
-          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonErrorResponse_2:
       type: object
       required:
@@ -1612,22 +1656,51 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonAccountReference_2:
+    JsonPostFundsConfirmationConsentsRequest_2:
+      type: object
+      required:
+      - account
+      - combinedServiceIndicator
+      - instructedAmount
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+          description: Unsupported mandatory field. Must be set to false
+    ConsentStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+      - valid
+      - revokedByPsu
+      - expired
+      - terminatedByTpp
+    OtpChallengeData:
       type: object
       properties:
-        iban:
+        image:
           type: string
-        bban:
+        data:
+          type: array
+          items:
+            type: string
+        imageLink:
           type: string
-        pan:
+        otpMaxLength:
           type: string
-        maskedPan:
+        otpFormat:
           type: string
-        msisdn:
+        additionalInformation:
           type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonPostAuthorisationsResponse_2:
       type: object
       properties:
@@ -1646,30 +1719,6 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonGetConsentStatusResponse_2:
-      type: object
-      properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-    OtpChosenScaMethod:
-      type: object
-      properties:
-        authenticationType:
-          type: string
-          enum:
-          - SMS_OTP
-          - CHIP_OTP
-          - PHOTO_OTP
-          - PUSH_OTP
-          - SMTP_OTP
-        authenticationVersion:
-          type: string
-        authenticationMethodId:
-          type: string
-        name:
-          type: string
-        explanation:
-          type: string
     JsonGetFundsConfirmationConsentResponse_2:
       type: object
       required:
@@ -1703,32 +1752,46 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    ConsentStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-      - valid
-      - revokedByPsu
-      - expired
-      - terminatedByTpp
-    OtpChallengeData:
+    JsonGetConsentStatusResponse_2:
       type: object
       properties:
-        image:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    OtpChosenScaMethod:
+      type: object
+      properties:
+        authenticationType:
           type: string
-        data:
-          type: array
-          items:
-            type: string
-        imageLink:
+          enum:
+          - SMS_OTP
+          - CHIP_OTP
+          - PHOTO_OTP
+          - PUSH_OTP
+          - SMTP_OTP
+        authenticationVersion:
           type: string
-        otpMaxLength:
+        authenticationMethodId:
           type: string
-        otpFormat:
+        name:
           type: string
-        additionalInformation:
+        explanation:
           type: string
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonGetAuthorisationStatusResponse_2:
       type: object
       properties:
@@ -1750,41 +1813,6 @@ components:
       - finalised
       - failed
       - exempted
-    JsonPostFundsConfirmationConsentsRequest_2:
-      type: object
-      required:
-      - account
-      - combinedServiceIndicator
-      - instructedAmount
-      properties:
-        cardNumber:
-          type: string
-        account:
-          $ref: '#/components/schemas/JsonAccountReference_3'
-        payee:
-          type: string
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-          description: Unsupported mandatory field. Must be set to false
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
   parameters:
     envParam:
       name: sandbox|live

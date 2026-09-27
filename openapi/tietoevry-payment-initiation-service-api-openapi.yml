@@ -554,7 +554,7 @@ paths:
     get:
       tags:
       - Payment Initiation Service
-      operationId: getJSONPayment
+      operationId: getSandboxXs2aV13PaymentsByPaymentProductByPaymentId
       description: Returns the content of payment object.
       summary: Get Payment Details
       parameters:
@@ -588,6 +588,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetPaymentResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPayment
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -597,7 +599,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: paymentsGetAuthorizations
+      operationId: getSandboxXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - name: payment-product
         in: path
@@ -631,12 +633,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationsResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizations
     post:
       tags:
       - Payment Initiation Service
       summary: 'Payment: Start authorisation process'
       description: Starts the authorisation process for a payment initiation.
-      operationId: paymentsStartAuthorization
+      operationId: postSandboxXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - name: payment-product
         in: path
@@ -683,6 +687,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonPostAuthorisationsResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -692,7 +698,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: paymentsGetAuthorizationStatus
+      operationId: getSandboxXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisationsByAuthorisationId
       parameters:
       - name: payment-id
         in: path
@@ -732,6 +738,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -741,7 +749,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get Status Request'
       description: Can check the status of a payment initiation.
-      operationId: getJSONPaymentStatus
+      operationId: getSandboxXs2aV13PaymentsByPaymentProductByPaymentIdStatus
       parameters:
       - name: payment-id
         in: path
@@ -793,6 +801,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPaymentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -802,7 +812,7 @@ paths:
       - Payment Initiation Service
       summary: Payment Initiation with JSON encoding of the Payment Instruction
       description: Creates a payment initiation request at the ASPSP.
-      operationId: initiateJSONPayment
+      operationId: postSandboxXs2aV13PaymentsByPaymentProduct
       parameters:
       - name: payment-product
         in: path
@@ -877,6 +887,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/JsonPostPaymentRequest_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: initiateJSONPayment
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -884,7 +896,7 @@ paths:
     get:
       tags:
       - Payment Initiation Service
-      operationId: getJSONPayment
+      operationId: getBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProductByPaymentId
       description: Returns the content of payment object.
       summary: 'Payment: Get Payment Details'
       parameters:
@@ -955,6 +967,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPayment
     delete:
       tags:
       - Payment Initiation Service
@@ -1034,7 +1048,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: paymentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -1104,12 +1118,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizations
     post:
       tags:
       - Payment Initiation Service
       summary: 'Payment: Start authorisation process'
       description: Starts the authorisation process for a payment initiation.
-      operationId: paymentsStartAuthorization
+      operationId: postBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -1204,6 +1220,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsStartAuthorization
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a-premium/v1.3/future-dated-payments/{payment-product}/{payment-id}/authorisations/{authorisation-id}:
@@ -1212,7 +1230,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: paymentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProductByPaymentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1294,6 +1312,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizationStatus
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a-premium/v1.3/future-dated-payments/{payment-product}/{payment-id}/status:
@@ -1302,7 +1322,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get Status Request'
       description: Can check the status of a payment initiation.
-      operationId: getJSONPaymentStatus
+      operationId: getBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProductByPaymentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1371,6 +1391,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPaymentStatus
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a-premium/v1.3/future-dated-payments/{payment-product}:
@@ -1379,7 +1401,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Payment Initiation with JSON encoding of the Payment Instruction'
       description: Creates a payment initiation request at the ASPSP.
-      operationId: initiateJSONPayment
+      operationId: postBySandbox|liveXs2aPremiumV13FutureDatedPaymentsByPaymentProduct
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -1477,13 +1499,15 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostPaymentRequest_3'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: initiateJSONPayment
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.2/payments/{payment-id}:
     get:
       tags:
       - Payment Initiation Service
-      operationId: getJSONPayment
+      operationId: getBySandbox|liveXs2aV12PaymentsByPaymentId
       description: Returns the content of payment object.
       summary: Get Payment Details
       parameters:
@@ -1526,6 +1550,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetPaymentResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPayment
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1535,7 +1561,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: paymentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV12PaymentsByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1577,12 +1603,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationsResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizations
     post:
       tags:
       - Payment Initiation Service
       summary: 'Payment: Start authorisation process'
       description: Starts the authorisation process for a payment initiation.
-      operationId: paymentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV12PaymentsByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1636,6 +1664,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonPostAuthorisationsResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1645,7 +1675,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: paymentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV12PaymentsByPaymentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1693,6 +1723,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1702,7 +1734,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get Status Request'
       description: Can check the status of a payment initiation.
-      operationId: getJSONPaymentStatus
+      operationId: getBySandbox|liveXs2aV12PaymentsByPaymentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -1763,6 +1795,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPaymentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1772,7 +1806,7 @@ paths:
       - Payment Initiation Service
       summary: Payment Initiation with JSON encoding of the Payment Instruction
       description: Creates a payment initiation request at the ASPSP.
-      operationId: initiateJSONPayment
+      operationId: postBySandbox|liveXs2aV12PaymentsByPaymentProduct
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -1865,6 +1899,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostPaymentRequest_4'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: initiateJSONPayment
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1872,7 +1908,7 @@ paths:
     get:
       tags:
       - Payment Initiation Service
-      operationId: getJSONPayment
+      operationId: getBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentId
       description: Returns the content of payment object.
       summary: 'Payment: Get Payment Details'
       parameters:
@@ -1943,12 +1979,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPayment
     delete:
       tags:
       - Payment Initiation Service
       summary: 'Payment: Delete a Payment Object'
       description: The TPP can delete a payment object.
-      operationId: deletePayment
+      operationId: deleteBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -2014,6 +2052,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: deletePayment
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations:
@@ -2022,7 +2062,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: paymentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -2092,12 +2132,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizations
     post:
       tags:
       - Payment Initiation Service
       summary: 'Payment: Start authorisation process'
       description: Starts the authorisation process for a payment initiation.
-      operationId: paymentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -2205,6 +2247,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsStartAuthorization
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/authorisations/{authorisation-id}:
@@ -2213,7 +2257,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: paymentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -2295,6 +2339,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: paymentsGetAuthorizationStatus
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/payments/{payment-product}/{payment-id}/status:
@@ -2303,7 +2349,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Get Status Request'
       description: Can check the status of a payment initiation.
-      operationId: getJSONPaymentStatus
+      operationId: getBySandbox|liveXs2aV13PaymentsByPaymentProductByPaymentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-id
@@ -2372,6 +2418,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getJSONPaymentStatus
     servers:
     - url: https://openbanking.api.tieto.com
   /{sandbox|live}/xs2a/v1.3/payments/{payment-product}:
@@ -2380,7 +2428,7 @@ paths:
       - Payment Initiation Service
       summary: 'Payment: Payment Initiation with JSON encoding of the Payment Instruction'
       description: Creates a payment initiation request at the ASPSP.
-      operationId: initiateJSONPayment
+      operationId: postBySandbox|liveXs2aV13PaymentsByPaymentProduct
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: payment-product
@@ -2491,10 +2539,29 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostPaymentRequest_5'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: initiateJSONPayment
     servers:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -2503,13 +2570,6 @@ components:
         authorisationId:
           type: string
         scaStatus:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonDeletePaymentResponse:
-      type: object
-      properties:
-        transactionStatus:
           type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
@@ -2554,59 +2614,6 @@ components:
           - PART
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonAddress:
-      type: object
-      required:
-      - country
-      properties:
-        street:
-          type: string
-        buildingNumber:
-          type: string
-        city:
-          type: string
-        postalCode:
-          type: string
-        country:
-          type: string
-          description: Two characters as defined by ISO 3166
-    JsonPostPaymentResponse:
-      type: object
-      required:
-      - paymentId
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
-        transactionStatus:
-          type: string
-          enum:
-          - ACCP
-          - ACSC
-          - ACSP
-          - ACTC
-          - ACWC
-          - ACWP
-          - RCVD
-          - PDNG
-          - RJCT
-          - CANC
-          - ACFC
-          - PATC
-          - PART
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonLinks:
       type: object
       properties:
@@ -2642,41 +2649,33 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          type: string
-    JsonGetPaymentStatusResponse:
+    JsonGetPaymentProductsResponse:
       type: object
       required:
-      - transactionStatus
+      - paymentProducts
       properties:
-        fundsAvailable:
-          type: boolean
-        transactionStatus:
-          type: string
-          enum:
-          - ACCP
-          - ACSC
-          - ACSP
-          - ACTC
-          - ACWC
-          - ACWP
-          - RCVD
-          - PDNG
-          - RJCT
-          - CANC
-          - ACFC
-          - PATC
-          - PART
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationIds:
+        paymentProducts:
           type: array
           items:
             type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAddress:
+      type: object
+      required:
+      - country
+      properties:
+        street:
+          type: string
+        buildingNumber:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          description: Two characters as defined by ISO 3166
     JsonMessage:
       type: object
       required:
@@ -2721,17 +2720,36 @@ components:
           - CRED
           - SHAR
           - SLEV
-    JsonGetPaymentProductsResponse:
+    JsonAccountReference:
       type: object
       required:
-      - paymentProducts
+      - currency
       properties:
-        paymentProducts:
-          type: array
-          items:
-            type: string
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonDeletePaymentResponse:
+      type: object
+      properties:
+        transactionStatus:
+          type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
     JsonErrorResponse:
       type: object
       required:
@@ -2759,39 +2777,78 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonHref:
       type: object
       properties:
         href:
           type: string
-    JsonAmount:
+    JsonPostPaymentResponse:
       type: object
       required:
-      - amount
-      - currency
+      - paymentId
+      - transactionStatus
       properties:
-        currency:
+        psuMessage:
           type: string
-        amount:
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
           type: string
+          format: uuid
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetPaymentStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        fundsAvailable:
+          type: boolean
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonGetAuthorisationsResponse_2:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_2:
       type: object
       properties:
@@ -2849,6 +2906,59 @@ components:
           type: string
         country:
           type: string
+    JsonPostPaymentRequest_2:
+      type: object
+      required:
+      - creditorAddress
+      - creditorAccount
+      - creditorName
+      - debtorAccount
+      - instructedAmount
+      properties:
+        endToEndIdentification:
+          type: string
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        creditorName:
+          type: string
+        creditorAddress:
+          $ref: '#/components/schemas/JsonAddress_2'
+        creditorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        remittanceInformationUnstructured:
+          type: string
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonErrorResponse_2:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonPostPaymentResponse_2:
       type: object
       required:
@@ -2873,23 +2983,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
     JsonGetPaymentStatusResponse_2:
       type: object
       required:
@@ -2897,49 +2990,13 @@ components:
       properties:
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonGetAuthorisationsResponse_2:
+    JsonGetAuthorisationsResponse_3:
       type: object
       properties:
         authorisationsIds:
           type: array
           items:
             type: string
-    JsonPostPaymentRequest_2:
-      type: object
-      required:
-      - creditorAddress
-      - creditorAccount
-      - creditorName
-      - debtorAccount
-      - instructedAmount
-      properties:
-        endToEndIdentification:
-          type: string
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        creditorName:
-          type: string
-        creditorAddress:
-          $ref: '#/components/schemas/JsonAddress_2'
-        creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        remittanceInformationUnstructured:
-          type: string
-    JsonErrorResponse_2:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonPostAuthorisationsResponse_3:
       type: object
       properties:
@@ -3005,58 +3062,6 @@ components:
       properties:
         country:
           type: string
-    JsonPostPaymentResponse_3:
-      type: object
-      required:
-      - paymentId
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse_2:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetPaymentStatusResponse_3:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
     JsonPostPaymentRequest_3:
       type: object
       required:
@@ -3097,26 +3102,6 @@ components:
               type: string
             referenceIssuer:
               type: string
-    JsonGetAuthorisationsResponse_3:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    JsonErrorResponse_3:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountReference_2:
       type: object
       properties:
@@ -3133,6 +3118,78 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse_2:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse_3:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonPostPaymentResponse_3:
+      type: object
+      required:
+      - paymentId
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
+          type: string
+          format: uuid
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
+    JsonGetPaymentStatusResponse_3:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonGetAuthorisationsResponse_4:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_4:
       type: object
       properties:
@@ -3204,6 +3261,82 @@ components:
           type: string
         country:
           type: string
+    JsonPostPaymentRequest_4:
+      type: object
+      required:
+      - creditorAddress
+      - creditorAccount
+      - creditorName
+      - debtorAccount
+      - instructedAmount
+      properties:
+        endToEndIdentification:
+          type: string
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        creditorName:
+          type: string
+        creditorAddress:
+          $ref: '#/components/schemas/JsonAddress_4'
+        creditorAccount:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        remittanceInformationUnstructured:
+          type: string
+        requestedExecutionDate:
+          type: string
+          description: This parameter is indicates that this is future dated payment that will execute at this date. The content is date in ISODate Format, e.g. 2017-10-30.
+        remittanceInformationStructured:
+          type: object
+          required:
+          - reference
+          properties:
+            reference:
+              type: string
+            referenceType:
+              type: string
+            referenceIssuer:
+              type: string
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonErrorResponse_4:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - AcceptedCustomerProfile
+          - AcceptedSettlementCompleted
+          - AcceptedSettlementInProcess
+          - AcceptedTechnicalValidation
+          - AcceptedWithChange
+          - AcceptedWithoutPosting
+          - Received
+          - Pending
+          - Rejected
     JsonPostPaymentResponse_4:
       type: object
       required:
@@ -3255,14 +3388,33 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonGetAuthorisationsResponse_4:
+    JsonGetAuthorisationsResponse_5:
       type: object
       properties:
         authorisationsIds:
           type: array
           items:
             type: string
-    JsonPostPaymentRequest_4:
+    OtpChosenScaMethod:
+      type: object
+      properties:
+        authenticationType:
+          type: string
+          enum:
+          - SMS_OTP
+          - CHIP_OTP
+          - PHOTO_OTP
+          - PUSH_OTP
+          - SMTP_OTP
+        authenticationVersion:
+          type: string
+        authenticationMethodId:
+          type: string
+        name:
+          type: string
+        explanation:
+          type: string
+    JsonPostPaymentRequest_5:
       type: object
       required:
       - creditorAddress
@@ -3273,25 +3425,25 @@ components:
       properties:
         endToEndIdentification:
           type: string
+          description: Unique end to end identity.
         debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_3'
+          $ref: '#/components/schemas/JsonAccountReference_4'
         instructedAmount:
           $ref: '#/components/schemas/JsonAmount'
         creditorName:
           type: string
         creditorAddress:
-          $ref: '#/components/schemas/JsonAddress_4'
+          $ref: '#/components/schemas/JsonAddress_5'
         creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_3'
+          $ref: '#/components/schemas/JsonAccountReference_4'
         remittanceInformationUnstructured:
           type: string
-        requestedExecutionDate:
-          type: string
-          description: This parameter is indicates that this is future dated payment that will execute at this date. The content is date in ISODate Format, e.g. 2017-10-30.
+          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
         remittanceInformationStructured:
           type: object
           required:
           - reference
+          description: You can use only one group of Remittance Information fields in payload. Exception – Estonia internal payments – then both Remittance Information types can be provided in the same payload
           properties:
             reference:
               type: string
@@ -3299,72 +3451,6 @@ components:
               type: string
             referenceIssuer:
               type: string
-    JsonErrorResponse_4:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          type: string
-          enum:
-          - AcceptedCustomerProfile
-          - AcceptedSettlementCompleted
-          - AcceptedSettlementInProcess
-          - AcceptedTechnicalValidation
-          - AcceptedWithChange
-          - AcceptedWithoutPosting
-          - Received
-          - Pending
-          - Rejected
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonAddress_5:
-      type: object
-      required:
-      - country
-      properties:
-        country:
-          type: string
-    JsonGetPaymentStatusResponse_5:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonErrorResponse_5:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountReference_4:
       type: object
       properties:
@@ -3381,6 +3467,24 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonPostAuthorisationsResponse_5:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+        chosenScaMethod:
+          $ref: '#/components/schemas/OtpChosenScaMethod'
+        challengeData:
+          $ref: '#/components/schemas/OtpChallengeData'
     JsonGetPaymentResponse_5:
       type: object
       required:
@@ -3422,25 +3526,36 @@ components:
               type: string
             referenceIssuer:
               type: string
-    OtpChosenScaMethod:
+    JsonGetAuthorisationStatusResponse_3:
       type: object
       properties:
-        authenticationType:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
           type: string
-          enum:
-          - SMS_OTP
-          - CHIP_OTP
-          - PHOTO_OTP
-          - PUSH_OTP
-          - SMTP_OTP
-        authenticationVersion:
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetPaymentStatusResponse_5:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonErrorResponse_5:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
           type: string
-        authenticationMethodId:
-          type: string
-        name:
-          type: string
-        explanation:
-          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonPostPaymentResponse_5:
       type: object
       required:
@@ -3469,68 +3584,6 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonGetAuthorisationsResponse_5:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    JsonPostPaymentRequest_5:
-      type: object
-      required:
-      - creditorAddress
-      - creditorAccount
-      - creditorName
-      - debtorAccount
-      - instructedAmount
-      properties:
-        endToEndIdentification:
-          type: string
-          description: Unique end to end identity.
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_4'
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        creditorName:
-          type: string
-        creditorAddress:
-          $ref: '#/components/schemas/JsonAddress_5'
-        creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_4'
-        remittanceInformationUnstructured:
-          type: string
-          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
-        remittanceInformationStructured:
-          type: object
-          required:
-          - reference
-          description: You can use only one group of Remittance Information fields in payload. Exception – Estonia internal payments – then both Remittance Information types can be provided in the same payload
-          properties:
-            reference:
-              type: string
-            referenceType:
-              type: string
-            referenceIssuer:
-              type: string
-    JsonPostAuthorisationsResponse_5:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-        chosenScaMethod:
-          $ref: '#/components/schemas/OtpChosenScaMethod'
-        challengeData:
-          $ref: '#/components/schemas/OtpChallengeData'
     OtpChallengeData:
       type: object
       properties:
@@ -3548,16 +3601,13 @@ components:
           type: string
         additionalInformation:
           type: string
-    JsonGetAuthorisationStatusResponse_3:
+    JsonAddress_5:
       type: object
+      required:
+      - country
       properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
+        country:
           type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
   parameters:
     envParam:
       name: sandbox|live

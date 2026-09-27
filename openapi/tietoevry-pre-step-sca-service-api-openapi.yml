@@ -129,28 +129,6 @@ paths:
                 $ref: '#/components/schemas/JsonErrorResponse'
 components:
   schemas:
-    JsonPreAuthProviderResponse:
-      type: object
-      properties:
-        providerId:
-          type: string
-          description: ID of a provider
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
     JsonErrorResponse:
       type: object
       required:
@@ -178,8 +156,30 @@ components:
           - ACFC
           - PATC
           - PART
+    JsonPreAuthProviderResponse:
+      type: object
+      properties:
+        providerId:
+          type: string
+          description: ID of a provider
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
     JsonHref:
       type: object
       properties:
         href:
+          type: string
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
           type: string

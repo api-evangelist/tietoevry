@@ -326,47 +326,6 @@ paths:
               $ref: '#/components/headers/X-Request-ID-5XX'
 components:
   schemas:
-    MandateInformation:
-      type: object
-      properties:
-        mandateId:
-          type: string
-          description: Identification of Mandates, e.g. a SEPA Mandate ID.
-        recurringIndicator:
-          type: boolean
-          description: '"true", if the transaction is for recurring.
-
-
-            "false", if the transaction is for one time.
-
-            '
-          example: true
-        amount:
-          type: string
-          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
-        currency:
-          type: string
-          description: ISO 4217 Alpha 3 currency code
-          example: EUR
-    ChargebackStatus:
-      type: object
-      properties:
-        chargebackId:
-          type: string
-          description: Chargeback identification
-          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          type: object
-          properties:
-            chargeback:
-              type: object
-              description: Link to chargeback resource
-              properties:
-                href:
-                  type: string
-                  description: Link to a resource
     Event:
       type: object
       properties:
@@ -379,6 +338,60 @@ components:
               type: string
               format: date-time
               example: '2021-06-02T12:00:00Z'
+    ReasonCode:
+      type: string
+      description: '"MD05" - "Collection not due"
+
+        "MD06" - "Refund Request By End Customer"
+
+        '
+      enum:
+      - MD05
+      - MD06
+    RemittanceInformationStructured:
+      type: object
+      description: Structured remittance information
+      properties:
+        reference:
+          type: string
+          example: REF123123
+    PaymentRequest:
+      type: object
+      description: Data that describes the payment
+      properties:
+        instructedAmount:
+          $ref: '#/components/schemas/Amount'
+        debtorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        debtorName:
+          type: string
+          description: Debtor Name
+        creditorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        creditorName:
+          type: string
+          description: Creditor Name
+        creditorAgent:
+          type: string
+          description: BICFI
+          example: AAAADEBBXXX
+        creditorAgentName:
+          type: string
+        creditorId:
+          type: string
+          description: Identification of Creditors, e.g. a SEPA Creditor ID.
+          example: DE452399865083
+        endToEndIdentification:
+          type: string
+          example: 123-ZXCV-890
+        requestedExecutionDate:
+          type: string
+          format: date
+          example: '2021-06-01'
+        remittanceInformationStructured:
+          $ref: '#/components/schemas/RemittanceInformationStructured'
+        mandateInformation:
+          $ref: '#/components/schemas/MandateInformation'
     ErrorResponse:
       type: object
       required:
@@ -436,43 +449,56 @@ components:
                 description: Additional explaining text
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    PaymentRequest:
+    EventName:
+      type: string
+      description: Event name
+      enum:
+      - SettledWithCreditor
+    MandateInformation:
       type: object
-      description: Data that describes the payment
       properties:
-        instructedAmount:
-          $ref: '#/components/schemas/Amount'
-        debtorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        debtorName:
+        mandateId:
           type: string
-          description: Debtor Name
-        creditorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        creditorName:
+          description: Identification of Mandates, e.g. a SEPA Mandate ID.
+        recurringIndicator:
+          type: boolean
+          description: '"true", if the transaction is for recurring.
+
+
+            "false", if the transaction is for one time.
+
+            '
+          example: true
+        amount:
           type: string
-          description: Creditor Name
-        creditorAgent:
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+        currency:
           type: string
-          description: BICFI
-          example: AAAADEBBXXX
-        creditorAgentName:
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
+    AccountReference:
+      type: object
+      required:
+      - iban
+      properties:
+        iban:
           type: string
-        creditorId:
+          description: IBAN of an account
+          example: DE89370400440532013000
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
           type: string
-          description: Identification of Creditors, e.g. a SEPA Creditor ID.
-          example: DE452399865083
-        endToEndIdentification:
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+          example: '1000'
+        currency:
           type: string
-          example: 123-ZXCV-890
-        requestedExecutionDate:
-          type: string
-          format: date
-          example: '2021-06-01'
-        remittanceInformationStructured:
-          $ref: '#/components/schemas/RemittanceInformationStructured'
-        mandateInformation:
-          $ref: '#/components/schemas/MandateInformation'
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
     TransactionStatus:
       description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
       type: string
@@ -488,75 +514,26 @@ components:
       - RJCT
       - CANC
       example: ACCP
-    RemittanceInformationStructured:
+    ChargebackStatus:
       type: object
-      description: Structured remittance information
       properties:
-        reference:
+        chargebackId:
           type: string
-          example: REF123123
-    Amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: string
-          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
-          example: '1000'
-        currency:
-          type: string
-          description: ISO 4217 Alpha 3 currency code
-          example: EUR
-    EventName:
-      type: string
-      description: Event name
-      enum:
-      - SettledWithCreditor
-    ReasonCode:
-      type: string
-      description: '"MD05" - "Collection not due"
-
-        "MD06" - "Refund Request By End Customer"
-
-        '
-      enum:
-      - MD05
-      - MD06
-    AccountReference:
-      type: object
-      required:
-      - iban
-      properties:
-        iban:
-          type: string
-          description: IBAN of an account
-          example: DE89370400440532013000
+          description: Chargeback identification
+          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          type: object
+          properties:
+            chargeback:
+              type: object
+              description: Link to chargeback resource
+              properties:
+                href:
+                  type: string
+                  description: Link to a resource
   parameters:
-    payment-id:
-      name: payment-id
-      in: path
-      required: true
-      description: Payment identification
-      schema:
-        type: string
-    X-Request-ID:
-      name: X-Request-ID
-      in: header
-      description: ID of the request, unique to the call
-      required: true
-      schema:
-        type: string
-        format: uuid
-    Digest:
-      name: Digest
-      in: header
-      description: Is contained if and only if the "Signature" element is contained in the header of the request.
-      schema:
-        type: string
-      required: false
-      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
     Signature-Certificate:
       name: Signature-Certificate
       in: header
@@ -569,6 +546,29 @@ components:
         type: string
         format: byte
       required: false
+    Digest:
+      name: Digest
+      in: header
+      description: Is contained if and only if the "Signature" element is contained in the header of the request.
+      schema:
+        type: string
+      required: false
+      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
+    X-Request-ID:
+      name: X-Request-ID
+      in: header
+      description: ID of the request, unique to the call
+      required: true
+      schema:
+        type: string
+        format: uuid
+    payment-id:
+      name: payment-id
+      in: path
+      required: true
+      description: Payment identification
+      schema:
+        type: string
     Signature:
       name: Signature
       in: header

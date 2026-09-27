@@ -206,23 +206,10 @@ paths:
                 $ref: '#/components/schemas/XS2AErrorResponse'
 components:
   parameters:
-    pageSize:
-      name: pageSize
-      in: query
-      description: Number of entries per page number
-      schema:
-        type: integer
-        default: 20
-    PSU-IP-Port:
-      name: PSU-IP-Port
+    PSU-Device-ID:
+      name: PSU-Device-ID
       in: header
-      description: IP port of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Charset:
-      name: PSU-Accept-Charset
-      in: header
-      description: Accept-Charset header field of the source application, if available.
+      description: UUID for a device, which is used by end user, if available.
       schema:
         type: string
     X-Request-ID:
@@ -232,54 +219,10 @@ components:
       required: true
       schema:
         type: string
-    PSU-User-Agent:
-      name: PSU-User-Agent
-      in: header
-      description: User-Agent header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Encoding:
-      name: PSU-Accept-Encoding
-      in: header
-      description: Accept-Encoding header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept:
-      name: PSU-Accept
-      in: header
-      description: Accept header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Geo-Location:
-      name: PSU-Geo-Location
-      in: header
-      description: Geo Location of the source application, if available.
-      schema:
-        type: string
-    pageNumber:
-      name: pageNumber
-      in: query
-      description: Requested page number
-      schema:
-        type: integer
-        default: 1
     PSU-Accept-Language:
       name: PSU-Accept-Language
       in: header
       description: Accept-Language header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Device-ID:
-      name: PSU-Device-ID
-      in: header
-      description: UUID for a device, which is used by end user, if available.
-      schema:
-        type: string
-    PSU-ID:
-      name: PSU-ID
-      in: header
-      description: User ID of the user initiating the request.
-      required: true
       schema:
         type: string
     PSU-IP-Address:
@@ -295,6 +238,63 @@ components:
       required: true
       schema:
         type: string
+    pageSize:
+      name: pageSize
+      in: query
+      description: Number of entries per page number
+      schema:
+        type: integer
+        default: 20
+    PSU-IP-Port:
+      name: PSU-IP-Port
+      in: header
+      description: IP port of the source application, if available.
+      schema:
+        type: string
+    PSU-Geo-Location:
+      name: PSU-Geo-Location
+      in: header
+      description: Geo Location of the source application, if available.
+      schema:
+        type: string
+    PSU-User-Agent:
+      name: PSU-User-Agent
+      in: header
+      description: User-Agent header field of the source application, if available.
+      schema:
+        type: string
+    pageNumber:
+      name: pageNumber
+      in: query
+      description: Requested page number
+      schema:
+        type: integer
+        default: 1
+    PSU-Accept:
+      name: PSU-Accept
+      in: header
+      description: Accept header field of the source application, if available.
+      schema:
+        type: string
+    PSU-ID:
+      name: PSU-ID
+      in: header
+      description: User ID of the user initiating the request.
+      required: true
+      schema:
+        type: string
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
+      in: header
+      description: Accept-Charset header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: Accept-Encoding header field of the source application, if available.
+      schema:
+        type: string
   schemas:
     XS2AErrorResponse:
       type: object
@@ -303,6 +303,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/XS2ATPPMessage'
+    UsersResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        _links:
+          $ref: '#/components/schemas/XS2APaginationLinks'
     XS2APaginationLinks:
       type: object
       properties:
@@ -316,15 +325,31 @@ components:
           $ref: '#/components/schemas/XS2AHref'
         last:
           $ref: '#/components/schemas/XS2AHref'
-    UsersResponse:
+    XS2AHref:
       type: object
       properties:
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserResponse'
-        _links:
-          $ref: '#/components/schemas/XS2APaginationLinks'
+        href:
+          type: string
+    XS2ATPPMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+          enum:
+          - ERROR
+          - WARNING
+        code:
+          type: string
+        path:
+          type: string
+          description: An explicit path to the request field causing error, if applicable.
+        text:
+          type: string
+          maxLength: 512
+          description: Additional explanatory text.
     UserResponse:
       type: object
       properties:
@@ -375,31 +400,6 @@ components:
           properties:
             self:
               $ref: '#/components/schemas/XS2AHref'
-    XS2AHref:
-      type: object
-      properties:
-        href:
-          type: string
-    XS2ATPPMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-          enum:
-          - ERROR
-          - WARNING
-        code:
-          type: string
-        path:
-          type: string
-          description: An explicit path to the request field causing error, if applicable.
-        text:
-          type: string
-          maxLength: 512
-          description: Additional explanatory text.
     UserType:
       type: string
       description: User type.

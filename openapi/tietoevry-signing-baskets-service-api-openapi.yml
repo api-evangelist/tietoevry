@@ -355,6 +355,20 @@ paths:
         required: true
 components:
   schemas:
+    JsonGetSigningBasketStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -369,6 +383,17 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
     JsonPostSigningBasketResponse:
       type: object
       required:
@@ -386,63 +411,6 @@ components:
           format: uuid
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetSigningBasketResponse:
-      type: object
-      properties:
-        paymentIds:
-          type: array
-          items:
-            type: string
-        consentIds:
-          type: array
-          items:
-            type: string
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetSigningBasketStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
@@ -495,7 +463,7 @@ components:
           type: string
         text:
           type: string
-    JsonPostSigningBasketRequest:
+    JsonGetSigningBasketResponse:
       type: object
       properties:
         paymentIds:
@@ -506,17 +474,38 @@ components:
           type: array
           items:
             type: string
-    ScaStatus:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    TransactionStatus:
       type: string
       enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonErrorResponse:
       type: object
       required:
@@ -535,6 +524,17 @@ components:
       properties:
         href:
           type: string
+    JsonPostSigningBasketRequest:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
   parameters:
     envParam:
       name: sandbox|live

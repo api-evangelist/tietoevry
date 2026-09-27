@@ -380,37 +380,17 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
-    JsonPostAuthorisationsResponse:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonAddress:
+    JsonAmount:
       required:
-      - country
+      - amount
+      - currency
       type: object
       properties:
-        country:
+        currency:
           type: string
-    JsonReason:
-      required:
-      - code
-      - information
-      type: object
-      properties:
-        code:
+        amount:
           type: string
-        information:
-          type: string
-    JsonPostPaymentRecallRequest:
+    JsonGetPaymentRecallResponse:
       required:
       - paymentIdentification
       - creditorAccount
@@ -428,19 +408,34 @@ components:
           $ref: '#/components/schemas/JsonAccountReference'
         instructedAmount:
           $ref: '#/components/schemas/JsonAmount'
+        reason:
+          $ref: '#/components/schemas/JsonReason'
         creditorName:
           type: string
         creditorAddress:
           $ref: '#/components/schemas/JsonAddress'
         creditorAccount:
           $ref: '#/components/schemas/JsonAccountReference'
-        paymentIdentification:
-          type: string
-        reason:
-          $ref: '#/components/schemas/JsonReason'
         remittanceInformationUnstructured:
           type: string
           description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
     JsonGetAuthorisationsResponse:
       type: object
       properties:
@@ -448,27 +443,6 @@ components:
           type: array
           items:
             type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-      - CNCL
-      - PDCR
-      - RJCR
-      - PNDG
     JsonLinks:
       type: object
       properties:
@@ -504,6 +478,20 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
+    JsonMessage:
+      required:
+      - category
+      - code
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
     JsonPostPaymentRecallResponse:
       required:
       - paymentId
@@ -527,41 +515,7 @@ components:
           $ref: '#/components/schemas/JsonAmount'
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonMessage:
-      required:
-      - category
-      - code
-      type: object
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    JsonGetPaymentRecallResponse:
+    JsonPostPaymentRecallRequest:
       required:
       - paymentIdentification
       - creditorAccount
@@ -579,21 +533,19 @@ components:
           $ref: '#/components/schemas/JsonAccountReference'
         instructedAmount:
           $ref: '#/components/schemas/JsonAmount'
-        reason:
-          $ref: '#/components/schemas/JsonReason'
         creditorName:
           type: string
         creditorAddress:
           $ref: '#/components/schemas/JsonAddress'
         creditorAccount:
           $ref: '#/components/schemas/JsonAccountReference'
+        paymentIdentification:
+          type: string
+        reason:
+          $ref: '#/components/schemas/JsonReason'
         remittanceInformationUnstructured:
           type: string
           description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonAccountReference:
       type: object
       properties:
@@ -612,6 +564,46 @@ components:
         code:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+      - CNCL
+      - PDCR
+      - RJCR
+      - PNDG
+    JsonReason:
+      required:
+      - code
+      - information
+      type: object
+      properties:
+        code:
+          type: string
+        information:
+          type: string
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
     JsonErrorResponse:
       required:
       - transactionStatus
@@ -625,6 +617,29 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonAddress:
+      required:
+      - country
+      type: object
+      properties:
+        country:
+          type: string
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
     JsonGetPaymentRecallStatusResponse:
       required:
       - transactionStatus
@@ -632,18 +647,3 @@ components:
       properties:
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonAmount:
-      required:
-      - amount
-      - currency
-      type: object
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string

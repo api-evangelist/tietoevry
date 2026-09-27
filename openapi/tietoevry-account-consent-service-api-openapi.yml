@@ -471,7 +471,7 @@ paths:
       description: 'Creates an account information consent resource at the ASPSP regarding access to accounts specified in this request.
 
         All permitted "access" attributes ("accounts", "balances" and "transactions") used in this message shall carry a non-empty array of account references, indicating the accounts where the type of access is requested. Please note that a "transactions", "balances" or "accounts" access right also gives access to the generic /accounts endpoints, i.e. is implicitly supporting also the "accounts" access.'
-      operationId: postConsent
+      operationId: postSandboxXs2aV13Consents
       parameters:
       - name: Content-Type
         in: header
@@ -542,6 +542,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/JsonPostConsentsRequest_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: postConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -551,7 +553,7 @@ paths:
       - Account consent service
       summary: Get Consent Request
       description: Returns the content of an account information consent object.
-      operationId: getConsent
+      operationId: getSandboxXs2aV13ConsentsByConsentId
       parameters:
       - name: Accept
         in: header
@@ -599,12 +601,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsent
     delete:
       tags:
       - Account consent service
       summary: Delete an Account Information Consent Object
       description: The TPP can delete an account information consent object.
-      operationId: deleteConsent
+      operationId: deleteSandboxXs2aV13ConsentsByConsentId
       parameters:
       - name: consent-id
         in: path
@@ -641,6 +645,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -650,7 +656,7 @@ paths:
       - Account consent service
       summary: Get authorisation sub-resources request
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: consentsGetAuthorizations
+      operationId: getSandboxXs2aV13ConsentsByConsentIdAuthorisations
       parameters:
       - name: consent-id
         in: path
@@ -679,12 +685,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationsResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizations
     post:
       tags:
       - Account consent service
       summary: Start authorisation process
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: consentsStartAuthorization
+      operationId: postSandboxXs2aV13ConsentsByConsentIdAuthorisations
       parameters:
       - name: consent-id
         in: path
@@ -726,6 +734,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonPostAuthorisationsResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -735,7 +745,7 @@ paths:
       - Account consent service
       summary: Get SCA status request
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: consentsGetAuthorizationStatus
+      operationId: getSandboxXs2aV13ConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - name: consent-id
         in: path
@@ -770,6 +780,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -779,7 +791,7 @@ paths:
       - Account consent service
       summary: Get Status Request
       description: Can check the status of an account information consent resource.
-      operationId: getConsentStatus
+      operationId: getSandboxXs2aV13ConsentsByConsentIdStatus
       parameters:
       - name: consent-id
         in: path
@@ -827,6 +839,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -840,7 +854,7 @@ paths:
         All permitted "access" attributes ("accounts", "balances" and "transactions") used in this message shall carry a non-empty array of account references, indicating the accounts where the type of access is requested. Please note that a "transactions", "balances" or "accounts" access right also gives access to the generic /accounts endpoints.
 
         "access" attributes can carry an empty array, indicating that TPP is asking for accessible account list.'
-      operationId: postConsent
+      operationId: postBySandbox|liveXs2aV13Consents
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -935,6 +949,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostConsentsRequest_3'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: postConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -944,7 +960,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get Consent Request'
       description: Returns the content of an account information consent object.
-      operationId: getConsent
+      operationId: getBySandbox|liveXs2aV13ConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: X-Request-ID
@@ -1004,12 +1020,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsent
     delete:
       tags:
       - Account consent service
       summary: 'Account info: Delete an Account Information Consent Object'
       description: The TPP can delete an account information consent object.
-      operationId: deleteConsent
+      operationId: deleteBySandbox|liveXs2aV13ConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1065,6 +1083,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1074,7 +1094,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: consentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV13ConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1134,12 +1154,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizations
     post:
       tags:
       - Account consent service
       summary: 'Account info: Start authorisation process'
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: consentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV13ConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1224,6 +1246,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1233,7 +1257,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: consentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV13ConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1305,6 +1329,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1314,7 +1340,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get Status Request'
       description: Can check the status of an account information consent resource.
-      operationId: getConsentStatus
+      operationId: getBySandbox|liveXs2aV13ConsentsByConsentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -1374,6 +1400,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_3'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1387,7 +1415,7 @@ paths:
         All permitted "access" attributes ("accounts", "balances" and "transactions") used in this message shall carry a non-empty array of account references, indicating the accounts where the type of access is requested. Please note that a "transactions", "balances" or "accounts" access right also gives access to the generic /accounts endpoints.
 
         "access" attributes can carry an empty array, indicating that TPP is asking for accessible account list.'
-      operationId: postConsent
+      operationId: postXs2aPremiumV13Consents
       parameters:
       - name: Content-Type
         in: header
@@ -1478,6 +1506,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
       x-codegen-request-body-name: body
+      x-operation-id-source: normalized
+      x-operation-id-original: postConsent
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1487,7 +1517,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get Consent Request'
       description: Returns the content of an account information consent object.
-      operationId: getConsent
+      operationId: getXs2aPremiumV13ConsentsByConsentId
       parameters:
       - name: X-Request-ID
         in: header
@@ -1543,12 +1573,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsent
     delete:
       tags:
       - Account consent service
       summary: 'Account info: Delete an Account Information Consent Object'
       description: The TPP can delete an account information consent object.
-      operationId: deleteConsent
+      operationId: deleteXs2aPremiumV13ConsentsByConsentId
       parameters:
       - name: consent-id
         in: path
@@ -1595,6 +1627,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteConsent
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1604,7 +1638,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get authorisation sub-resources request'
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: consentsGetAuthorizations
+      operationId: getXs2aPremiumV13ConsentsByConsentIdAuthorisations
       parameters:
       - name: consent-id
         in: path
@@ -1660,12 +1694,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizations
     post:
       tags:
       - Account consent service
       summary: 'Account info: Start authorisation process'
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: consentsStartAuthorization
+      operationId: postXs2aPremiumV13ConsentsByConsentIdAuthorisations
       parameters:
       - name: consent-id
         in: path
@@ -1746,6 +1782,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsStartAuthorization
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1755,7 +1793,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get SCA status request'
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: consentsGetAuthorizationStatus
+      operationId: getXs2aPremiumV13ConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - name: consent-id
         in: path
@@ -1823,6 +1861,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizationStatus
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1832,7 +1872,7 @@ paths:
       - Account consent service
       summary: 'Account info: Get Status Request'
       description: Can check the status of an account information consent resource.
-      operationId: getConsentStatus
+      operationId: getXs2aPremiumV13ConsentsByConsentIdStatus
       parameters:
       - name: consent-id
         in: path
@@ -1888,6 +1928,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_4'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsentStatus
     servers:
     - url: https://openbanking.api.tieto.com/sandbox
     - url: https://openbanking.api.tieto.com/live
@@ -1899,7 +1941,7 @@ paths:
       description: 'Creates an account information consent resource at the ASPSP regarding access to accounts specified in this request.
 
         All permitted "access" attributes ("accounts", "balances" and "transactions") used in this message shall carry a non-empty array of account references, indicating the accounts where the type of access is requested. Please note that a "transactions", "balances" or "accounts" access right also gives access to the generic /accounts endpoints, i.e. is implicitly supporting also the "accounts" access.'
-      operationId: postConsent
+      operationId: postBySandbox|liveXs2aV12Consents
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -1988,6 +2030,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonPostConsentsRequest_5'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: postConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -1997,7 +2041,7 @@ paths:
       - Account consent service
       summary: Get Consent Request
       description: Returns the content of an account information consent object.
-      operationId: getConsent
+      operationId: getBySandbox|liveXs2aV12ConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Accept
@@ -2058,12 +2102,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsent
     delete:
       tags:
       - Account consent service
       summary: Delete an Account Information Consent Object
       description: The TPP can delete an account information consent object.
-      operationId: deleteConsent
+      operationId: deleteBySandbox|liveXs2aV12ConsentsByConsentId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -2113,6 +2159,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: deleteConsent
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2122,7 +2170,7 @@ paths:
       - Account consent service
       summary: Get authorisation sub-resources request
       description: Will deliver an array of resource identifications of all generated authorisation sub-resources.
-      operationId: consentsGetAuthorizations
+      operationId: getBySandbox|liveXs2aV12ConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -2164,12 +2212,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationsResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizations
     post:
       tags:
       - Account consent service
       summary: Start authorisation process
       description: Starts an authorisation process in for establishing account information consent data on the server.
-      operationId: consentsStartAuthorization
+      operationId: postBySandbox|liveXs2aV12ConsentsByConsentIdAuthorisations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -2223,6 +2273,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonPostAuthorisationsResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsStartAuthorization
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2232,7 +2284,7 @@ paths:
       - Account consent service
       summary: Get SCA status request
       description: Checks the SCA status of a authorisation sub-resource.
-      operationId: consentsGetAuthorizationStatus
+      operationId: getBySandbox|liveXs2aV12ConsentsByConsentIdAuthorisationsByAuthorisationId
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -2280,6 +2332,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonGetAuthorisationStatusResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: consentsGetAuthorizationStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -2289,7 +2343,7 @@ paths:
       - Account consent service
       summary: Get Status Request
       description: Can check the status of an account information consent resource.
-      operationId: getConsentStatus
+      operationId: getBySandbox|liveXs2aV12ConsentsByConsentIdStatus
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: consent-id
@@ -2350,11 +2404,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JsonErrorResponse_5'
+      x-operation-id-source: normalized
+      x-operation-id-original: getConsentStatus
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -2366,33 +2429,6 @@ components:
           type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetConsentStatusResponse:
-      type: object
-      properties:
-        consentStatus:
-          type: string
-    JsonAccountAccess:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationIds:
-          type: array
-          items:
-            type: string
     JsonLinks:
       type: object
       properties:
@@ -2428,10 +2464,24 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAuthorisationStatusResponse:
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonGetConsentStatusResponse:
       type: object
       properties:
-        scaStatus:
+        consentStatus:
           type: string
     JsonGetConsentResponse:
       type: object
@@ -2465,36 +2515,6 @@ components:
           - terminatedByTpp
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonPostConsentsResponse:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonPostConsentsRequest:
       type: object
       required:
@@ -2516,6 +2536,45 @@ components:
         combinedServiceIndicator:
           type: boolean
           example: true
+    JsonPostConsentsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        consentId:
+          type: string
+          format: uuid
+        consentStatus:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
     JsonErrorResponse:
       type: object
       required:
@@ -2543,29 +2602,33 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonHref:
       type: object
       properties:
         href:
           type: string
+    JsonAccountAccess:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+    JsonGetAuthorisationsResponse_2:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_2:
       type: object
       properties:
@@ -2580,30 +2643,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationsResponse_2:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
     JsonGetConsentResponse_2:
       type: object
       required:
@@ -2637,23 +2676,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_2:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
     JsonPostConsentsRequest_2:
       type: object
       required:
@@ -2674,6 +2696,40 @@ components:
         combinedServiceIndicator:
           type: boolean
           example: true
+    JsonPostConsentsResponse_2:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        consentId:
+          type: string
+          format: uuid
+        consentStatus:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
     JsonErrorResponse_2:
       type: object
       required:
@@ -2687,6 +2743,27 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
+    CashAccountType:
+      type: string
+      enum:
+      - CACC
+      - CARD
+    ConsentStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+      - valid
+      - revokedByPsu
+      - expired
+      - terminatedByTpp
+    JsonGetAuthorisationsResponse_3:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_3:
       type: object
       properties:
@@ -2706,108 +2783,6 @@ components:
       properties:
         consentStatus:
           $ref: '#/components/schemas/ConsentStatus'
-    JsonAccountAccess_2:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        restrictedTo:
-          type: array
-          items:
-            $ref: '#/components/schemas/CashAccountType'
-    CashAccountType:
-      type: string
-      enum:
-      - CACC
-      - CARD
-    JsonGetAuthorisationsResponse_3:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    ConsentStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-      - valid
-      - revokedByPsu
-      - expired
-      - terminatedByTpp
-    JsonGetAuthorisationStatusResponse_2:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_3:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    JsonPostConsentsRequest_3:
-      type: object
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess_2'
-        recurringIndicator:
-          type: boolean
-          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
-        validUntil:
-          type: string
-          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
-        frequencyPerDay:
-          type: string
-          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-          description: Unsupported mandatory field. Must be set to false
     JsonGetConsentResponse_3:
       type: object
       required:
@@ -2838,10 +2813,32 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse_3:
+    JsonPostConsentsRequest_3:
       type: object
       required:
-      - transactionStatus
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess_2'
+        recurringIndicator:
+          type: boolean
+          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
+        validUntil:
+          type: string
+          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
+        frequencyPerDay:
+          type: string
+          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+          description: Unsupported mandatory field. Must be set to false
+    JsonPostConsentsResponse_3:
+      type: object
       properties:
         psuMessage:
           type: string
@@ -2849,8 +2846,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
+        consentId:
+          type: string
+          format: uuid
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonAccountReference_2:
       type: object
       properties:
@@ -2869,6 +2872,66 @@ components:
         cashAccountType:
           $ref: '#/components/schemas/CashAccountType'
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse_2:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse_3:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
+    JsonAccountAccess_2:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        restrictedTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/CashAccountType'
+    JsonGetAuthorisationsResponse_4:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_4:
       type: object
       properties:
@@ -2887,90 +2950,6 @@ components:
       properties:
         consentStatus:
           $ref: '#/components/schemas/ConsentStatus'
-    JsonAccountAccess_3:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        additionalAccountInformation:
-          $ref: '#/components/schemas/JsonAdditionalAccountInformation'
-    JsonGetAuthorisationsResponse_4:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    JsonGetAuthorisationStatusResponse_3:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_4:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsRequest_4:
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      type: object
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess_3'
-        recurringIndicator:
-          type: boolean
-          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
-        validUntil:
-          type: string
-          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
-        frequencyPerDay:
-          type: string
-          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
-        combinedServiceIndicator:
-          type: boolean
-          description: Unsupported mandatory field. Must be set to false
-          example: false
-    JsonAdditionalAccountInformation:
-      type: object
-      properties:
-        ownerName:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        ownerAddress:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
     JsonGetConsentResponse_4:
       required:
       - access
@@ -3000,19 +2979,41 @@ components:
           $ref: '#/components/schemas/ConsentStatus'
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse_4:
-      required:
-      - transactionStatus
+    JsonAdditionalAccountInformation:
       type: object
       properties:
-        psuMessage:
-          type: string
-        tppMessages:
+        ownerName:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        ownerAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+    JsonPostConsentsRequest_4:
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      type: object
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess_3'
+        recurringIndicator:
+          type: boolean
+          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
+        validUntil:
+          type: string
+          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
+        frequencyPerDay:
+          type: string
+          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
+        combinedServiceIndicator:
+          type: boolean
+          description: Unsupported mandatory field. Must be set to false
+          example: false
     JsonAccountReference_3:
       type: object
       properties:
@@ -3029,6 +3030,68 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonPostConsentsResponse_4:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        consentId:
+          type: string
+          format: uuid
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetAuthorisationStatusResponse_3:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse_4:
+      required:
+      - transactionStatus
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonAccountAccess_3:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        additionalAccountInformation:
+          $ref: '#/components/schemas/JsonAdditionalAccountInformation'
+    JsonGetAuthorisationsResponse_5:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse_5:
       type: object
       properties:
@@ -3043,13 +3106,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationsResponse_5:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
     JsonGetConsentResponse_5:
       type: object
       required:
@@ -3084,23 +3140,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_5:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
     JsonPostConsentsRequest_5:
       type: object
       required:
@@ -3121,6 +3160,39 @@ components:
         combinedServiceIndicator:
           type: boolean
           example: true
+    JsonPostConsentsResponse_5:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        consentId:
+          type: string
+          format: uuid
+        consentStatus:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference_4:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonErrorResponse_5:
       type: object
       required:
@@ -3144,56 +3216,13 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonAccountReference_4:
+    JsonGetAuthorisationsResponse_6:
       type: object
       properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonErrorResponse_6:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
+        authorisationsIds:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonAccountReference_5:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonGetConsentStatusResponse_4:
-      type: object
-      properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
+            type: string
     OtpChosenScaMethod:
       type: object
       properties:
@@ -3213,13 +3242,40 @@ components:
           type: string
         explanation:
           type: string
-    JsonGetAuthorisationsResponse_6:
+    JsonAccountReference_5:
       type: object
       properties:
-        authorisationsIds:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonPostAuthorisationsResponse_6:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+        chosenScaMethod:
+          $ref: '#/components/schemas/OtpChosenScaMethod'
+        challengeData:
+          $ref: '#/components/schemas/OtpChallengeData'
     JsonGetConsentResponse_6:
       type: object
       required:
@@ -3250,8 +3306,25 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostAuthorisationsResponse_6:
+    JsonGetAuthorisationStatusResponse_4:
       type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetConsentStatusResponse_4:
+      type: object
+      properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    JsonErrorResponse_6:
+      type: object
+      required:
+      - transactionStatus
       properties:
         psuMessage:
           type: string
@@ -3259,15 +3332,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-        chosenScaMethod:
-          $ref: '#/components/schemas/OtpChosenScaMethod'
-        challengeData:
-          $ref: '#/components/schemas/OtpChallengeData'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     OtpChallengeData:
       type: object
       properties:
@@ -3306,16 +3372,6 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonGetAuthorisationStatusResponse_4:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
     JsonPostConsentsRequest_6:
       type: object
       required:

@@ -101,18 +101,6 @@ paths:
                 $ref: '#/components/schemas/JsonGetProviderResponse'
 components:
   schemas:
-    JsonGetProvidersResponse:
-      type: object
-      properties:
-        providers:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonProvider'
-    JsonGetProviderResponse:
-      type: object
-      properties:
-        provider:
-          $ref: '#/components/schemas/JsonProvider'
     JsonProvider:
       type: object
       properties:
@@ -124,3 +112,15 @@ components:
           type: string
         bankCode:
           type: string
+    JsonGetProviderResponse:
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/JsonProvider'
+    JsonGetProvidersResponse:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonProvider'

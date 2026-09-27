@@ -294,18 +294,6 @@ paths:
                 $ref: '#/components/schemas/JsonAggregatedConsentCreationResultResponse'
 components:
   schemas:
-    JsonPreAuthProviderResponse:
-      type: object
-      properties:
-        providerId:
-          type: string
-          description: ID of a provider
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-    JsonPreAuthProvidersResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/JsonPreAuthProviderResponse'
     JsonAggregatedConsentCreation:
       type: object
       description: A unified request for an aggregated creation of consents. Specific provider IDs shall be given.
@@ -332,40 +320,35 @@ components:
           type: array
           items:
             type: string
-    JsonGetAggregatedAccountsResponse:
+    JsonAggregatedConsentCreationResultResponse:
       type: object
       required:
-      - accountLists
+      - newConsent
       properties:
-        accountLists:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountList'
-    JsonNewConsentDetails:
+        newConsent:
+          $ref: '#/components/schemas/JsonGetNewConsentDetails'
+    JsonAggregatedAccountAccess:
+      type: object
+      properties:
+        accounts:
+          type: boolean
+        balances:
+          type: boolean
+        transactions:
+          type: boolean
+    JsonPreAuthProviderResponse:
       type: object
       properties:
         providerId:
           type: string
-        _links:
-          properties:
-            self:
-              $ref: '#/components/schemas/JsonHref'
-    JsonAccountList:
-      type: object
-      properties:
-        providerId:
-          type: string
-        _links:
+          description: ID of a provider
+        scaRedirect:
           $ref: '#/components/schemas/JsonHref'
-    JsonAggregatedConsentsResponse:
+    JsonHref:
       type: object
-      required:
-      - newConsents
       properties:
-        newConsents:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonNewConsentDetails'
+        href:
+          type: string
     JsonMessage:
       type: object
       required:
@@ -380,21 +363,26 @@ components:
           type: string
         text:
           type: string
-    JsonGetNewConsentDetails:
+    JsonPreAuthProvidersResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/JsonPreAuthProviderResponse'
+    JsonAccountList:
       type: object
       properties:
         providerId:
           type: string
         _links:
-          properties:
-            consent:
-              $ref: '#/components/schemas/JsonHref'
-            self:
-              $ref: '#/components/schemas/JsonHref'
-            scaRedirect:
-              $ref: '#/components/schemas/JsonHref'
-            status:
-              $ref: '#/components/schemas/JsonHref'
+          $ref: '#/components/schemas/JsonHref'
+    JsonGetAggregatedAccountsResponse:
+      type: object
+      required:
+      - accountLists
+      properties:
+        accountLists:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountList'
     JsonErrorResponse:
       type: object
       required:
@@ -422,24 +410,36 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonAggregatedConsentCreationResultResponse:
+    JsonAggregatedConsentsResponse:
       type: object
       required:
-      - newConsent
+      - newConsents
       properties:
-        newConsent:
-          $ref: '#/components/schemas/JsonGetNewConsentDetails'
-    JsonAggregatedAccountAccess:
+        newConsents:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonNewConsentDetails'
+    JsonNewConsentDetails:
       type: object
       properties:
-        accounts:
-          type: boolean
-        balances:
-          type: boolean
-        transactions:
-          type: boolean
-    JsonHref:
-      type: object
-      properties:
-        href:
+        providerId:
           type: string
+        _links:
+          properties:
+            self:
+              $ref: '#/components/schemas/JsonHref'
+    JsonGetNewConsentDetails:
+      type: object
+      properties:
+        providerId:
+          type: string
+        _links:
+          properties:
+            consent:
+              $ref: '#/components/schemas/JsonHref'
+            self:
+              $ref: '#/components/schemas/JsonHref'
+            scaRedirect:
+              $ref: '#/components/schemas/JsonHref'
+            status:
+              $ref: '#/components/schemas/JsonHref'

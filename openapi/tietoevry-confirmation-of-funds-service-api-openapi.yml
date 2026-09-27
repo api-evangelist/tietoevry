@@ -544,7 +544,7 @@ paths:
         If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
 
         If the card number is not registered for any of the accounts, the card number is ignored.'
-      operationId: getFundsConfirmation
+      operationId: postSandboxXs2aV13FundsConfirmations
       parameters:
       - name: Content-Type
         in: header
@@ -590,6 +590,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/JsonFundsConfirmationRequest_2'
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmation
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -607,7 +609,7 @@ paths:
         If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
 
         If the card number is not registered for any of the accounts, the card number is ignored.'
-      operationId: getFundsConfirmation
+      operationId: postBySandbox|liveXs2aV12FundsConfirmations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -674,6 +676,8 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonFundsConfirmationRequest_3'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmation
     servers:
     - url: http://openbanking.api.tieto.com
     - url: https://openbanking.api.tieto.com
@@ -691,7 +695,7 @@ paths:
         If card number and the PSU account identifier is contained:: check on sub-account addressed by card, if the addressed card is registered with one of the sub-accounts.
 
         If the card number is not registered for any of the accounts, the card number is ignored.'
-      operationId: getFundsConfirmation
+      operationId: postBySandbox|liveXs2aV13FundsConfirmations
       parameters:
       - $ref: '#/components/parameters/envParam'
       - name: Content-Type
@@ -757,10 +761,52 @@ paths:
             schema:
               $ref: '#/components/schemas/JsonFundsConfirmationRequest_4'
         required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: getFundsConfirmation
     servers:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    JsonPostFundsConfirmationConsentsRequest:
+      type: object
+      required:
+      - accounts
+      - combinedServiceIndicator
+      - validUntil
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        validUntil:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonFundsConfirmationResponse:
+      type: object
+      required:
+      - fundsAvailable
+      properties:
+        fundsAvailable:
+          type: boolean
+    JsonAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationIds:
+          type: array
+          items:
+            type: string
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -772,39 +818,35 @@ components:
           type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonFundsConfirmationResponse:
+    JsonGetFundsConfirmationConsentResponse:
       type: object
       required:
-      - fundsAvailable
+      - accounts
+      - combinedServiceIndicator
+      - consentStatus
+      - validUntil
       properties:
-        fundsAvailable:
-          type: boolean
-    JsonGetConsentStatusResponse:
-      type: object
-      properties:
-        consentStatus:
-          type: string
-    JsonFundsConfirmationRequest:
-      type: object
-      required:
-      - instructedAmount
-      - psuAccount
-      properties:
-        cardNumber:
-          type: string
-        account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        payee:
-          type: string
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationIds:
+        accounts:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/JsonAccountReference'
+        recurringIndicator:
+          type: boolean
+        validUntil:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+        consentStatus:
+          type: string
+          enum:
+          - received
+          - valid
+          - blocked
+          - expired
+          - deleted
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
     JsonLinks:
       type: object
       properties:
@@ -840,40 +882,6 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          type: string
-    JsonGetFundsConfirmationConsentResponse:
-      type: object
-      required:
-      - accounts
-      - combinedServiceIndicator
-      - consentStatus
-      - validUntil
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        recurringIndicator:
-          type: boolean
-        validUntil:
-          type: string
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-        consentStatus:
-          type: string
-          enum:
-          - received
-          - valid
-          - blocked
-          - expired
-          - deleted
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonMessage:
       type: object
       required:
@@ -888,22 +896,34 @@ components:
           type: string
         text:
           type: string
-    JsonPostFundsConfirmationConsentsRequest:
+    JsonGetConsentStatusResponse:
+      type: object
+      properties:
+        consentStatus:
+          type: string
+    JsonAccountReference:
       type: object
       required:
-      - accounts
-      - combinedServiceIndicator
-      - validUntil
+      - currency
       properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        validUntil:
+        iban:
           type: string
-        combinedServiceIndicator:
-          type: boolean
-          example: true
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
     JsonErrorResponse:
       type: object
       required:
@@ -931,44 +951,16 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonHref:
       type: object
       properties:
         href:
           type: string
-    JsonAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
-    JsonFundsConfirmationRequest_2:
+    JsonFundsConfirmationRequest:
       type: object
       required:
       - instructedAmount
-      - account
+      - psuAccount
       properties:
         cardNumber:
           type: string
@@ -1008,7 +1000,7 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonFundsConfirmationRequest_3:
+    JsonFundsConfirmationRequest_2:
       type: object
       required:
       - instructedAmount
@@ -1017,11 +1009,27 @@ components:
         cardNumber:
           type: string
         account:
-          $ref: '#/components/schemas/JsonAccountReference_2'
+          $ref: '#/components/schemas/JsonAccountReference'
         payee:
           type: string
         instructedAmount:
           $ref: '#/components/schemas/JsonAmount'
+    JsonAccountReference_2:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonErrorResponse_3:
       type: object
       required:
@@ -1045,23 +1053,7 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonAccountReference_2:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonFundsConfirmationRequest_4:
+    JsonFundsConfirmationRequest_3:
       type: object
       required:
       - instructedAmount
@@ -1070,24 +1062,11 @@ components:
         cardNumber:
           type: string
         account:
-          $ref: '#/components/schemas/JsonAccountReference_3'
+          $ref: '#/components/schemas/JsonAccountReference_2'
         payee:
           type: string
         instructedAmount:
           $ref: '#/components/schemas/JsonAmount'
-    JsonErrorResponse_4:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonAccountReference_3:
       type: object
       properties:
@@ -1104,6 +1083,33 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonErrorResponse_4:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonFundsConfirmationRequest_4:
+      type: object
+      required:
+      - instructedAmount
+      - account
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
   parameters:
     envParam:
       name: sandbox|live
