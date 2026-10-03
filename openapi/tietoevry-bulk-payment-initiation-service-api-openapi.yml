@@ -356,17 +356,6 @@ paths:
               $ref: '#/components/schemas/JsonPostBulkPaymentRequest'
         required: true
 components:
-  parameters:
-    envParam:
-      name: sandbox|live
-      in: path
-      description: The addressed environment
-      required: true
-      schema:
-        type: string
-        enum:
-        - sandbox
-        - live
   schemas:
     JsonAmount:
       type: object
@@ -377,6 +366,139 @@ components:
         currency:
           type: string
         amount:
+          type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
+    JsonPostPaymentResponse:
+      type: object
+      required:
+      - paymentId
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
+          type: string
+          format: uuid
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostBulkPaymentRequest:
+      type: object
+      required:
+      - debtorAccount
+      - payments
+      properties:
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        batchBookingPreferred:
+          type: boolean
+          default: false
+          description: If this element equals true, the PSU prefers only one booking entry. If this element equals false, the PSU prefers individual booking of all contained individual transactions.
+        payments:
+          type: array
+          items:
+            type: object
+            required:
+            - creditorAddress
+            - creditorAccount
+            - creditorName
+            - instructedAmount
+            properties:
+              instructedAmount:
+                $ref: '#/components/schemas/JsonAmount'
+              creditorName:
+                type: string
+              creditorAddress:
+                $ref: '#/components/schemas/JsonAddress'
+              creditorAccount:
+                $ref: '#/components/schemas/JsonAccountReference'
+              remittanceInformationUnstructured:
+                type: string
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonAddress:
+      type: object
+      required:
+      - country
+      properties:
+        street:
+          type: string
+        buildingNumber:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
           type: string
     JsonGetBulkPaymentResponse:
       type: object
@@ -411,13 +533,24 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationsResponse:
+    JsonGetPaymentStatusResponse:
       type: object
+      required:
+      - transactionStatus
       properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -432,6 +565,28 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
     JsonLinks:
       type: object
       properties:
@@ -467,169 +622,14 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonAddress:
-      type: object
-      required:
-      - country
-      properties:
-        street:
-          type: string
-        buildingNumber:
-          type: string
-        city:
-          type: string
-        postalCode:
-          type: string
-        country:
-          type: string
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonPostBulkPaymentRequest:
-      type: object
-      required:
-      - debtorAccount
-      - payments
-      properties:
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        batchBookingPreferred:
-          type: boolean
-          default: false
-          description: If this element equals true, the PSU prefers only one booking entry. If this element equals false, the PSU prefers individual booking of all contained individual transactions.
-        payments:
-          type: array
-          items:
-            type: object
-            required:
-            - creditorAddress
-            - creditorAccount
-            - creditorName
-            - instructedAmount
-            properties:
-              instructedAmount:
-                $ref: '#/components/schemas/JsonAmount'
-              creditorName:
-                type: string
-              creditorAddress:
-                $ref: '#/components/schemas/JsonAddress'
-              creditorAccount:
-                $ref: '#/components/schemas/JsonAccountReference'
-              remittanceInformationUnstructured:
-                type: string
-    JsonPostPaymentResponse:
-      type: object
-      required:
-      - paymentId
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    JsonGetPaymentStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
+  parameters:
+    envParam:
+      name: sandbox|live
+      in: path
+      description: The addressed environment
+      required: true
+      schema:
+        type: string
+        enum:
+        - sandbox
+        - live

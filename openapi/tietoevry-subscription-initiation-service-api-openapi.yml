@@ -117,20 +117,22 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
+    JsonPostSubscriptionRequest:
+      required:
+      - iban
+      - apiClientPrimaryPushURI
+      type: object
+      properties:
+        subscriptionEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonaccountIdReference'
+          description: The URL to the service API what listens endpoints
     SubscriptionStatus:
       type: string
       enum:
       - received
       - rejected
-    JsonTppMessages:
-      type: object
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        text:
-          type: string
     JsonGetAccountIdReference:
       type: object
       properties:
@@ -145,40 +147,24 @@ components:
           type: string
         apiClientPrimaryPushURI:
           type: string
-    JsonLinks:
+    JsonErrorResponse:
+      required:
+      - transactionStatus
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+    JsonGetLinks:
       type: object
       properties:
         self:
           $ref: '#/components/schemas/JsonHref'
         status:
           $ref: '#/components/schemas/JsonHref'
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-    JsonaccountIdReference:
-      type: object
-      properties:
-        accountId:
-          type: object
-          properties:
-            iban:
-              type: string
-        remittanceInformationUnstructured:
-          type: string
-      description: Must contain iban
-    JsonMessage:
-      required:
-      - category
-      - code
-      type: object
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
     JsonPostSubscriptionResponse:
       required:
       - subscriptionStatus
@@ -200,29 +186,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonTppMessages'
-    JsonGetLinks:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-    JsonErrorResponse:
-      required:
-      - transactionStatus
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
     JsonGetSubscriptionStatusResponse:
       required:
       - subscriptionStatus
@@ -236,14 +199,51 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonGetAccountIdReference'
-    JsonPostSubscriptionRequest:
+    JsonMessage:
       required:
-      - iban
-      - apiClientPrimaryPushURI
+      - category
+      - code
       type: object
       properties:
-        subscriptionEntries:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonaccountIdReference'
-          description: The URL to the service API what listens endpoints
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonaccountIdReference:
+      type: object
+      properties:
+        accountId:
+          type: object
+          properties:
+            iban:
+              type: string
+        remittanceInformationUnstructured:
+          type: string
+      description: Must contain iban
+    JsonTppMessages:
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        text:
+          type: string
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'

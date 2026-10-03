@@ -355,13 +355,6 @@ paths:
         required: true
 components:
   schemas:
-    JsonGetSigningBasketStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
     JsonGetAuthorisationsResponse:
       type: object
       properties:
@@ -369,6 +362,40 @@ components:
           type: array
           items:
             type: string
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonPostSigningBasketRequest:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonPostAuthorisationsResponse:
       type: object
       properties:
@@ -383,6 +410,20 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
     ScaStatus:
       type: string
       enum:
@@ -394,6 +435,13 @@ components:
       - finalised
       - failed
       - exempted
+    JsonGetSigningBasketStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonPostSigningBasketResponse:
       type: object
       required:
@@ -414,6 +462,44 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetSigningBasketResponse:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
     JsonLinks:
       type: object
       properties:
@@ -449,92 +535,6 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonGetSigningBasketResponse:
-      type: object
-      properties:
-        paymentIds:
-          type: array
-          items:
-            type: string
-        consentIds:
-          type: array
-          items:
-            type: string
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonPostSigningBasketRequest:
-      type: object
-      properties:
-        paymentIds:
-          type: array
-          items:
-            type: string
-        consentIds:
-          type: array
-          items:
-            type: string
   parameters:
     envParam:
       name: sandbox|live
