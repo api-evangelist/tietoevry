@@ -129,6 +129,19 @@ paths:
                 $ref: '#/components/schemas/JsonErrorResponse'
 components:
   schemas:
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonPreAuthProviderResponse:
+      type: object
+      properties:
+        providerId:
+          type: string
+          description: ID of a provider
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
     JsonMessage:
       type: object
       required:
@@ -142,19 +155,6 @@ components:
         path:
           type: string
         text:
-          type: string
-    JsonPreAuthProviderResponse:
-      type: object
-      properties:
-        providerId:
-          type: string
-          description: ID of a provider
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-    JsonHref:
-      type: object
-      properties:
-        href:
           type: string
     JsonErrorResponse:
       type: object

@@ -540,78 +540,61 @@ paths:
                 $ref: '#/components/schemas/JsonErrorResponse'
 components:
   schemas:
-    JsonCardAccountDetails:
-      type: object
-      required:
-      - maskedPan
-      - currency
-      properties:
-        maskedPan:
-          type: string
-        currency:
-          type: string
-        resourceId:
-          type: string
-        ownerName:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonBalance'
-        product:
-          type: string
-        status:
-          $ref: '#/components/schemas/AccountStatus'
-        usage:
-          $ref: '#/components/schemas/AccountUsage'
-        details:
-          type: string
-        creditLimit:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-      description: JsonCardAccountDetails must contain maskedPan field
-    JsonAddress:
-      type: object
-      required:
-      - country
-      properties:
-        streetName:
-          type: string
-        buildingNumber:
-          type: string
-        townName:
-          type: string
-        postCode:
-          type: string
-        country:
-          type: string
-          description: Country Code
-    CashAccountType:
-      type: string
-      enum:
-      - CACC
-      - CARD
-    JsonGetCardAccountBalancesResponse:
-      type: object
-      required:
-      - balances
-      properties:
-        cardAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonBalance'
     JsonGetCardAccountTransactionDetailsResponse:
       type: object
       properties:
         transactionsDetails:
           $ref: '#/components/schemas/JsonCardTransaction'
+    JsonGetCardAccountsResponse:
+      type: object
+      required:
+      - cardAccounts
+      properties:
+        cardAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardAccountDetails'
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    AccountStatus:
+      type: string
+      enum:
+      - enabled
+      - deleted
+      - blocked
     JsonCardTransaction:
       type: object
       required:
@@ -655,21 +638,6 @@ components:
           type: boolean
         proprietaryBankTransactionCode:
           type: string
-    AccountUsage:
-      type: string
-      enum:
-      - PRIV
-      - ORGA
-    JsonAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
     BalanceType:
       type: string
       enum:
@@ -680,6 +648,84 @@ components:
       - interimBooked
       - forwardAvailable
       - nonInvoiced
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonGetCardAccountTransactionsResponse:
+      type: object
+      properties:
+        cardAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        cardTransactions:
+          $ref: '#/components/schemas/JsonCardAccountReport'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    CashAccountType:
+      type: string
+      enum:
+      - CACC
+      - CARD
+    JsonGetCardAccountBalancesResponse:
+      type: object
+      required:
+      - balances
+      properties:
+        cardAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
     JsonBalance:
       type: object
       required:
@@ -696,27 +742,48 @@ components:
           type: string
         lastCommittedTransaction:
           type: string
-    JsonMessage:
+    JsonAmount:
       type: object
       required:
-      - category
-      - code
+      - amount
+      - currency
       properties:
-        category:
+        currency:
           type: string
-        code:
+        amount:
           type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonGetCardAccountResponse:
+    JsonCardAccountReport:
       type: object
       required:
-      - cardAccount
+      - booked
+      - _links
       properties:
-        cardAccount:
-          $ref: '#/components/schemas/JsonCardAccountDetails'
+        booked:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardTransaction'
+        pending:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonCardTransaction'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAddress:
+      type: object
+      required:
+      - country
+      properties:
+        streetName:
+          type: string
+        buildingNumber:
+          type: string
+        townName:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+          description: Country Code
     JsonReportExchangeRate:
       type: object
       required:
@@ -730,38 +797,53 @@ components:
           type: string
         unitCurrency:
           type: string
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    AccountStatus:
+    AccountUsage:
       type: string
       enum:
-      - enabled
-      - deleted
-      - blocked
-    JsonGetCardAccountTransactionsResponse:
+      - PRIV
+      - ORGA
+    JsonGetCardAccountResponse:
       type: object
+      required:
+      - cardAccount
       properties:
         cardAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        cardTransactions:
-          $ref: '#/components/schemas/JsonCardAccountReport'
+          $ref: '#/components/schemas/JsonCardAccountDetails'
+    JsonCardAccountDetails:
+      type: object
+      required:
+      - maskedPan
+      - currency
+      properties:
+        maskedPan:
+          type: string
+        currency:
+          type: string
+        resourceId:
+          type: string
+        ownerName:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
         balances:
           type: array
           items:
             $ref: '#/components/schemas/JsonBalance'
+        product:
+          type: string
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        usage:
+          $ref: '#/components/schemas/AccountUsage'
+        details:
+          type: string
+        creditLimit:
+          $ref: '#/components/schemas/JsonAmount'
         _links:
           $ref: '#/components/schemas/JsonLinks'
+      description: JsonCardAccountDetails must contain maskedPan field
     JsonAccountReference:
       type: object
       properties:
@@ -780,88 +862,6 @@ components:
         cashAccountType:
           $ref: '#/components/schemas/CashAccountType'
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonCardAccountReport:
-      type: object
-      required:
-      - booked
-      - _links
-      properties:
-        booked:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonCardTransaction'
-        pending:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonCardTransaction'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetCardAccountsResponse:
-      type: object
-      required:
-      - cardAccounts
-      properties:
-        cardAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonCardAccountDetails'
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonLinks:
-      type: object
-      properties:
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-        scaOAuth:
-          $ref: '#/components/schemas/JsonHref'
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        account:
-          $ref: '#/components/schemas/JsonHref'
-        balances:
-          $ref: '#/components/schemas/JsonHref'
-        transactions:
-          $ref: '#/components/schemas/JsonHref'
-        transactionDetails:
-          $ref: '#/components/schemas/JsonHref'
-        first:
-          $ref: '#/components/schemas/JsonHref'
-        next:
-          $ref: '#/components/schemas/JsonHref'
-        previous:
-          $ref: '#/components/schemas/JsonHref'
-        last:
-          $ref: '#/components/schemas/JsonHref'
-        download:
-          $ref: '#/components/schemas/JsonHref'
-        updatePsuIdentification:
-          $ref: '#/components/schemas/JsonHref'
-        startAuthorisation:
-          $ref: '#/components/schemas/JsonHref'
-        scaStatus:
-          $ref: '#/components/schemas/JsonHref'
   parameters:
     envParam:
       name: sandbox|live

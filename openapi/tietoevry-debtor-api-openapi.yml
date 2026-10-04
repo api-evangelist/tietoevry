@@ -326,6 +326,31 @@ paths:
               $ref: '#/components/headers/X-Request-ID-5XX'
 components:
   schemas:
+    TransactionStatus:
+      description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
+      type: string
+      enum:
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      example: ACCP
+    ReasonCode:
+      type: string
+      description: '"MD05" - "Collection not due"
+
+        "MD06" - "Refund Request By End Customer"
+
+        '
+      enum:
+      - MD05
+      - MD06
     Amount:
       type: object
       required:
@@ -336,37 +361,6 @@ components:
           type: string
           description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
           example: '1000'
-        currency:
-          type: string
-          description: ISO 4217 Alpha 3 currency code
-          example: EUR
-    AccountReference:
-      type: object
-      required:
-      - iban
-      properties:
-        iban:
-          type: string
-          description: IBAN of an account
-          example: DE89370400440532013000
-    MandateInformation:
-      type: object
-      properties:
-        mandateId:
-          type: string
-          description: Identification of Mandates, e.g. a SEPA Mandate ID.
-        recurringIndicator:
-          type: boolean
-          description: '"true", if the transaction is for recurring.
-
-
-            "false", if the transaction is for one time.
-
-            '
-          example: true
-        amount:
-          type: string
-          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
         currency:
           type: string
           description: ISO 4217 Alpha 3 currency code
@@ -383,16 +377,11 @@ components:
               type: string
               format: date-time
               example: '2021-06-02T12:00:00Z'
-    ReasonCode:
+    EventName:
       type: string
-      description: '"MD05" - "Collection not due"
-
-        "MD06" - "Refund Request By End Customer"
-
-        '
+      description: Event name
       enum:
-      - MD05
-      - MD06
+      - SettledWithCreditor
     PaymentRequest:
       type: object
       description: Data that describes the payment
@@ -430,6 +419,44 @@ components:
           $ref: '#/components/schemas/RemittanceInformationStructured'
         mandateInformation:
           $ref: '#/components/schemas/MandateInformation'
+    AccountReference:
+      type: object
+      required:
+      - iban
+      properties:
+        iban:
+          type: string
+          description: IBAN of an account
+          example: DE89370400440532013000
+    RemittanceInformationStructured:
+      type: object
+      description: Structured remittance information
+      properties:
+        reference:
+          type: string
+          example: REF123123
+    MandateInformation:
+      type: object
+      properties:
+        mandateId:
+          type: string
+          description: Identification of Mandates, e.g. a SEPA Mandate ID.
+        recurringIndicator:
+          type: boolean
+          description: '"true", if the transaction is for recurring.
+
+
+            "false", if the transaction is for one time.
+
+            '
+          example: true
+        amount:
+          type: string
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+        currency:
+          type: string
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
     ChargebackStatus:
       type: object
       properties:
@@ -449,11 +476,6 @@ components:
                 href:
                   type: string
                   description: Link to a resource
-    EventName:
-      type: string
-      description: Event name
-      enum:
-      - SettledWithCreditor
     ErrorResponse:
       type: object
       required:
@@ -511,29 +533,39 @@ components:
                 description: Additional explaining text
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    TransactionStatus:
-      description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
-      type: string
-      enum:
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      example: ACCP
-    RemittanceInformationStructured:
-      type: object
-      description: Structured remittance information
-      properties:
-        reference:
-          type: string
-          example: REF123123
   parameters:
+    Signature:
+      name: Signature
+      in: header
+      description: 'A signature of the request by the TPP on application level. This might be mandated by ASPSP.
+
+        '
+      schema:
+        type: string
+      required: false
+      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D-Trust%20GmbH,C=DE",algorithm="rsa-sha256", headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date", signature="Base64(RSA-SHA256(signing string))"
+
+        '
+    Signature-Certificate:
+      name: Signature-Certificate
+      in: header
+      description: 'The certificate used for signing the request, in base64 encoding.
+
+        Must be contained if a signature is contained.
+
+        '
+      schema:
+        type: string
+        format: byte
+      required: false
+    Digest:
+      name: Digest
+      in: header
+      description: Is contained if and only if the "Signature" element is contained in the header of the request.
+      schema:
+        type: string
+      required: false
+      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
     X-Request-ID:
       name: X-Request-ID
       in: header
@@ -549,38 +581,6 @@ components:
       description: Payment identification
       schema:
         type: string
-    Signature-Certificate:
-      name: Signature-Certificate
-      in: header
-      description: 'The certificate used for signing the request, in base64 encoding.
-
-        Must be contained if a signature is contained.
-
-        '
-      schema:
-        type: string
-        format: byte
-      required: false
-    Signature:
-      name: Signature
-      in: header
-      description: 'A signature of the request by the TPP on application level. This might be mandated by ASPSP.
-
-        '
-      schema:
-        type: string
-      required: false
-      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D-Trust%20GmbH,C=DE",algorithm="rsa-sha256", headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date", signature="Base64(RSA-SHA256(signing string))"
-
-        '
-    Digest:
-      name: Digest
-      in: header
-      description: Is contained if and only if the "Signature" element is contained in the header of the request.
-      schema:
-        type: string
-      required: false
-      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
   headers:
     X-Request-ID-5XX:
       description: ID of the request, unique to the call

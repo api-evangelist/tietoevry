@@ -2740,21 +2740,17 @@ components:
           type: string
         amount:
           type: string
-    JsonAccountReport:
+    JsonGetAccountTransactionsResponse:
       type: object
-      required:
-      - booked
       properties:
-        booked:
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        transactions:
+          $ref: '#/components/schemas/JsonAccountReport'
+        balances:
           type: array
           items:
-            $ref: '#/components/schemas/JsonTransaction'
-        pending:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonTransaction'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
+            $ref: '#/components/schemas/JsonBalance'
     JsonErrorResponse:
       type: object
       required:
@@ -2782,49 +2778,27 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonBalance:
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonGetAccountResponse:
       type: object
       required:
-      - balanceAmount
-      - balanceType
-      properties:
-        balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        balanceType:
-          type: string
-        referenceDate:
-          type: string
-        lastChangeDateTime:
-          type: string
-    JsonGetAccountTransactionsResponse:
-      type: object
+      - account
       properties:
         account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        transactions:
-          $ref: '#/components/schemas/JsonAccountReport'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonBalance'
-    JsonAccountReference:
+          $ref: '#/components/schemas/JsonAccountDetails'
+    JsonGetAccountsResponse:
       type: object
       required:
-      - currency
+      - accounts
       properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountDetails'
     JsonMessage:
       type: object
       required:
@@ -2839,6 +2813,17 @@ components:
           type: string
         text:
           type: string
+    JsonGetAccountBalancesResponse:
+      type: object
+      required:
+      - balances
+      properties:
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonBalance'
     JsonTransaction:
       type: object
       properties:
@@ -2860,66 +2845,21 @@ components:
           type: string
         remittanceInformationUnstructured:
           type: string
-    JsonGetAccountsResponse:
+    JsonAccountReport:
       type: object
       required:
-      - accounts
+      - booked
       properties:
-        accounts:
+        booked:
           type: array
           items:
-            $ref: '#/components/schemas/JsonAccountDetails'
-    JsonGetAccountBalancesResponse:
-      type: object
-      required:
-      - balances
-      properties:
-        account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        balances:
+            $ref: '#/components/schemas/JsonTransaction'
+        pending:
           type: array
           items:
-            $ref: '#/components/schemas/JsonBalance'
-    JsonGetAccountResponse:
-      type: object
-      required:
-      - account
-      properties:
-        account:
-          $ref: '#/components/schemas/JsonAccountDetails'
-    JsonAccountDetails:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-        resourceId:
-          type: string
-        name:
-          type: string
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonBalance'
+            $ref: '#/components/schemas/JsonTransaction'
         _links:
           $ref: '#/components/schemas/JsonLinks'
-      description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
     JsonLinks:
       type: object
       properties:
@@ -2955,24 +2895,66 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAccountTransactionDetailsResponse:
-      type: object
-      properties:
-        transactionsDetails:
-          $ref: '#/components/schemas/JsonTransaction'
-    JsonErrorResponse_2:
+    JsonAccountReference:
       type: object
       required:
-      - transactionStatus
+      - currency
       properties:
-        psuMessage:
+        iban:
           type: string
-        tppMessages:
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonAccountDetails:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+        resourceId:
+          type: string
+        name:
+          type: string
+        balances:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
+            $ref: '#/components/schemas/JsonBalance'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+      description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field
+    JsonBalance:
+      type: object
+      required:
+      - balanceAmount
+      - balanceType
+      properties:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          type: string
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
     TransactionStatus:
       type: string
       enum:
@@ -2990,6 +2972,24 @@ components:
       - ACFC
       - PATC
       - PART
+    JsonErrorResponse_2:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonGetAccountTransactionDetailsResponse:
+      type: object
+      properties:
+        transactionsDetails:
+          $ref: '#/components/schemas/JsonTransaction'
     JsonAccountDetails_2:
       type: object
       required:
@@ -3018,16 +3018,6 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    BalanceType:
-      type: string
-      enum:
-      - closingBooked
-      - expected
-      - openingBooked
-      - interimAvailable
-      - interimBooked
-      - forwardAvailable
-      - nonInvoiced
     JsonErrorResponse_3:
       required:
       - transactionStatus
@@ -3041,20 +3031,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonBalance_2:
-      required:
-      - balanceAmount
-      - balanceType
-      type: object
-      properties:
-        balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        balanceType:
-          $ref: '#/components/schemas/BalanceType'
-        referenceDate:
-          type: string
-        lastChangeDateTime:
-          type: string
     JsonAccountReference_2:
       type: object
       properties:
@@ -3104,6 +3080,16 @@ components:
               type: string
             referenceIssuer:
               type: string
+    BalanceType:
+      type: string
+      enum:
+      - closingBooked
+      - expected
+      - openingBooked
+      - interimAvailable
+      - interimBooked
+      - forwardAvailable
+      - nonInvoiced
     JsonAccountDetails_3:
       required:
       - currency
@@ -3136,6 +3122,20 @@ components:
         ownerAddress:
           type: string
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonBalance_2:
+      required:
+      - balanceAmount
+      - balanceType
+      type: object
+      properties:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          $ref: '#/components/schemas/BalanceType'
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
     JsonErrorResponse_4:
       type: object
       required:
@@ -3246,20 +3246,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonBalance_3:
-      type: object
-      required:
-      - balanceAmount
-      - balanceType
-      properties:
-        balanceAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        balanceType:
-          $ref: '#/components/schemas/BalanceType'
-        referenceDate:
-          type: string
-        lastChangeDateTime:
-          type: string
     JsonAccountReference_4:
       type: object
       properties:
@@ -3337,26 +3323,43 @@ components:
         _links:
           $ref: '#/components/schemas/JsonLinks'
       description: JsonAccountDetails must contain one of iban,bban,maskedPan,msisdn or pan field
-    XS2ATPPMessage:
+    JsonBalance_3:
       type: object
       required:
-      - category
-      - code
+      - balanceAmount
+      - balanceType
       properties:
-        category:
+        balanceAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        balanceType:
+          $ref: '#/components/schemas/BalanceType'
+        referenceDate:
           type: string
-          enum:
-          - ERROR
-          - WARNING
-        code:
+        lastChangeDateTime:
           type: string
-        path:
-          type: string
-          description: An explicit path to the request field causing error, if applicable.
-        text:
-          type: string
-          maxLength: 512
-          description: Additional explanatory text.
+    XS2AErrorResponse:
+      type: object
+      properties:
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2ATPPMessage'
+    AccountsResponse:
+      type: object
+      required:
+      - accounts
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2AAccountDetails'
+    AccountResponse:
+      type: object
+      required:
+      - account
+      properties:
+        account:
+          $ref: '#/components/schemas/XS2AAccountDetails'
     XS2AAccountReference:
       type: object
       required:
@@ -3375,25 +3378,30 @@ components:
         currency:
           type: string
       description: Must contain one of iban, bban, maskedPan, msisdn or pan field
-    XS2AHref:
-      type: object
-      properties:
-        href:
-          type: string
-    XS2AErrorResponse:
-      type: object
-      properties:
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/XS2ATPPMessage'
-    AccountResponse:
+    XS2ABalance:
       type: object
       required:
-      - account
+      - balanceAmount
+      - balanceType
       properties:
-        account:
-          $ref: '#/components/schemas/XS2AAccountDetails'
+        balanceAmount:
+          $ref: '#/components/schemas/XS2AAmount'
+        balanceType:
+          type: string
+        referenceDate:
+          type: string
+        lastChangeDateTime:
+          type: string
+    XS2AAmount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        currency:
+          type: string
+        amount:
+          type: string
     AccountBalancesResponse:
       type: object
       required:
@@ -3405,16 +3413,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/XS2ABalance'
-    XS2AAmount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        currency:
-          type: string
-        amount:
-          type: string
     XS2AAccountDetails:
       type: object
       required:
@@ -3452,29 +3450,31 @@ components:
             balances:
               $ref: '#/components/schemas/XS2AHref'
       description: JsonAccountDetails must contain one of iban, bban, maskedPan, msisdn or pan field
-    XS2ABalance:
+    XS2AHref:
+      type: object
+      properties:
+        href:
+          type: string
+    XS2ATPPMessage:
       type: object
       required:
-      - balanceAmount
-      - balanceType
+      - category
+      - code
       properties:
-        balanceAmount:
-          $ref: '#/components/schemas/XS2AAmount'
-        balanceType:
+        category:
           type: string
-        referenceDate:
+          enum:
+          - ERROR
+          - WARNING
+        code:
           type: string
-        lastChangeDateTime:
+        path:
           type: string
-    AccountsResponse:
-      type: object
-      required:
-      - accounts
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/XS2AAccountDetails'
+          description: An explicit path to the request field causing error, if applicable.
+        text:
+          type: string
+          maxLength: 512
+          description: Additional explanatory text.
   parameters:
     envParam:
       name: sandbox|live
@@ -3486,47 +3486,28 @@ components:
         enum:
         - sandbox
         - live
-    PSU-Accept-Language:
-      name: PSU-Accept-Language
-      in: header
-      description: Accept-Language header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept:
-      name: PSU-Accept
-      in: header
-      description: Accept header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Encoding:
-      name: PSU-Accept-Encoding
-      in: header
-      description: Accept-Encoding header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Charset:
-      name: PSU-Accept-Charset
-      in: header
-      description: Accept-Charset header field of the source application, if available.
-      schema:
-        type: string
     PSU-Device-ID:
       name: PSU-Device-ID
       in: header
       description: UUID for a device, which is used by end user, if available.
       schema:
         type: string
-    PSU-ID:
-      name: PSU-ID
+    PSU-Accept-Language:
+      name: PSU-Accept-Language
       in: header
-      description: User ID of the user initiating the request.
-      required: true
+      description: Accept-Language header field of the source application, if available.
       schema:
         type: string
-    PSU-IP-Address:
-      name: PSU-IP-Address
+    PSU-Geo-Location:
+      name: PSU-Geo-Location
       in: header
-      description: IP address of the source application
+      description: Geo Location of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: Accept-Encoding header field of the source application, if available.
       schema:
         type: string
     X-Request-ID:
@@ -3536,10 +3517,11 @@ components:
       required: true
       schema:
         type: string
-    PSU-IP-Port:
-      name: PSU-IP-Port
+    PSU-ID:
+      name: PSU-ID
       in: header
-      description: IP port of the source application, if available.
+      description: User ID of the user initiating the request.
+      required: true
       schema:
         type: string
     PSU-User-Agent:
@@ -3548,10 +3530,28 @@ components:
       description: User-Agent header field of the source application, if available.
       schema:
         type: string
-    PSU-Geo-Location:
-      name: PSU-Geo-Location
+    PSU-IP-Address:
+      name: PSU-IP-Address
       in: header
-      description: Geo Location of the source application, if available.
+      description: IP address of the source application
+      schema:
+        type: string
+    PSU-IP-Port:
+      name: PSU-IP-Port
+      in: header
+      description: IP port of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
+      in: header
+      description: Accept-Charset header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept:
+      name: PSU-Accept
+      in: header
+      description: Accept header field of the source application, if available.
       schema:
         type: string
   securitySchemes:

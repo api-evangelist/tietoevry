@@ -1421,6 +1421,28 @@ paths:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetConsentStatusResponse:
+      type: object
+      properties:
+        consentStatus:
+          type: string
     JsonAmount:
       type: object
       required:
@@ -1438,6 +1460,20 @@ components:
           type: array
           items:
             type: string
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonErrorResponse:
       type: object
       required:
@@ -1451,15 +1487,100 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostFundsConfirmationConsentsRequest:
+      type: object
+      required:
+      - account
+      - combinedServiceIndicator
+      - instructedAmount
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonGetAuthorisationStatusResponse:
       type: object
       properties:
         scaStatus:
           type: string
-    JsonGetConsentStatusResponse:
+    JsonHref:
       type: object
       properties:
-        consentStatus:
+        href:
           type: string
     JsonGetFundsConfirmationConsentResponse:
       type: object
@@ -1496,127 +1617,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonPostFundsConfirmationConsentsRequest:
-      type: object
-      required:
-      - account
-      - combinedServiceIndicator
-      - instructedAmount
-      properties:
-        cardNumber:
-          type: string
-        account:
-          $ref: '#/components/schemas/JsonAccountReference'
-        payee:
-          type: string
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        combinedServiceIndicator:
-          type: boolean
-          example: true
-    JsonPostAuthorisationsResponse:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    JsonLinks:
-      type: object
-      properties:
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-        scaOAuth:
-          $ref: '#/components/schemas/JsonHref'
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        account:
-          $ref: '#/components/schemas/JsonHref'
-        balances:
-          $ref: '#/components/schemas/JsonHref'
-        transactions:
-          $ref: '#/components/schemas/JsonHref'
-        transactionDetails:
-          $ref: '#/components/schemas/JsonHref'
-        first:
-          $ref: '#/components/schemas/JsonHref'
-        next:
-          $ref: '#/components/schemas/JsonHref'
-        previous:
-          $ref: '#/components/schemas/JsonHref'
-        last:
-          $ref: '#/components/schemas/JsonHref'
-        download:
-          $ref: '#/components/schemas/JsonHref'
-        updatePsuIdentification:
-          $ref: '#/components/schemas/JsonHref'
-        startAuthorisation:
-          $ref: '#/components/schemas/JsonHref'
-        scaStatus:
-          $ref: '#/components/schemas/JsonHref'
     JsonErrorResponse_2:
       type: object
       required:
@@ -1656,16 +1656,40 @@ components:
         currency:
           type: string
       description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonGetAuthorisationStatusResponse_2:
+    JsonGetConsentStatusResponse_2:
       type: object
       properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    JsonPostAuthorisationsResponse_2:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
         scaStatus:
           $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+        chosenScaMethod:
+          $ref: '#/components/schemas/OtpChosenScaMethod'
+        challengeData:
+          $ref: '#/components/schemas/OtpChallengeData'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
     OtpChallengeData:
       type: object
       properties:
@@ -1683,11 +1707,79 @@ components:
           type: string
         additionalInformation:
           type: string
-    JsonGetConsentStatusResponse_2:
+    OtpChosenScaMethod:
       type: object
       properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
+        authenticationType:
+          type: string
+          enum:
+          - SMS_OTP
+          - CHIP_OTP
+          - PHOTO_OTP
+          - PUSH_OTP
+          - SMTP_OTP
+        authenticationVersion:
+          type: string
+        authenticationMethodId:
+          type: string
+        name:
+          type: string
+        explanation:
+          type: string
+    JsonPostFundsConfirmationConsentsRequest_2:
+      type: object
+      required:
+      - account
+      - combinedServiceIndicator
+      - instructedAmount
+      properties:
+        cardNumber:
+          type: string
+        account:
+          $ref: '#/components/schemas/JsonAccountReference_3'
+        payee:
+          type: string
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+          description: Unsupported mandatory field. Must be set to false
+    ConsentStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+      - valid
+      - revokedByPsu
+      - expired
+      - terminatedByTpp
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse_2:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonGetFundsConfirmationConsentResponse_2:
       type: object
       required:
@@ -1714,98 +1806,6 @@ components:
           description: Unsupported mandatory field. Must be set to false
         consentStatus:
           $ref: '#/components/schemas/ConsentStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-        chosenScaMethod:
-          $ref: '#/components/schemas/OtpChosenScaMethod'
-        challengeData:
-          $ref: '#/components/schemas/OtpChallengeData'
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonPostFundsConfirmationConsentsRequest_2:
-      type: object
-      required:
-      - account
-      - combinedServiceIndicator
-      - instructedAmount
-      properties:
-        cardNumber:
-          type: string
-        account:
-          $ref: '#/components/schemas/JsonAccountReference_3'
-        payee:
-          type: string
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-          description: Unsupported mandatory field. Must be set to false
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    OtpChosenScaMethod:
-      type: object
-      properties:
-        authenticationType:
-          type: string
-          enum:
-          - SMS_OTP
-          - CHIP_OTP
-          - PHOTO_OTP
-          - PUSH_OTP
-          - SMTP_OTP
-        authenticationVersion:
-          type: string
-        authenticationMethodId:
-          type: string
-        name:
-          type: string
-        explanation:
-          type: string
-    ConsentStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-      - valid
-      - revokedByPsu
-      - expired
-      - terminatedByTpp
-    JsonPostAuthorisationsResponse_2:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'

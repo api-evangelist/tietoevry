@@ -104,7 +104,102 @@ paths:
               schema:
                 $ref: '#/components/schemas/XS2AErrorResponse'
 components:
+  parameters:
+    PSU-Accept-Language:
+      name: PSU-Accept-Language
+      in: header
+      description: Accept-Language header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Geo-Location:
+      name: PSU-Geo-Location
+      in: header
+      description: Geo Location of the source application, if available.
+      schema:
+        type: string
+    PSU-ID:
+      name: PSU-ID
+      in: header
+      description: User ID of the user initiating the request.
+      required: true
+      schema:
+        type: string
+    role-id:
+      name: role-id
+      in: path
+      description: ID of the user role as defined in VAM.
+      required: true
+      schema:
+        type: string
+    PSU-IP-Port:
+      name: PSU-IP-Port
+      in: header
+      description: IP port of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept-Encoding:
+      name: PSU-Accept-Encoding
+      in: header
+      description: Accept-Encoding header field of the source application, if available.
+      schema:
+        type: string
+    X-Request-ID:
+      name: X-Request-ID
+      in: header
+      description: ID of the request, unique to the call, as determined by the initiating party.
+      required: true
+      schema:
+        type: string
+    PSU-Accept-Charset:
+      name: PSU-Accept-Charset
+      in: header
+      description: Accept-Charset header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Device-ID:
+      name: PSU-Device-ID
+      in: header
+      description: UUID for a device, which is used by end user, if available.
+      schema:
+        type: string
+    PSU-User-Agent:
+      name: PSU-User-Agent
+      in: header
+      description: User-Agent header field of the source application, if available.
+      schema:
+        type: string
+    PSU-Accept:
+      name: PSU-Accept
+      in: header
+      description: Accept header field of the source application, if available.
+      schema:
+        type: string
+    PSU-IP-Address:
+      name: PSU-IP-Address
+      in: header
+      description: IP address of the source application
+      schema:
+        type: string
   schemas:
+    XS2AErrorResponse:
+      type: object
+      properties:
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/XS2ATPPMessage'
+    UserRolesResponse:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRoleResponse'
+        _links:
+          type: object
+          properties:
+            self:
+              $ref: '#/components/schemas/XS2AHref'
     UserRoleResponse:
       type: object
       properties:
@@ -125,32 +220,6 @@ components:
           properties:
             self:
               $ref: '#/components/schemas/XS2AHref'
-    UserType:
-      type: string
-      description: User type.
-      enum:
-      - BANK
-      - CUST
-      - CLNT
-    UserRolesResponse:
-      type: object
-      properties:
-        roles:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserRoleResponse'
-        _links:
-          type: object
-          properties:
-            self:
-              $ref: '#/components/schemas/XS2AHref'
-    XS2AErrorResponse:
-      type: object
-      properties:
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/XS2ATPPMessage'
     XS2AHref:
       type: object
       properties:
@@ -176,82 +245,13 @@ components:
           type: string
           maxLength: 512
           description: Additional explanatory text.
-  parameters:
-    PSU-ID:
-      name: PSU-ID
-      in: header
-      description: User ID of the user initiating the request.
-      required: true
-      schema:
-        type: string
-    PSU-Device-ID:
-      name: PSU-Device-ID
-      in: header
-      description: UUID for a device, which is used by end user, if available.
-      schema:
-        type: string
-    X-Request-ID:
-      name: X-Request-ID
-      in: header
-      description: ID of the request, unique to the call, as determined by the initiating party.
-      required: true
-      schema:
-        type: string
-    PSU-Accept-Language:
-      name: PSU-Accept-Language
-      in: header
-      description: Accept-Language header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept:
-      name: PSU-Accept
-      in: header
-      description: Accept header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Accept-Encoding:
-      name: PSU-Accept-Encoding
-      in: header
-      description: Accept-Encoding header field of the source application, if available.
-      schema:
-        type: string
-    PSU-IP-Address:
-      name: PSU-IP-Address
-      in: header
-      description: IP address of the source application
-      schema:
-        type: string
-    PSU-Accept-Charset:
-      name: PSU-Accept-Charset
-      in: header
-      description: Accept-Charset header field of the source application, if available.
-      schema:
-        type: string
-    role-id:
-      name: role-id
-      in: path
-      description: ID of the user role as defined in VAM.
-      required: true
-      schema:
-        type: string
-    PSU-User-Agent:
-      name: PSU-User-Agent
-      in: header
-      description: User-Agent header field of the source application, if available.
-      schema:
-        type: string
-    PSU-Geo-Location:
-      name: PSU-Geo-Location
-      in: header
-      description: Geo Location of the source application, if available.
-      schema:
-        type: string
-    PSU-IP-Port:
-      name: PSU-IP-Port
-      in: header
-      description: IP port of the source application, if available.
-      schema:
-        type: string
+    UserType:
+      type: string
+      description: User type.
+      enum:
+      - BANK
+      - CUST
+      - CLNT
   securitySchemes:
     APIKeyHeader:
       type: apiKey

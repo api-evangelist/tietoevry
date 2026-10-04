@@ -410,35 +410,6 @@ paths:
               $ref: '#/components/headers/X-Request-ID-5XX'
 components:
   schemas:
-    PaymentStatus:
-      type: object
-      properties:
-        paymentId:
-          type: string
-          description: Payment identification
-          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          type: object
-          properties:
-            payment:
-              type: object
-              description: Link to payment resource
-              properties:
-                href:
-                  type: string
-                  description: Link to a resource
-    ReasonCode:
-      type: string
-      description: '"MD05" - "Collection not due"
-
-        "MD06" - "Refund Request By End Customer"
-
-        '
-      enum:
-      - MD05
-      - MD06
     Amount:
       type: object
       required:
@@ -453,43 +424,13 @@ components:
           type: string
           description: ISO 4217 Alpha 3 currency code
           example: EUR
-    PaymentRequest:
+    RemittanceInformationStructured:
       type: object
-      description: Data that describes the payment
+      description: Structured remittance information
       properties:
-        instructedAmount:
-          $ref: '#/components/schemas/Amount'
-        debtorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        debtorName:
+        reference:
           type: string
-          description: Debtor Name
-        creditorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        creditorName:
-          type: string
-          description: Creditor Name
-        creditorAgent:
-          type: string
-          description: BICFI
-          example: AAAADEBBXXX
-        creditorAgentName:
-          type: string
-        creditorId:
-          type: string
-          description: Identification of Creditors, e.g. a SEPA Creditor ID.
-          example: DE452399865083
-        endToEndIdentification:
-          type: string
-          example: 123-ZXCV-890
-        requestedExecutionDate:
-          type: string
-          format: date
-          example: '2021-06-01'
-        remittanceInformationStructured:
-          $ref: '#/components/schemas/RemittanceInformationStructured'
-        mandateInformation:
-          $ref: '#/components/schemas/MandateInformation'
+          example: REF123123
     ErrorResponse:
       type: object
       required:
@@ -547,6 +488,82 @@ components:
                 description: Additional explaining text
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
+    TransactionStatus:
+      description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
+      type: string
+      enum:
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      example: ACCP
+    ReasonCode:
+      type: string
+      description: '"MD05" - "Collection not due"
+
+        "MD06" - "Refund Request By End Customer"
+
+        '
+      enum:
+      - MD05
+      - MD06
+    EventName:
+      type: string
+      description: Event name
+      enum:
+      - SettledWithCreditor
+    PaymentRequest:
+      type: object
+      description: Data that describes the payment
+      properties:
+        instructedAmount:
+          $ref: '#/components/schemas/Amount'
+        debtorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        debtorName:
+          type: string
+          description: Debtor Name
+        creditorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        creditorName:
+          type: string
+          description: Creditor Name
+        creditorAgent:
+          type: string
+          description: BICFI
+          example: AAAADEBBXXX
+        creditorAgentName:
+          type: string
+        creditorId:
+          type: string
+          description: Identification of Creditors, e.g. a SEPA Creditor ID.
+          example: DE452399865083
+        endToEndIdentification:
+          type: string
+          example: 123-ZXCV-890
+        requestedExecutionDate:
+          type: string
+          format: date
+          example: '2021-06-01'
+        remittanceInformationStructured:
+          $ref: '#/components/schemas/RemittanceInformationStructured'
+        mandateInformation:
+          $ref: '#/components/schemas/MandateInformation'
+    AccountReference:
+      type: object
+      required:
+      - iban
+      properties:
+        iban:
+          type: string
+          description: IBAN of an account
+          example: DE89370400440532013000
     Address:
       type: object
       properties:
@@ -561,34 +578,6 @@ components:
         country:
           type: string
           description: ISO 3166 ALPHA2 country code
-    AccountReference:
-      type: object
-      required:
-      - iban
-      properties:
-        iban:
-          type: string
-          description: IBAN of an account
-          example: DE89370400440532013000
-    RefundStatus:
-      type: object
-      properties:
-        refundId:
-          type: string
-          description: Refund identification
-          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          type: object
-          properties:
-            refund:
-              type: object
-              description: Link to refund resource
-              properties:
-                href:
-                  type: string
-                  description: Link to a resource
     MandateInformation:
       type: object
       properties:
@@ -623,41 +612,45 @@ components:
               type: string
               format: date-time
               example: '2021-06-02T12:00:00Z'
-    EventName:
-      type: string
-      description: Event name
-      enum:
-      - SettledWithCreditor
-    TransactionStatus:
-      description: "The transaction status is filled with codes of the ISO 20022 data table:\n- 'ACCP': 'AcceptedCustomerProfile' -\n  Preceding check of technical validation was successful.\n  Customer profile check was also successful.\n- 'ACSC': 'AcceptedSettlementCompleted' -\n  Settlement on the debtor’s account has been completed.\n\n  **Usage:** this can be used by the first agent to report to the debtor that the transaction has been completed.\n\n  **Warning:** this status is provided for transaction status reasons, not for financial information.\n  It can only be used after bilateral agreement.\n- 'ACSP': 'AcceptedSettlementInProcess' -\n  All preceding checks such as technical validation and customer profile were successful and therefore the payment initiation has been accepted for execution.\n- 'ACTC': 'AcceptedTechnicalValidation' -\n  Authentication and syntactical and semantical validation are successful.\n- 'ACWC': 'AcceptedWithChange' -\n  Instruction is accepted but a change will be made, such as date or remittance not sent.\n- 'ACWP': 'AcceptedWithoutPosting' -\n  Payment instruction included in the credit transfer is accepted without being posted to the creditor customer’s account.\n- 'RCVD': 'Received' -\n  Payment initiation has been received by the receiving agent.\n- 'PDNG': 'Pending' -\n  Payment initiation or individual transaction included in the payment initiation is pending.\n  Further checks and status update will be performed.\n- 'RJCT': 'Rejected' -\n  Payment initiation or individual transaction included in the payment initiation has been rejected.\n- 'CANC': 'Cancelled'\n  Payment initiation has been cancelled before execution\n\n  **Remark:** *Change Request to ISO20022 is still needed.*\n"
-      type: string
-      enum:
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      example: ACCP
-    RemittanceInformationStructured:
+    RefundStatus:
       type: object
-      description: Structured remittance information
       properties:
-        reference:
+        refundId:
           type: string
-          example: REF123123
+          description: Refund identification
+          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          type: object
+          properties:
+            refund:
+              type: object
+              description: Link to refund resource
+              properties:
+                href:
+                  type: string
+                  description: Link to a resource
+    PaymentStatus:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Payment identification
+          example: 3d9bbfe2-1942-4036-b1e3-d49e65c26a29
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          type: object
+          properties:
+            payment:
+              type: object
+              description: Link to payment resource
+              properties:
+                href:
+                  type: string
+                  description: Link to a resource
   parameters:
-    payment-id:
-      name: payment-id
-      in: path
-      required: true
-      description: Payment identification
-      schema:
-        type: string
     Digest:
       name: Digest
       in: header
@@ -666,6 +659,13 @@ components:
         type: string
       required: false
       example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
+    payment-id:
+      name: payment-id
+      in: path
+      required: true
+      description: Payment identification
+      schema:
+        type: string
     X-Request-ID:
       name: X-Request-ID
       in: header
@@ -699,14 +699,14 @@ components:
         format: byte
       required: false
   headers:
-    X-Request-ID-5XX:
-      description: ID of the request, unique to the call
-      schema:
-        type: string
-        format: uuid
     X-Request-ID:
       description: ID of the request, unique to the call
       required: true
+      schema:
+        type: string
+        format: uuid
+    X-Request-ID-5XX:
+      description: ID of the request, unique to the call
       schema:
         type: string
         format: uuid

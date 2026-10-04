@@ -2545,6 +2545,40 @@ paths:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        authorisationId:
+          type: string
+        scaStatus:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetPaymentStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        fundsAvailable:
+          type: boolean
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
     JsonAmount:
       type: object
       required:
@@ -2555,6 +2589,13 @@ components:
           type: string
         amount:
           type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationIds:
+          type: array
+          items:
+            type: string
     JsonGetPaymentResponse:
       type: object
       required:
@@ -2596,13 +2637,153 @@ components:
           - PART
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationsResponse:
+    JsonErrorResponse:
       type: object
+      required:
+      - transactionStatus
       properties:
-        authorisationIds:
+        psuMessage:
+          type: string
+        tppMessages:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          type: string
+          enum:
+          - ACCP
+          - ACSC
+          - ACSP
+          - ACTC
+          - ACWC
+          - ACWP
+          - RCVD
+          - PDNG
+          - RJCT
+          - CANC
+          - ACFC
+          - PATC
+          - PART
+    JsonAddress:
+      type: object
+      required:
+      - country
+      properties:
+        street:
+          type: string
+        buildingNumber:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          description: Two characters as defined by ISO 3166
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonDeletePaymentResponse:
+      type: object
+      properties:
+        transactionStatus:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostPaymentRequest:
+      type: object
+      required:
+      - creditorAddress
+      - creditorAccount
+      - creditorName
+      - debtorAccount
+      - instructedAmount
+      properties:
+        endToEndIdentification:
+          type: string
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        creditorName:
+          type: string
+        creditorAddress:
+          $ref: '#/components/schemas/JsonAddress'
+        creditorAccount:
+          $ref: '#/components/schemas/JsonAccountReference'
+        remittanceInformationUnstructured:
+          type: string
+        chargeBearer:
+          type: string
+          enum:
+          - DEBT
+          - CRED
+          - SHAR
+          - SLEV
+    JsonLinks:
+      type: object
+      properties:
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+        scaOAuth:
+          $ref: '#/components/schemas/JsonHref'
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        account:
+          $ref: '#/components/schemas/JsonHref'
+        balances:
+          $ref: '#/components/schemas/JsonHref'
+        transactions:
+          $ref: '#/components/schemas/JsonHref'
+        transactionDetails:
+          $ref: '#/components/schemas/JsonHref'
+        first:
+          $ref: '#/components/schemas/JsonHref'
+        next:
+          $ref: '#/components/schemas/JsonHref'
+        previous:
+          $ref: '#/components/schemas/JsonHref'
+        last:
+          $ref: '#/components/schemas/JsonHref'
+        download:
+          $ref: '#/components/schemas/JsonHref'
+        updatePsuIdentification:
+          $ref: '#/components/schemas/JsonHref'
+        startAuthorisation:
+          $ref: '#/components/schemas/JsonHref'
+        scaStatus:
+          $ref: '#/components/schemas/JsonHref'
     JsonPostPaymentResponse:
       type: object
       required:
@@ -2640,45 +2821,6 @@ components:
           $ref: '#/components/schemas/JsonAmount'
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          type: string
-          enum:
-          - ACCP
-          - ACSC
-          - ACSP
-          - ACTC
-          - ACWC
-          - ACWP
-          - RCVD
-          - PDNG
-          - RJCT
-          - CANC
-          - ACFC
-          - PATC
-          - PART
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          type: string
-    JsonDeletePaymentResponse:
-      type: object
-      properties:
-        transactionStatus:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonGetPaymentProductsResponse:
       type: object
       required:
@@ -2690,158 +2832,40 @@ components:
             type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonAddress:
-      type: object
-      required:
-      - country
-      properties:
-        street:
-          type: string
-        buildingNumber:
-          type: string
-        city:
-          type: string
-        postalCode:
-          type: string
-        country:
-          type: string
-          description: Two characters as defined by ISO 3166
-    JsonGetPaymentStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        fundsAvailable:
-          type: boolean
-        transactionStatus:
-          type: string
-          enum:
-          - ACCP
-          - ACSC
-          - ACSP
-          - ACTC
-          - ACWC
-          - ACWP
-          - RCVD
-          - PDNG
-          - RJCT
-          - CANC
-          - ACFC
-          - PATC
-          - PART
-    JsonPostPaymentRequest:
-      type: object
-      required:
-      - creditorAddress
-      - creditorAccount
-      - creditorName
-      - debtorAccount
-      - instructedAmount
-      properties:
-        endToEndIdentification:
-          type: string
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        creditorName:
-          type: string
-        creditorAddress:
-          $ref: '#/components/schemas/JsonAddress'
-        creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference'
-        remittanceInformationUnstructured:
-          type: string
-        chargeBearer:
-          type: string
-          enum:
-          - DEBT
-          - CRED
-          - SHAR
-          - SLEV
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
-    JsonPostAuthorisationsResponse:
+    JsonGetAuthorisationStatusResponse:
       type: object
       properties:
-        psuMessage:
-          type: string
-        authorisationId:
-          type: string
         scaStatus:
           type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
     JsonHref:
       type: object
       properties:
         href:
           type: string
-    JsonLinks:
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonGetPaymentStatusResponse_2:
       type: object
+      required:
+      - transactionStatus
       properties:
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-        scaOAuth:
-          $ref: '#/components/schemas/JsonHref'
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        account:
-          $ref: '#/components/schemas/JsonHref'
-        balances:
-          $ref: '#/components/schemas/JsonHref'
-        transactions:
-          $ref: '#/components/schemas/JsonHref'
-        transactionDetails:
-          $ref: '#/components/schemas/JsonHref'
-        first:
-          $ref: '#/components/schemas/JsonHref'
-        next:
-          $ref: '#/components/schemas/JsonHref'
-        previous:
-          $ref: '#/components/schemas/JsonHref'
-        last:
-          $ref: '#/components/schemas/JsonHref'
-        download:
-          $ref: '#/components/schemas/JsonHref'
-        updatePsuIdentification:
-          $ref: '#/components/schemas/JsonHref'
-        startAuthorisation:
-          $ref: '#/components/schemas/JsonHref'
-        scaStatus:
-          $ref: '#/components/schemas/JsonHref'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonGetPaymentResponse_2:
       type: object
       required:
@@ -2877,11 +2901,8 @@ components:
           type: array
           items:
             type: string
-    JsonPostPaymentResponse_2:
+    JsonPostAuthorisationsResponse_2:
       type: object
-      required:
-      - paymentId
-      - transactionStatus
       properties:
         psuMessage:
           type: string
@@ -2889,15 +2910,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        paymentId:
+        scaStatus:
           type: string
-          format: uuid
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
@@ -2952,15 +2966,11 @@ components:
           $ref: '#/components/schemas/JsonAccountReference'
         remittanceInformationUnstructured:
           type: string
-    JsonGetPaymentStatusResponse_2:
+    JsonPostPaymentResponse_2:
       type: object
       required:
+      - paymentId
       - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonPostAuthorisationsResponse_2:
-      type: object
       properties:
         psuMessage:
           type: string
@@ -2968,28 +2978,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
+        paymentId:
           type: string
+          format: uuid
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
+    JsonGetPaymentStatusResponse_3:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonGetPaymentResponse_3:
       type: object
       required:
@@ -3041,11 +3048,8 @@ components:
           type: array
           items:
             type: string
-    JsonPostPaymentResponse_3:
+    JsonPostAuthorisationsResponse_3:
       type: object
-      required:
-      - paymentId
-      - transactionStatus
       properties:
         psuMessage:
           type: string
@@ -3053,15 +3057,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
@@ -3078,32 +3075,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonGetAuthorisationStatusResponse_2:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonAccountReference_2:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonAddress_3:
       type: object
       required:
@@ -3162,14 +3133,57 @@ components:
               type: string
             referenceIssuer:
               type: string
-    JsonGetPaymentStatusResponse_3:
+    JsonPostPaymentResponse_3:
       type: object
       required:
+      - paymentId
       - transactionStatus
       properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
+          type: string
+          format: uuid
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonPostAuthorisationsResponse_3:
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference_2:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonGetAuthorisationStatusResponse_2:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostAuthorisationsResponse_4:
       type: object
       properties:
         psuMessage:
@@ -3179,10 +3193,27 @@ components:
           items:
             $ref: '#/components/schemas/JsonMessage'
         scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
+          type: string
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    JsonGetPaymentStatusResponse_4:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          type: string
+          enum:
+          - AcceptedCustomerProfile
+          - AcceptedSettlementCompleted
+          - AcceptedSettlementInProcess
+          - AcceptedTechnicalValidation
+          - AcceptedWithChange
+          - AcceptedWithoutPosting
+          - Received
+          - Pending
+          - Rejected
     JsonGetPaymentResponse_4:
       type: object
       required:
@@ -3232,40 +3263,6 @@ components:
           type: array
           items:
             type: string
-    JsonPostPaymentResponse_4:
-      type: object
-      required:
-      - paymentId
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        paymentId:
-          type: string
-          format: uuid
-        transactionStatus:
-          type: string
-          enum:
-          - AcceptedCustomerProfile
-          - AcceptedSettlementCompleted
-          - AcceptedSettlementInProcess
-          - AcceptedTechnicalValidation
-          - AcceptedWithChange
-          - AcceptedWithoutPosting
-          - Received
-          - Pending
-          - Rejected
-        transactionFeeIndicator:
-          type: boolean
-        transactionFees:
-          $ref: '#/components/schemas/JsonAmount'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
     JsonErrorResponse_4:
       type: object
       required:
@@ -3289,22 +3286,6 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonAddress_4:
       type: object
       required:
@@ -3357,11 +3338,21 @@ components:
               type: string
             referenceIssuer:
               type: string
-    JsonGetPaymentStatusResponse_4:
+    JsonPostPaymentResponse_4:
       type: object
       required:
+      - paymentId
       - transactionStatus
       properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        paymentId:
+          type: string
+          format: uuid
         transactionStatus:
           type: string
           enum:
@@ -3374,20 +3365,48 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonPostAuthorisationsResponse_4:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          type: string
+        transactionFeeIndicator:
+          type: boolean
+        transactionFees:
+          $ref: '#/components/schemas/JsonAmount'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    OtpChosenScaMethod:
+      type: object
+      properties:
+        authenticationType:
+          type: string
+          enum:
+          - SMS_OTP
+          - CHIP_OTP
+          - PHOTO_OTP
+          - PUSH_OTP
+          - SMTP_OTP
+        authenticationVersion:
+          type: string
+        authenticationMethodId:
+          type: string
+        name:
+          type: string
+        explanation:
+          type: string
     JsonPostPaymentResponse_5:
       type: object
       required:
@@ -3416,47 +3435,6 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonGetAuthorisationStatusResponse_3:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonAddress_5:
-      type: object
-      required:
-      - country
-      properties:
-        country:
-          type: string
-    OtpChallengeData:
-      type: object
-      properties:
-        image:
-          type: string
-        data:
-          type: array
-          items:
-            type: string
-        imageLink:
-          type: string
-        otpMaxLength:
-          type: string
-        otpFormat:
-          type: string
-        additionalInformation:
-          type: string
-    JsonGetAuthorisationsResponse_5:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
     JsonGetPaymentStatusResponse_5:
       type: object
       required:
@@ -3464,43 +3442,6 @@ components:
       properties:
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonPostPaymentRequest_5:
-      type: object
-      required:
-      - creditorAddress
-      - creditorAccount
-      - creditorName
-      - debtorAccount
-      - instructedAmount
-      properties:
-        endToEndIdentification:
-          type: string
-          description: Unique end to end identity.
-        debtorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_4'
-        instructedAmount:
-          $ref: '#/components/schemas/JsonAmount'
-        creditorName:
-          type: string
-        creditorAddress:
-          $ref: '#/components/schemas/JsonAddress_5'
-        creditorAccount:
-          $ref: '#/components/schemas/JsonAccountReference_4'
-        remittanceInformationUnstructured:
-          type: string
-          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
-        remittanceInformationStructured:
-          type: object
-          required:
-          - reference
-          description: You can use only one group of Remittance Information fields in payload. Exception – Estonia internal payments – then both Remittance Information types can be provided in the same payload
-          properties:
-            reference:
-              type: string
-            referenceType:
-              type: string
-            referenceIssuer:
-              type: string
     JsonGetPaymentResponse_5:
       type: object
       required:
@@ -3542,54 +3483,60 @@ components:
               type: string
             referenceIssuer:
               type: string
-    JsonErrorResponse_5:
+    JsonGetAuthorisationsResponse_5:
       type: object
-      required:
-      - transactionStatus
       properties:
-        psuMessage:
-          type: string
-        tppMessages:
+        authorisationsIds:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonAccountReference_4:
+            type: string
+    JsonPostPaymentRequest_5:
+      type: object
+      required:
+      - creditorAddress
+      - creditorAccount
+      - creditorName
+      - debtorAccount
+      - instructedAmount
+      properties:
+        endToEndIdentification:
+          type: string
+          description: Unique end to end identity.
+        debtorAccount:
+          $ref: '#/components/schemas/JsonAccountReference_4'
+        instructedAmount:
+          $ref: '#/components/schemas/JsonAmount'
+        creditorName:
+          type: string
+        creditorAddress:
+          $ref: '#/components/schemas/JsonAddress_5'
+        creditorAccount:
+          $ref: '#/components/schemas/JsonAccountReference_4'
+        remittanceInformationUnstructured:
+          type: string
+          description: Reference issued used to establish a link between the payment of an invoice and the invoice instance.
+        remittanceInformationStructured:
+          type: object
+          required:
+          - reference
+          description: You can use only one group of Remittance Information fields in payload. Exception – Estonia internal payments – then both Remittance Information types can be provided in the same payload
+          properties:
+            reference:
+              type: string
+            referenceType:
+              type: string
+            referenceIssuer:
+              type: string
+    JsonGetAuthorisationStatusResponse_3:
       type: object
       properties:
-        iban:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
           type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    OtpChosenScaMethod:
-      type: object
-      properties:
-        authenticationType:
-          type: string
-          enum:
-          - SMS_OTP
-          - CHIP_OTP
-          - PHOTO_OTP
-          - PUSH_OTP
-          - SMTP_OTP
-        authenticationVersion:
-          type: string
-        authenticationMethodId:
-          type: string
-        name:
-          type: string
-        explanation:
-          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonPostAuthorisationsResponse_5:
       type: object
       properties:
@@ -3608,6 +3555,59 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
+    JsonErrorResponse_5:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonAddress_5:
+      type: object
+      required:
+      - country
+      properties:
+        country:
+          type: string
+    OtpChallengeData:
+      type: object
+      properties:
+        image:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+        imageLink:
+          type: string
+        otpMaxLength:
+          type: string
+        otpFormat:
+          type: string
+        additionalInformation:
+          type: string
+    JsonAccountReference_4:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
   parameters:
     envParam:
       name: sandbox|live

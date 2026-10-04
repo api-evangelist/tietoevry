@@ -117,54 +117,6 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
-    JsonPostSubscriptionRequest:
-      required:
-      - iban
-      - apiClientPrimaryPushURI
-      type: object
-      properties:
-        subscriptionEntries:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonaccountIdReference'
-          description: The URL to the service API what listens endpoints
-    SubscriptionStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-    JsonGetAccountIdReference:
-      type: object
-      properties:
-        accountId:
-          type: object
-          properties:
-            iban:
-              type: string
-        subscriptionEntryName:
-          type: string
-        subscriptionEntryId:
-          type: string
-        apiClientPrimaryPushURI:
-          type: string
-    JsonErrorResponse:
-      required:
-      - transactionStatus
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-    JsonGetLinks:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
     JsonPostSubscriptionResponse:
       required:
       - subscriptionStatus
@@ -186,6 +138,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonTppMessages'
+    SubscriptionStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+    JsonaccountIdReference:
+      type: object
+      properties:
+        accountId:
+          type: object
+          properties:
+            iban:
+              type: string
+        remittanceInformationUnstructured:
+          type: string
+      description: Must contain iban
+    JsonErrorResponse:
+      required:
+      - transactionStatus
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
     JsonGetSubscriptionStatusResponse:
       required:
       - subscriptionStatus
@@ -213,7 +197,7 @@ components:
           type: string
         text:
           type: string
-    JsonaccountIdReference:
+    JsonGetAccountIdReference:
       type: object
       properties:
         accountId:
@@ -221,23 +205,19 @@ components:
           properties:
             iban:
               type: string
-        remittanceInformationUnstructured:
+        subscriptionEntryName:
           type: string
-      description: Must contain iban
-    JsonTppMessages:
+        subscriptionEntryId:
+          type: string
+        apiClientPrimaryPushURI:
+          type: string
+    JsonGetLinks:
       type: object
       properties:
-        category:
-          type: string
-        code:
-          type: string
-        text:
-          type: string
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
     JsonLinks:
       type: object
       properties:
@@ -247,3 +227,23 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaRedirect:
           $ref: '#/components/schemas/JsonHref'
+    JsonTppMessages:
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        text:
+          type: string
+    JsonPostSubscriptionRequest:
+      required:
+      - iban
+      - apiClientPrimaryPushURI
+      type: object
+      properties:
+        subscriptionEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonaccountIdReference'
+          description: The URL to the service API what listens endpoints
