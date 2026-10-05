@@ -1,0 +1,12 @@
+{
+ "url": "https://openbanking.api.tietoevry.com/swagger.json",
+ "requested_url": "https://openbanking.api.tietoevry.com/swagger.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 87712,
+ "sha256": "76af321ad49a829a9a63349104643cd9f59264684d5a084846936d1ab22c0d43",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
