@@ -117,6 +117,49 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
+    JsonMessage:
+      required:
+      - category
+      - code
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonTppMessages:
+      type: object
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        text:
+          type: string
+    JsonLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+        scaRedirect:
+          $ref: '#/components/schemas/JsonHref'
+    JsonPostSubscriptionRequest:
+      required:
+      - iban
+      - apiClientPrimaryPushURI
+      type: object
+      properties:
+        subscriptionEntries:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonaccountIdReference'
+          description: The URL to the service API what listens endpoints
     JsonPostSubscriptionResponse:
       required:
       - subscriptionStatus
@@ -138,22 +181,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonTppMessages'
-    SubscriptionStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-    JsonaccountIdReference:
-      type: object
-      properties:
-        accountId:
-          type: object
-          properties:
-            iban:
-              type: string
-        remittanceInformationUnstructured:
-          type: string
-      description: Must contain iban
     JsonErrorResponse:
       required:
       - transactionStatus
@@ -165,11 +192,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
     JsonGetSubscriptionStatusResponse:
       required:
       - subscriptionStatus
@@ -183,20 +205,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonGetAccountIdReference'
-    JsonMessage:
-      required:
-      - category
-      - code
+    JsonHref:
       type: object
       properties:
-        category:
+        href:
           type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
+    JsonGetLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/JsonHref'
+        status:
+          $ref: '#/components/schemas/JsonHref'
+    SubscriptionStatus:
+      type: string
+      enum:
+      - received
+      - rejected
     JsonGetAccountIdReference:
       type: object
       properties:
@@ -211,39 +236,14 @@ components:
           type: string
         apiClientPrimaryPushURI:
           type: string
-    JsonGetLinks:
+    JsonaccountIdReference:
       type: object
       properties:
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-    JsonLinks:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/JsonHref'
-        status:
-          $ref: '#/components/schemas/JsonHref'
-        scaRedirect:
-          $ref: '#/components/schemas/JsonHref'
-    JsonTppMessages:
-      type: object
-      properties:
-        category:
+        accountId:
+          type: object
+          properties:
+            iban:
+              type: string
+        remittanceInformationUnstructured:
           type: string
-        code:
-          type: string
-        text:
-          type: string
-    JsonPostSubscriptionRequest:
-      required:
-      - iban
-      - apiClientPrimaryPushURI
-      type: object
-      properties:
-        subscriptionEntries:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonaccountIdReference'
-          description: The URL to the service API what listens endpoints
+      description: Must contain iban

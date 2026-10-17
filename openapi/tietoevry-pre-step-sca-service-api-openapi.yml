@@ -129,11 +129,6 @@ paths:
                 $ref: '#/components/schemas/JsonErrorResponse'
 components:
   schemas:
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
     JsonPreAuthProviderResponse:
       type: object
       properties:
@@ -183,3 +178,8 @@ components:
           - ACFC
           - PATC
           - PART
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string

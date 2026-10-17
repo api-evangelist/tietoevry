@@ -2411,22 +2411,56 @@ paths:
     - url: https://openbanking.api.tieto.com
 components:
   schemas:
-    JsonPostAuthorisationsResponse:
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          type: string
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostConsentsResponse:
       type: object
       properties:
         psuMessage:
           type: string
-        authorisationId:
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        consentId:
           type: string
-        scaStatus:
+          format: uuid
+        consentStatus:
           type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetConsentStatusResponse:
+    JsonAccountAccess:
       type: object
       properties:
-        consentStatus:
-          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference'
     JsonGetAuthorisationsResponse:
       type: object
       properties:
@@ -2461,74 +2495,6 @@ components:
           - ACFC
           - PATC
           - PART
-    JsonPostConsentsRequest:
-      type: object
-      required:
-      - access
-      - recurringIndicator
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess'
-        validUntil:
-          type: string
-        frequencyPerDay:
-          type: string
-        recurringIndicator:
-          type: boolean
-          example: true
-        combinedServiceIndicator:
-          type: boolean
-          example: true
-    JsonAccountAccess:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference'
-    JsonAccountReference:
-      type: object
-      required:
-      - currency
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
     JsonGetConsentResponse:
       type: object
       required:
@@ -2559,6 +2525,66 @@ components:
           - expired
           - deleted
           - terminatedByTpp
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAccountReference:
+      type: object
+      required:
+      - currency
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonPostConsentsRequest:
+      type: object
+      required:
+      - access
+      - recurringIndicator
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess'
+        validUntil:
+          type: string
+        frequencyPerDay:
+          type: string
+        recurringIndicator:
+          type: boolean
+          example: true
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonGetConsentStatusResponse:
+      type: object
+      properties:
+        consentStatus:
+          type: string
+    JsonPostAuthorisationsResponse:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        authorisationId:
+          type: string
+        scaStatus:
+          type: string
         _links:
           $ref: '#/components/schemas/JsonLinks'
     JsonLinks:
@@ -2596,7 +2622,7 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonPostConsentsResponse:
+    JsonPostConsentsResponse_2:
       type: object
       properties:
         psuMessage:
@@ -2609,46 +2635,6 @@ components:
           type: string
           format: uuid
         consentStatus:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          type: string
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
-    TransactionStatus:
-      type: string
-      enum:
-      - ACCC
-      - ACCP
-      - ACSC
-      - ACSP
-      - ACTC
-      - ACWC
-      - ACWP
-      - RCVD
-      - PDNG
-      - RJCT
-      - CANC
-      - ACFC
-      - PATC
-      - PART
-    JsonPostAuthorisationsResponse_2:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
           type: string
         _links:
           readOnly: true
@@ -2673,26 +2659,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonPostConsentsRequest_2:
-      type: object
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess'
-        recurringIndicator:
-          type: boolean
-        validUntil:
-          type: string
-        frequencyPerDay:
-          type: string
-        combinedServiceIndicator:
-          type: boolean
-          example: true
     JsonGetConsentResponse_2:
       type: object
       required:
@@ -2726,7 +2692,73 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_2:
+    JsonPostConsentsRequest_2:
+      type: object
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess'
+        recurringIndicator:
+          type: boolean
+        validUntil:
+          type: string
+        frequencyPerDay:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    TransactionStatus:
+      type: string
+      enum:
+      - ACCC
+      - ACCP
+      - ACSC
+      - ACSP
+      - ACTC
+      - ACWC
+      - ACWP
+      - RCVD
+      - PDNG
+      - RJCT
+      - CANC
+      - ACFC
+      - PATC
+      - PART
+    JsonPostAuthorisationsResponse_2:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonGetAuthorisationStatusResponse_2:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    CashAccountType:
+      type: string
+      enum:
+      - CACC
+      - CARD
+    JsonPostConsentsResponse_3:
       type: object
       properties:
         psuMessage:
@@ -2739,29 +2771,29 @@ components:
           type: string
           format: uuid
         consentStatus:
-          type: string
+          $ref: '#/components/schemas/ConsentStatus'
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetConsentStatusResponse_2:
+    JsonAccountAccess_2:
       type: object
       properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-    JsonPostAuthorisationsResponse_3:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
+        accounts:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_2'
+        restrictedTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/CashAccountType'
     JsonGetAuthorisationsResponse_3:
       type: object
       properties:
@@ -2782,92 +2814,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonPostConsentsRequest_3:
-      type: object
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess_2'
-        recurringIndicator:
-          type: boolean
-          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
-        validUntil:
-          type: string
-          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
-        frequencyPerDay:
-          type: string
-          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-          description: Unsupported mandatory field. Must be set to false
-    JsonAccountAccess_2:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_2'
-        restrictedTo:
-          type: array
-          items:
-            $ref: '#/components/schemas/CashAccountType'
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    CashAccountType:
-      type: string
-      enum:
-      - CACC
-      - CARD
-    JsonAccountReference_2:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-        cashAccountType:
-          $ref: '#/components/schemas/CashAccountType'
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    ConsentStatus:
-      type: string
-      enum:
-      - received
-      - rejected
-      - valid
-      - revokedByPsu
-      - expired
-      - terminatedByTpp
     JsonGetConsentResponse_3:
       type: object
       required:
@@ -2898,7 +2844,108 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_3:
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
+    JsonAccountReference_2:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+        cashAccountType:
+          $ref: '#/components/schemas/CashAccountType'
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    ConsentStatus:
+      type: string
+      enum:
+      - received
+      - rejected
+      - valid
+      - revokedByPsu
+      - expired
+      - terminatedByTpp
+    JsonPostConsentsRequest_3:
+      type: object
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess_2'
+        recurringIndicator:
+          type: boolean
+          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
+        validUntil:
+          type: string
+          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
+        frequencyPerDay:
+          type: string
+          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+          description: Unsupported mandatory field. Must be set to false
+    JsonGetConsentStatusResponse_2:
+      type: object
+      properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    JsonPostAuthorisationsResponse_3:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonAdditionalAccountInformation:
+      type: object
+      properties:
+        ownerName:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        ownerAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+    JsonGetAuthorisationStatusResponse_3:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostConsentsResponse_4:
       type: object
       properties:
         psuMessage:
@@ -2913,36 +2960,24 @@ components:
         consentStatus:
           $ref: '#/components/schemas/ConsentStatus'
         _links:
-          readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse_2:
+    JsonAccountAccess_3:
       type: object
       properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetConsentStatusResponse_3:
-      type: object
-      properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-    JsonPostAuthorisationsResponse_4:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
+        accounts:
           type: array
           items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonAccountReference_3'
+        additionalAccountInformation:
+          $ref: '#/components/schemas/JsonAdditionalAccountInformation'
     JsonGetAuthorisationsResponse_4:
       type: object
       properties:
@@ -2963,74 +2998,6 @@ components:
             $ref: '#/components/schemas/JsonMessage'
         transactionStatus:
           $ref: '#/components/schemas/TransactionStatus'
-    JsonPostConsentsRequest_4:
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      type: object
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess_3'
-        recurringIndicator:
-          type: boolean
-          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
-        validUntil:
-          type: string
-          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
-        frequencyPerDay:
-          type: string
-          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
-        combinedServiceIndicator:
-          type: boolean
-          description: Unsupported mandatory field. Must be set to false
-          example: false
-    JsonAccountAccess_3:
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        additionalAccountInformation:
-          $ref: '#/components/schemas/JsonAdditionalAccountInformation'
-    JsonAccountReference_3:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
-    JsonAdditionalAccountInformation:
-      type: object
-      properties:
-        ownerName:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
-        ownerAddress:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonAccountReference_3'
     JsonGetConsentResponse_4:
       required:
       - access
@@ -3060,7 +3027,65 @@ components:
           $ref: '#/components/schemas/ConsentStatus'
         _links:
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_4:
+    JsonAccountReference_3:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonPostConsentsRequest_4:
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      type: object
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess_3'
+        recurringIndicator:
+          type: boolean
+          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
+        validUntil:
+          type: string
+          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
+        frequencyPerDay:
+          type: string
+          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
+        combinedServiceIndicator:
+          type: boolean
+          description: Unsupported mandatory field. Must be set to false
+          example: false
+    JsonGetConsentStatusResponse_3:
+      type: object
+      properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    JsonPostAuthorisationsResponse_4:
+      type: object
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        _links:
+          $ref: '#/components/schemas/JsonLinks'
+    JsonPostConsentsResponse_5:
       type: object
       properties:
         psuMessage:
@@ -3073,28 +3098,6 @@ components:
           type: string
           format: uuid
         consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationStatusResponse_3:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          $ref: '#/components/schemas/JsonLinks'
-    JsonPostAuthorisationsResponse_5:
-      type: object
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        scaStatus:
           type: string
         _links:
           readOnly: true
@@ -3129,42 +3132,6 @@ components:
           - Received
           - Pending
           - Rejected
-    JsonPostConsentsRequest_5:
-      type: object
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess'
-        recurringIndicator:
-          type: boolean
-        validUntil:
-          type: string
-        frequencyPerDay:
-          type: string
-        combinedServiceIndicator:
-          type: boolean
-          example: true
-    JsonAccountReference_4:
-      type: object
-      properties:
-        iban:
-          type: string
-        bban:
-          type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonGetConsentResponse_5:
       type: object
       required:
@@ -3199,7 +3166,43 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonPostConsentsResponse_5:
+    JsonAccountReference_4:
+      type: object
+      properties:
+        iban:
+          type: string
+        bban:
+          type: string
+        pan:
+          type: string
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+    JsonPostConsentsRequest_5:
+      type: object
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
+      properties:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess'
+        recurringIndicator:
+          type: boolean
+        validUntil:
+          type: string
+        frequencyPerDay:
+          type: string
+        combinedServiceIndicator:
+          type: boolean
+          example: true
+    JsonPostAuthorisationsResponse_5:
       type: object
       properties:
         psuMessage:
@@ -3208,33 +3211,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JsonMessage'
-        consentId:
-          type: string
-          format: uuid
-        consentStatus:
+        scaStatus:
           type: string
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    OtpChosenScaMethod:
-      type: object
-      properties:
-        authenticationType:
-          type: string
-          enum:
-          - SMS_OTP
-          - CHIP_OTP
-          - PHOTO_OTP
-          - PUSH_OTP
-          - SMTP_OTP
-        authenticationVersion:
-          type: string
-        authenticationMethodId:
-          type: string
-        name:
-          type: string
-        explanation:
-          type: string
     JsonPostConsentsResponse_6:
       type: object
       properties:
@@ -3256,47 +3237,22 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonGetAuthorisationsResponse_6:
+    JsonAccountReference_5:
       type: object
       properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    JsonPostConsentsRequest_6:
-      type: object
-      required:
-      - access
-      - combinedServiceIndicator
-      - frequencyPerDay
-      - recurringIndicator
-      - validUntil
-      properties:
-        access:
-          $ref: '#/components/schemas/JsonAccountAccess'
-        recurringIndicator:
-          type: boolean
-          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
-        validUntil:
+        iban:
           type: string
-          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
-        frequencyPerDay:
+        bban:
           type: string
-          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
-        combinedServiceIndicator:
-          type: boolean
-          example: false
-          description: Unsupported mandatory field. Must be set to false
-    JsonGetAuthorisationStatusResponse_4:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
+        pan:
           type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
+        maskedPan:
+          type: string
+        msisdn:
+          type: string
+        currency:
+          type: string
+      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
     JsonPostAuthorisationsResponse_6:
       type: object
       properties:
@@ -3315,24 +3271,25 @@ components:
           $ref: '#/components/schemas/OtpChosenScaMethod'
         challengeData:
           $ref: '#/components/schemas/OtpChallengeData'
-    JsonErrorResponse_6:
+    OtpChosenScaMethod:
       type: object
-      required:
-      - transactionStatus
       properties:
-        psuMessage:
+        authenticationType:
           type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonGetConsentStatusResponse_4:
-      type: object
-      properties:
-        consentStatus:
-          $ref: '#/components/schemas/ConsentStatus'
+          enum:
+          - SMS_OTP
+          - CHIP_OTP
+          - PHOTO_OTP
+          - PUSH_OTP
+          - SMTP_OTP
+        authenticationVersion:
+          type: string
+        authenticationMethodId:
+          type: string
+        name:
+          type: string
+        explanation:
+          type: string
     OtpChallengeData:
       type: object
       properties:
@@ -3350,6 +3307,41 @@ components:
           type: string
         additionalInformation:
           type: string
+    JsonGetConsentStatusResponse_4:
+      type: object
+      properties:
+        consentStatus:
+          $ref: '#/components/schemas/ConsentStatus'
+    JsonGetAuthorisationsResponse_6:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
+    JsonGetAuthorisationStatusResponse_4:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonErrorResponse_6:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
     JsonGetConsentResponse_6:
       type: object
       required:
@@ -3380,22 +3372,30 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonAccountReference_5:
+    JsonPostConsentsRequest_6:
       type: object
+      required:
+      - access
+      - combinedServiceIndicator
+      - frequencyPerDay
+      - recurringIndicator
+      - validUntil
       properties:
-        iban:
+        access:
+          $ref: '#/components/schemas/JsonAccountAccess'
+        recurringIndicator:
+          type: boolean
+          description: true, if the consent is for recurring access to the account data false, if the consent is for one access to the account data
+        validUntil:
           type: string
-        bban:
+          description: This parameter is requesting a valid until date for the requested consent. The content is the local ASPSP date in ISODate Format, e.g. 2017-10-30. For recurring consents validUntil must not be farther then 180 days in future.
+        frequencyPerDay:
           type: string
-        pan:
-          type: string
-        maskedPan:
-          type: string
-        msisdn:
-          type: string
-        currency:
-          type: string
-      description: Must contain one of iban,bban,maskedPan,msisdn or pan field
+          description: This field indicates the requested maximum frequency for an access without PSU involvement per day. For a one-off access, this attribute is set to "1".
+        combinedServiceIndicator:
+          type: boolean
+          example: false
+          description: Unsupported mandatory field. Must be set to false
   parameters:
     envParam:
       name: sandbox|live

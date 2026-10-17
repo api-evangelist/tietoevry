@@ -409,28 +409,123 @@ paths:
             X-Request-ID:
               $ref: '#/components/headers/X-Request-ID-5XX'
 components:
+  parameters:
+    Signature:
+      name: Signature
+      in: header
+      description: 'A signature of the request by the TPP on application level. This might be mandated by ASPSP.
+
+        '
+      schema:
+        type: string
+      required: false
+      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D-Trust%20GmbH,C=DE",algorithm="rsa-sha256", headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date", signature="Base64(RSA-SHA256(signing string))"
+
+        '
+    X-Request-ID:
+      name: X-Request-ID
+      in: header
+      description: ID of the request, unique to the call
+      required: true
+      schema:
+        type: string
+        format: uuid
+    payment-id:
+      name: payment-id
+      in: path
+      required: true
+      description: Payment identification
+      schema:
+        type: string
+    Signature-Certificate:
+      name: Signature-Certificate
+      in: header
+      description: 'The certificate used for signing the request, in base64 encoding.
+
+        Must be contained if a signature is contained.
+
+        '
+      schema:
+        type: string
+        format: byte
+      required: false
+    Digest:
+      name: Digest
+      in: header
+      description: Is contained if and only if the "Signature" element is contained in the header of the request.
+      schema:
+        type: string
+      required: false
+      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
   schemas:
-    Amount:
+    AccountReference:
       type: object
       required:
-      - amount
-      - currency
+      - iban
       properties:
+        iban:
+          type: string
+          description: IBAN of an account
+          example: DE89370400440532013000
+    PaymentRequest:
+      type: object
+      description: Data that describes the payment
+      properties:
+        instructedAmount:
+          $ref: '#/components/schemas/Amount'
+        debtorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        debtorName:
+          type: string
+          description: Debtor Name
+        creditorAccount:
+          $ref: '#/components/schemas/AccountReference'
+        creditorName:
+          type: string
+          description: Creditor Name
+        creditorAgent:
+          type: string
+          description: BICFI
+          example: AAAADEBBXXX
+        creditorAgentName:
+          type: string
+        creditorId:
+          type: string
+          description: Identification of Creditors, e.g. a SEPA Creditor ID.
+          example: DE452399865083
+        endToEndIdentification:
+          type: string
+          example: 123-ZXCV-890
+        requestedExecutionDate:
+          type: string
+          format: date
+          example: '2021-06-01'
+        remittanceInformationStructured:
+          $ref: '#/components/schemas/RemittanceInformationStructured'
+        mandateInformation:
+          $ref: '#/components/schemas/MandateInformation'
+    MandateInformation:
+      type: object
+      properties:
+        mandateId:
+          type: string
+          description: Identification of Mandates, e.g. a SEPA Mandate ID.
+        recurringIndicator:
+          type: boolean
+          description: '"true", if the transaction is for recurring.
+
+
+            "false", if the transaction is for one time.
+
+            '
+          example: true
         amount:
           type: string
           description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
-          example: '1000'
         currency:
           type: string
           description: ISO 4217 Alpha 3 currency code
           example: EUR
-    RemittanceInformationStructured:
-      type: object
-      description: Structured remittance information
-      properties:
-        reference:
-          type: string
-          example: REF123123
     ErrorResponse:
       type: object
       required:
@@ -503,67 +598,6 @@ components:
       - RJCT
       - CANC
       example: ACCP
-    ReasonCode:
-      type: string
-      description: '"MD05" - "Collection not due"
-
-        "MD06" - "Refund Request By End Customer"
-
-        '
-      enum:
-      - MD05
-      - MD06
-    EventName:
-      type: string
-      description: Event name
-      enum:
-      - SettledWithCreditor
-    PaymentRequest:
-      type: object
-      description: Data that describes the payment
-      properties:
-        instructedAmount:
-          $ref: '#/components/schemas/Amount'
-        debtorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        debtorName:
-          type: string
-          description: Debtor Name
-        creditorAccount:
-          $ref: '#/components/schemas/AccountReference'
-        creditorName:
-          type: string
-          description: Creditor Name
-        creditorAgent:
-          type: string
-          description: BICFI
-          example: AAAADEBBXXX
-        creditorAgentName:
-          type: string
-        creditorId:
-          type: string
-          description: Identification of Creditors, e.g. a SEPA Creditor ID.
-          example: DE452399865083
-        endToEndIdentification:
-          type: string
-          example: 123-ZXCV-890
-        requestedExecutionDate:
-          type: string
-          format: date
-          example: '2021-06-01'
-        remittanceInformationStructured:
-          $ref: '#/components/schemas/RemittanceInformationStructured'
-        mandateInformation:
-          $ref: '#/components/schemas/MandateInformation'
-    AccountReference:
-      type: object
-      required:
-      - iban
-      properties:
-        iban:
-          type: string
-          description: IBAN of an account
-          example: DE89370400440532013000
     Address:
       type: object
       properties:
@@ -578,40 +612,13 @@ components:
         country:
           type: string
           description: ISO 3166 ALPHA2 country code
-    MandateInformation:
+    RemittanceInformationStructured:
       type: object
+      description: Structured remittance information
       properties:
-        mandateId:
+        reference:
           type: string
-          description: Identification of Mandates, e.g. a SEPA Mandate ID.
-        recurringIndicator:
-          type: boolean
-          description: '"true", if the transaction is for recurring.
-
-
-            "false", if the transaction is for one time.
-
-            '
-          example: true
-        amount:
-          type: string
-          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
-        currency:
-          type: string
-          description: ISO 4217 Alpha 3 currency code
-          example: EUR
-    Event:
-      type: object
-      properties:
-        event:
-          type: object
-          properties:
-            name:
-              $ref: '#/components/schemas/EventName'
-            timestamp:
-              type: string
-              format: date-time
-              example: '2021-06-02T12:00:00Z'
+          example: REF123123
     RefundStatus:
       type: object
       properties:
@@ -631,6 +638,21 @@ components:
                 href:
                   type: string
                   description: Link to a resource
+    ReasonCode:
+      type: string
+      description: '"MD05" - "Collection not due"
+
+        "MD06" - "Refund Request By End Customer"
+
+        '
+      enum:
+      - MD05
+      - MD06
+    EventName:
+      type: string
+      description: Event name
+      enum:
+      - SettledWithCreditor
     PaymentStatus:
       type: object
       properties:
@@ -650,54 +672,32 @@ components:
                 href:
                   type: string
                   description: Link to a resource
-  parameters:
-    Digest:
-      name: Digest
-      in: header
-      description: Is contained if and only if the "Signature" element is contained in the header of the request.
-      schema:
-        type: string
-      required: false
-      example: SHA-256=hl1/Eps8BEQW58FJhDApwJXjGY4nr1ArGDHIT25vq6A=
-    payment-id:
-      name: payment-id
-      in: path
-      required: true
-      description: Payment identification
-      schema:
-        type: string
-    X-Request-ID:
-      name: X-Request-ID
-      in: header
-      description: ID of the request, unique to the call
-      required: true
-      schema:
-        type: string
-        format: uuid
-    Signature:
-      name: Signature
-      in: header
-      description: 'A signature of the request by the TPP on application level. This might be mandated by ASPSP.
-
-        '
-      schema:
-        type: string
-      required: false
-      example: 'keyId="SN=9FA1,CA=CN=D-TRUST%20CA%202-1%202015,O=D-Trust%20GmbH,C=DE",algorithm="rsa-sha256", headers="Digest X-Request-ID PSU-ID TPP-Redirect-URI Date", signature="Base64(RSA-SHA256(signing string))"
-
-        '
-    Signature-Certificate:
-      name: Signature-Certificate
-      in: header
-      description: 'The certificate used for signing the request, in base64 encoding.
-
-        Must be contained if a signature is contained.
-
-        '
-      schema:
-        type: string
-        format: byte
-      required: false
+    Event:
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/EventName'
+            timestamp:
+              type: string
+              format: date-time
+              example: '2021-06-02T12:00:00Z'
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: string
+          description: "The amount given with fractional digits, where fractions must be compliant to the currency definition.\nUp to 14 significant figures. Negative amounts are signed by minus.\nThe decimal separator is a dot.\n\n**Example:**\nValid representations for EUR with up to two decimals are:\n\n  * 1056\n  * 5768.2\n  * -1.50\n  * 5877.78\n"
+          example: '1000'
+        currency:
+          type: string
+          description: ISO 4217 Alpha 3 currency code
+          example: EUR
   headers:
     X-Request-ID:
       description: ID of the request, unique to the call

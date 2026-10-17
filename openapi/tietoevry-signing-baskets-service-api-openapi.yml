@@ -355,6 +355,79 @@ paths:
         required: true
 components:
   schemas:
+    JsonGetAuthorisationStatusResponse:
+      type: object
+      properties:
+        scaStatus:
+          $ref: '#/components/schemas/ScaStatus'
+        authorisationId:
+          type: string
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
+    JsonMessage:
+      type: object
+      required:
+      - category
+      - code
+      properties:
+        category:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+        text:
+          type: string
+    JsonPostSigningBasketRequest:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+    JsonGetAuthorisationsResponse:
+      type: object
+      properties:
+        authorisationsIds:
+          type: array
+          items:
+            type: string
+    JsonErrorResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        psuMessage:
+          type: string
+        tppMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/JsonMessage'
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    JsonGetSigningBasketStatusResponse:
+      type: object
+      required:
+      - transactionStatus
+      properties:
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+    ScaStatus:
+      type: string
+      enum:
+      - received
+      - psuIdentified
+      - psuAuthenticated
+      - scaMethodSelected
+      - started
+      - finalised
+      - failed
+      - exempted
     TransactionStatus:
       type: string
       enum:
@@ -372,6 +445,27 @@ components:
       - ACFC
       - PATC
       - PART
+    JsonHref:
+      type: object
+      properties:
+        href:
+          type: string
+    JsonGetSigningBasketResponse:
+      type: object
+      properties:
+        paymentIds:
+          type: array
+          items:
+            type: string
+        consentIds:
+          type: array
+          items:
+            type: string
+        transactionStatus:
+          $ref: '#/components/schemas/TransactionStatus'
+        _links:
+          readOnly: true
+          $ref: '#/components/schemas/JsonLinks'
     JsonPostSigningBasketResponse:
       type: object
       required:
@@ -406,85 +500,6 @@ components:
         _links:
           readOnly: true
           $ref: '#/components/schemas/JsonLinks'
-    JsonGetAuthorisationsResponse:
-      type: object
-      properties:
-        authorisationsIds:
-          type: array
-          items:
-            type: string
-    JsonGetSigningBasketStatusResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonErrorResponse:
-      type: object
-      required:
-      - transactionStatus
-      properties:
-        psuMessage:
-          type: string
-        tppMessages:
-          type: array
-          items:
-            $ref: '#/components/schemas/JsonMessage'
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-    JsonGetSigningBasketResponse:
-      type: object
-      properties:
-        paymentIds:
-          type: array
-          items:
-            type: string
-        consentIds:
-          type: array
-          items:
-            type: string
-        transactionStatus:
-          $ref: '#/components/schemas/TransactionStatus'
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    ScaStatus:
-      type: string
-      enum:
-      - received
-      - psuIdentified
-      - psuAuthenticated
-      - scaMethodSelected
-      - started
-      - finalised
-      - failed
-      - exempted
-    JsonPostSigningBasketRequest:
-      type: object
-      properties:
-        paymentIds:
-          type: array
-          items:
-            type: string
-        consentIds:
-          type: array
-          items:
-            type: string
-    JsonMessage:
-      type: object
-      required:
-      - category
-      - code
-      properties:
-        category:
-          type: string
-        code:
-          type: string
-        path:
-          type: string
-        text:
-          type: string
     JsonLinks:
       type: object
       properties:
@@ -520,21 +535,6 @@ components:
           $ref: '#/components/schemas/JsonHref'
         scaStatus:
           $ref: '#/components/schemas/JsonHref'
-    JsonGetAuthorisationStatusResponse:
-      type: object
-      properties:
-        scaStatus:
-          $ref: '#/components/schemas/ScaStatus'
-        authorisationId:
-          type: string
-        _links:
-          readOnly: true
-          $ref: '#/components/schemas/JsonLinks'
-    JsonHref:
-      type: object
-      properties:
-        href:
-          type: string
   parameters:
     envParam:
       name: sandbox|live
