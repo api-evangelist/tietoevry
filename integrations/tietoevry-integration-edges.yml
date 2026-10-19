@@ -6,10 +6,17 @@ source:
 - https://composio.dev/toolkits/tietoevry
 - https://monid.ai/tools/tietoevry
 checked:
+- https://api.nuget.org/v3
 - https://composio.dev/toolkits/tietoevry
+- https://crates.io/api/v1
 - https://monid.ai/tools/tietoevry
 - https://n8n.io/integrations/tietoevry/
 - https://peppol.org/members/peppol-certified-service-providers/
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://www.impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees
 - https://www.streamlinedsalestax.org/certified-service-providers/certified-service-providers-list
 - https://zapier.com/apps/tietoevry/integrations
@@ -72,4 +79,34 @@ edges:
     detected: '2026-10-15'
   detected_by: sweep-einvoicing-tax.py
   first_seen: '2026-10-15'
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.tietoevry.quarkus/quarkus-resteasy-problem-parent
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.tietoevry.quarkus:quarkus-resteasy-problem-parent
+      version: 3.9.0
+      released: '2024-03-28'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.tietoevry.quarkus/quarkus-resteasy-problem-parent
+      repo_leg: github-org:tietoevry
+      publisher_leg: groupId:tietoevry.com
+      matched_by: domain
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 templates: []
