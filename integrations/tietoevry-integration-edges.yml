@@ -20,65 +20,10 @@ checked:
 - https://www.impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees
 - https://www.streamlinedsalestax.org/certified-service-providers/certified-service-providers-list
 - https://zapier.com/apps/tietoevry/integrations
+- https://listings.pcisecuritystandards.org/assessors_and_solutions
 summary: null
 marketplace_apps: []
 edges:
-- partner_name: OpenPeppol (certified service providers)
-  partner: null
-  partner_match: register
-  type: register
-  direction: partner-built
-  evidence: https://peppol.org/members/peppol-certified-service-providers/
-  category: Peppol service provider
-  channel: standard-directory
-  relationship: standard-participant
-  contract_reference:
-    register: OpenPeppol certified service providers (peppol.org/members/peppol-certified-service-providers)
-    spec_file: null
-    standard: Peppol
-    role: peppol-certified-service-provider
-    registered_name: tietoEVRY
-    legal_name: tietoEVRY
-    matched_domain: tietoevry.com
-    matched_by: domain
-    domain_source: contact email domain
-    peppol_authorities:
-    - DFØ
-    countries:
-    - Norway
-    certified_products:
-    - product: Access Point
-      lapsed: false
-    signal_note: certified_products = one entry per Peppol-certified SERVICE (Access Point, SMP); authorities and
-      countries are context, never read
-    detected_by: sweep-einvoicing-tax.py
-    detected: '2026-10-15'
-  detected_by: sweep-einvoicing-tax.py
-  first_seen: '2026-10-15'
-- partner_name: OpenPeppol (certified service providers)
-  partner: null
-  partner_match: register
-  type: register
-  direction: partner-built
-  evidence: https://peppol.org/members/peppol-certified-service-providers/
-  category: Peppol service provider
-  channel: standard-directory
-  relationship: compatible
-  shape: peppol
-  evidence_kind: conformance-register
-  degree: certified
-  report_only: true
-  contract_reference:
-    register: OpenPeppol certified service providers (peppol.org/members/peppol-certified-service-providers)
-    spec_file: null
-    standard: Peppol
-    role: peppol-certified-service-provider
-    registered_name: tietoEVRY
-    matched_domain: tietoevry.com
-    detected_by: sweep-einvoicing-tax.py
-    detected: '2026-10-15'
-  detected_by: sweep-einvoicing-tax.py
-  first_seen: '2026-10-15'
 - partner_name: Maven Central
   partner: maven-central
   partner_match: register
@@ -109,4 +54,92 @@ edges:
     detected: '2026-10-18'
   detected_by: sweep-official-sdks.py
   first_seen: '2026-10-18'
+- partner_name: OpenPeppol (certified service providers)
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  evidence: https://peppol.org/members/peppol-certified-service-providers/
+  category: Peppol service provider
+  channel: standard-directory
+  relationship: standard-participant
+  contract_reference:
+    register: OpenPeppol certified service providers (peppol.org/members/peppol-certified-service-providers)
+    spec_file: null
+    standard: Peppol
+    role: peppol-certified-service-provider
+    registered_name: tietoEVRY
+    legal_name: tietoEVRY
+    matched_domain: tietoevry.com
+    matched_by: domain
+    domain_source: contact email domain
+    peppol_authorities:
+    - DFØ
+    countries:
+    - Norway
+    certified_products:
+    - product: Access Point
+      lapsed: false
+    signal_note: certified_products = one entry per Peppol-certified SERVICE (Access Point, SMP); authorities and
+      countries are context, never read
+    detected_by: sweep-einvoicing-tax.py
+    detected: '2026-10-19'
+  detected_by: sweep-einvoicing-tax.py
+  first_seen: '2026-10-15'
+- partner_name: OpenPeppol (certified service providers)
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  evidence: https://peppol.org/members/peppol-certified-service-providers/
+  category: Peppol service provider
+  channel: standard-directory
+  relationship: compatible
+  shape: peppol
+  evidence_kind: conformance-register
+  degree: certified
+  report_only: true
+  contract_reference:
+    register: OpenPeppol certified service providers (peppol.org/members/peppol-certified-service-providers)
+    spec_file: null
+    standard: Peppol
+    role: peppol-certified-service-provider
+    registered_name: tietoEVRY
+    matched_domain: tietoevry.com
+    detected_by: sweep-einvoicing-tax.py
+    detected: '2026-10-19'
+  detected_by: sweep-einvoicing-tax.py
+  first_seen: '2026-10-15'
+- partner_name: PCI Security Standards Council (program listings)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://listings.pcisecuritystandards.org/assessors_and_solutions/payment_software
+  category: Payment security validation
+  contract_reference:
+    register: PCI SSC program listings (listings.pcisecuritystandards.org / pcisecuritystandards.org)
+    spec_file: null
+    standard: PCI SSC
+    role: pci-validated-vendor
+    registered_name: Tietoevry Fintech Sweden AB
+    website: www.tietoevry.com
+    matched_domain: tietoevry.com
+    matched_by: domain
+    identity_source: the vendor website on the PCI SSC listing (no lookup)
+    certified_products:
+    - product: PCI Secure Software (Validated Secure Software)
+      lapsed: false
+      latest_expiry: '2027-02-26'
+      listed: 8
+    signal_note: one certified_products entry per PCI SSC program (Secure Software, PA-DSS, P2PE solution / component
+      / application, 3DS SDK, SPoC, CPoC, MPoC, PTS device, Secure SLC); lapsed = every listed product in that program
+      is past its expiry / reassessment date or marked expired; `listed` is context only. List Access Agreement
+      accepted on Kin's instruction 2026-10-20
+    detected_by: sweep-compliance-assurance.py
+    detected: '2026-10-20'
+  detected_by: sweep-compliance-assurance.py
+  first_seen: '2026-10-20'
 templates: []
