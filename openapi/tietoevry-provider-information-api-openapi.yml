@@ -124,3 +124,9 @@ components:
           type: string
         bankCode:
           type: string
+x-provenance:
+  method: harvested
+  publisher: TietoEVRY
+  source: https://aggregation.api.tieto.com/swagger.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
